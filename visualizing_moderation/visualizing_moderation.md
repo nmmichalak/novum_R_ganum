@@ -66,9 +66,9 @@ set.seed(1234)
 
 # random normal data
 # two-way interaction
-x <- rnorm(n = 100, mean = 0, sd = )
-z <- x * 0.4 + rnorm(n = 100, mean = 0, sd = 1)
-y <- x * z + rnorm(n = 100, mean = 0, sd = 1)
+x <- rnorm(n = 250, mean = 0, sd = )
+z <- x * 0.4 + rnorm(n = 250, mean = 0, sd = 1)
+y <- x * z + rnorm(n = 250, mean = 0, sd = 1)
 
 # store in a dataframe
 examp_dat <- data.frame(y, x, z)
@@ -103,19 +103,19 @@ examp_dat %>%
 ## 
 ## Residuals:
 ##     Min      1Q  Median      3Q     Max 
-## -3.3052 -0.8771 -0.1415  0.5552  6.2626 
+## -5.1672 -0.9687 -0.1271  0.7018 13.8515 
 ## 
 ## Coefficients:
-##             Estimate Std. Error t value Pr(>|t|)    
-## (Intercept)   0.5507     0.1425   3.863 0.000202 ***
-## x             0.1230     0.1497   0.821 0.413514    
-## z_std        -0.1857     0.1504  -1.235 0.219825    
+##             Estimate Std. Error t value Pr(>|t|)   
+## (Intercept)  0.32673    0.11190   2.920  0.00382 **
+## x            0.01765    0.11776   0.150  0.88100   
+## z_std       -0.07259    0.11981  -0.606  0.54513   
 ## ---
 ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 ## 
-## Residual standard error: 1.406 on 97 degrees of freedom
-## Multiple R-squared:  0.01728,	Adjusted R-squared:  -0.002985 
-## F-statistic: 0.8527 on 2 and 97 DF,  p-value: 0.4294
+## Residual standard error: 1.769 on 247 degrees of freedom
+## Multiple R-squared:  0.001503,	Adjusted R-squared:  -0.006582 
+## F-statistic: 0.1859 on 2 and 247 DF,  p-value: 0.8305
 ```
 
 ```r
@@ -132,20 +132,20 @@ examp_dat %>%
 ## 
 ## Residuals:
 ##      Min       1Q   Median       3Q      Max 
-## -3.06188 -0.62230  0.09497  0.55913  2.71666 
+## -2.78989 -0.62795  0.07566  0.62157  2.44049 
 ## 
 ## Coefficients:
 ##             Estimate Std. Error t value Pr(>|t|)    
-## (Intercept)  0.18638    0.10380   1.796   0.0757 .  
-## x            0.03002    0.10312   0.291   0.7716    
-## z_std        0.07904    0.10623   0.744   0.4587    
-## x:z_std      1.02838    0.09807  10.487   <2e-16 ***
+## (Intercept) -0.09429    0.06183  -1.525    0.129    
+## x            0.01772    0.06261   0.283    0.777    
+## z_std        0.06580    0.06394   1.029    0.304    
+## x:z_std      1.17893    0.04706  25.053   <2e-16 ***
 ## ---
 ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 ## 
-## Residual standard error: 0.9648 on 96 degrees of freedom
-## Multiple R-squared:  0.542,	Adjusted R-squared:  0.5277 
-## F-statistic: 37.86 on 3 and 96 DF,  p-value: 3.092e-16
+## Residual standard error: 0.9407 on 246 degrees of freedom
+## Multiple R-squared:  0.7188,	Adjusted R-squared:  0.7154 
+## F-statistic: 209.6 on 3 and 246 DF,  p-value: < 2.2e-16
 ```
 
 ```r
@@ -178,12 +178,12 @@ test_hi_low %>%
 ```
 
 ```
-## lavaan (0.5-23.1097) converged normally after  13 iterations
+## lavaan (0.5-23.1097) converged normally after  15 iterations
 ## 
-##   Number of observations                           100
+##   Number of observations                           250
 ## 
 ##   Estimator                                         ML
-##   Minimum Function Test Statistic               18.253
+##   Minimum Function Test Statistic               35.028
 ##   Degrees of freedom                                 2
 ##   P-value (Chi-square)                           0.000
 ## 
@@ -195,33 +195,33 @@ test_hi_low %>%
 ## Regressions:
 ##                    Estimate  Std.Err  z-value  P(>|z|)
 ##   y ~                                                 
-##     x         (b1)    0.030    0.095    0.317    0.751
-##     z_std     (b2)    0.079    0.095    0.832    0.405
-##     x_z_std   (b3)    1.028    0.093   11.019    0.000
+##     x         (b1)    0.018    0.058    0.305    0.761
+##     z_std     (b2)    0.066    0.059    1.113    0.266
+##     x_z_std   (b3)    1.179    0.047   25.350    0.000
 ## 
 ## Covariances:
 ##                    Estimate  Std.Err  z-value  P(>|z|)
 ##   x ~~                                                
-##     x_z_std           0.003    0.101    0.027    0.979
+##     x_z_std          -0.042    0.082   -0.515    0.607
 ## 
 ## Intercepts:
 ##                    Estimate  Std.Err  z-value  P(>|z|)
-##     z_std   (z_s_)   -0.000    0.099   -0.000    1.000
-##    .y                 0.186    0.101    1.848    0.065
-##     x                -0.157    0.100   -1.569    0.117
-##     x_z_std           0.340    0.101    3.358    0.001
+##     z_std   (z_s_)   -0.000    0.063   -0.000    1.000
+##    .y                -0.094    0.061   -1.538    0.124
+##     x                -0.004    0.064   -0.064    0.949
+##     x_z_std           0.357    0.080    4.447    0.000
 ## 
 ## Variances:
 ##                    Estimate  Std.Err  z-value  P(>|z|)
-##     z_std   (z_s_)    0.990    0.140    7.071    0.000
-##    .y                 0.894    0.126    7.071    0.000
-##     x                 0.999    0.141    7.071    0.000
-##     x_z_std           1.026    0.145    7.071    0.000
+##     z_std   (z_s_)    0.996    0.089   11.180    0.000
+##    .y                 0.871    0.078   11.180    0.000
+##     x                 1.031    0.092   11.180    0.000
+##     x_z_std           1.612    0.144   11.180    0.000
 ## 
 ## Defined Parameters:
 ##                    Estimate  Std.Err  z-value  P(>|z|)
-##     z_low            -0.993    0.183   -5.441    0.000
-##     z_hi              1.053    0.182    5.778    0.000
+##     z_low            -1.159    0.117   -9.913    0.000
+##     z_hi              1.194    0.118   10.087    0.000
 ```
 
 ```r
@@ -243,19 +243,19 @@ test_hi_low %>%
 
 ```
 ##     lhs op                                rhs label         est         se
-## 1     y  ~                                  x    b1  0.03002322 0.09459260
-## 2     y  ~                              z_std    b2  0.07903846 0.09500897
-## 3     y  ~                            x_z_std    b3  1.02837743 0.09333149
-## 4     y ~1                                           0.18637835 0.10082821
-## 5 z_low := b1+b3*(z_std_mean-sqrt(z_std_var)) z_low -0.99319939 0.18254593
-## 6  z_hi := b1+b3*(z_std_mean+sqrt(z_std_var))  z_hi  1.05324584 0.18228922
-##            z       pvalue    ci.lower   ci.upper
-## 1  0.3173951 7.509439e-01 -0.15537487  0.2154213
-## 2  0.8319053 4.054624e-01 -0.10717570  0.2652526
-## 3 11.0185469 0.000000e+00  0.84545107  1.2113038
-## 4  1.8484741 6.453378e-02 -0.01124132  0.3839980
-## 5 -5.4408191 5.303614e-08 -1.35098284 -0.6354159
-## 6  5.7778833 7.564623e-09  0.69596554  1.4105261
+## 1     y  ~                                  x    b1  0.01772498 0.05815649
+## 2     y  ~                              z_std    b2  0.06579734 0.05913779
+## 3     y  ~                            x_z_std    b3  1.17892848 0.04650581
+## 4     y ~1                                          -0.09428967 0.06131009
+## 5 z_low := b1+b3*(z_std_mean-sqrt(z_std_var)) z_low -1.15884328 0.11690328
+## 6  z_hi := b1+b3*(z_std_mean+sqrt(z_std_var))  z_hi  1.19429324 0.11839769
+##            z    pvalue    ci.lower   ci.upper
+## 1  0.3047808 0.7605331 -0.09625965  0.1317096
+## 2  1.1126108 0.2658756 -0.05011060  0.1817053
+## 3 25.3501316 0.0000000  1.08777877  1.2700782
+## 4 -1.5379144 0.1240696 -0.21445523  0.0258759
+## 5 -9.9128380 0.0000000 -1.38796950 -0.9297171
+## 6 10.0871333 0.0000000  0.96223804  1.4263484
 ```
 
 # traditional plot
@@ -266,9 +266,10 @@ test_hi_low %>%
 
 ```r
 examp_dat %>%
-  filter(z_grp != "Moderate (-1 SD ≥ z ≤ +1 SD)") %>%
   ggplot(mapping = aes(x = x, y = y, lty = z_grp)) +
-  geom_smooth(method = "lm", se = FALSE, color = "black") +
+  geom_smooth(data = examp_dat %>%
+                filter(z_grp != "Moderate (-1 SD ≥ z ≤ +1 SD)"),
+              method = "lm", se = FALSE, color = "black") +
   scale_x_continuous(breaks = seq(-3, 3, 1), limits = c(-3, 3)) +
   scale_y_continuous(breaks = seq(-4, 8, 2), limits = c(-4, 8)) +
   theme(legend.position = "top",
@@ -278,6 +279,10 @@ examp_dat %>%
         axis.title.y = element_text(size = 14),
         axis.text.x = element_text(size = 14),
         axis.text.y = element_text(size = 14))
+```
+
+```
+## Warning: Removed 3 rows containing non-finite values (stat_smooth).
 ```
 
 ![](visualizing_moderation_files/figure-html/unnamed-chunk-4-1.png)<!-- -->
@@ -290,9 +295,10 @@ examp_dat %>%
 
 ```r
 examp_dat %>%
-  filter(z_grp != "Moderate (-1 SD ≥ z ≤ +1 SD)") %>%
   ggplot(mapping = aes(x = x, y = y, lty = z_grp)) +
-  geom_smooth(method = "lm", se = TRUE, color = "black") +
+  geom_smooth(data = examp_dat %>%
+                filter(z_grp != "Moderate (-1 SD ≥ z ≤ +1 SD)"),
+              method = "lm", se = TRUE, color = "black") +
   scale_x_continuous(breaks = seq(-3, 3, 1), limits = c(-3, 3)) +
   scale_y_continuous(breaks = seq(-4, 8, 2), limits = c(-4, 8)) +
   theme(legend.position = "top",
@@ -302,6 +308,10 @@ examp_dat %>%
         axis.title.y = element_text(size = 14),
         axis.text.x = element_text(size = 14),
         axis.text.y = element_text(size = 14))
+```
+
+```
+## Warning: Removed 3 rows containing non-finite values (stat_smooth).
 ```
 
 ![](visualizing_moderation_files/figure-html/unnamed-chunk-5-1.png)<!-- -->
@@ -314,11 +324,11 @@ examp_dat %>%
 
 ```r
 examp_dat %>%
-  filter(z_grp != "Moderate (-1 SD ≥ z ≤ +1 SD)") %>%
-  ggplot(mapping = aes(x = x, y = y, lty = z_grp, color = z_grp)) +
-  geom_smooth(method = "lm", se = TRUE, color = "black") +
+  ggplot(mapping = aes(x = x, y = y)) +
+  geom_smooth(data = examp_dat %>%
+                filter(z_grp != "Moderate (-1 SD ≥ z ≤ +1 SD)"),
+              aes(lty = z_grp), method = "lm", se = TRUE, color = "black") +
   geom_point() +
-  scale_color_manual(values = c("red", "blue")) +
   scale_x_continuous(breaks = seq(-3, 3, 1), limits = c(-3, 3)) +
   scale_y_continuous(breaks = seq(-4, 8, 2), limits = c(-4, 8)) +
   theme_minimal() +
@@ -329,6 +339,14 @@ examp_dat %>%
         axis.title.y = element_text(size = 14),
         axis.text.x = element_text(size = 14),
         axis.text.y = element_text(size = 14))
+```
+
+```
+## Warning: Removed 3 rows containing non-finite values (stat_smooth).
+```
+
+```
+## Warning: Removed 3 rows containing missing values (geom_point).
 ```
 
 ![](visualizing_moderation_files/figure-html/unnamed-chunk-6-1.png)<!-- -->
