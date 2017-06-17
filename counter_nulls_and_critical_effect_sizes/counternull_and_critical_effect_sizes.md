@@ -1,18 +1,6 @@
----
-title: "Counternulls and critical effect sizes"
-author: "Nicholas Michalak"
-date: "6/17/2017"
-output: 
-  html_document: 
-    fig_height: 7.5
-    fig_width: 10.5
-    keep_md: yes
-    theme: readable
-    toc: yes
-    toc_float:
-      collapsed: yes
-      smooth_scroll: yes
----
+# Counternulls and critical effect sizes
+Nicholas Michalak  
+6/17/2017  
 
 # *t* Tests for Contrasts
 
@@ -36,7 +24,8 @@ output:
 
 # R Function
 
-```{r}
+
+```r
 f_contrast <- function(omnibus_f, df_numerator, means, n_total, cont, alpha = .05, ns = NULL) {
   
   # largest value of F that any contrast carved out of the sum of squares for the numerator of F could possibly achieve
@@ -79,19 +68,24 @@ f_contrast <- function(omnibus_f, df_numerator, means, n_total, cont, alpha = .0
   data.frame(estimate, se, t_stat, p_val, lwr, upr)
   
 }
-
 ```
 
 # Example
 > The article reports four groups---Group 1 (*M* = 3), Group 2 (*M* = 1), Group 3 (*M* = 9), Group 4 (*M* = 7)---and the omnibus test, *F* (1, 16) = 66.67.
 
-```{r}
+
+```r
 f_contrast(omnibus_f = 66.67,
            df_numerator = 3,
            means = c(3, 1, 9, 7),
            ns = c(5, 5, 5, 5),
            cont = c(-3, -1, 1, 3),
            alpha = .05)
+```
+
+```
+##   estimate      se   t_stat        p_val     lwr     upr
+## 1       20 1.99995 10.00025 2.745902e-08 15.7603 24.2397
 ```
 
 > Routine computation and reporting of the counternull, in addition to the p value, virtually eliminates the common error of taking failure to reject the null as equivalent to estimating the effect size as equal to zero.
