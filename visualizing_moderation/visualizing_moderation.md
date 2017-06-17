@@ -371,7 +371,6 @@ examp_dat %>%
 
 ```r
 examp_dat %>%
-  mutate(z_std = as.numeric(scale(z))) %>%
   ggplot(mapping = aes(x = x, y = y, color = z)) +
   geom_point() +
   scale_x_continuous(breaks = seq(-4, 4, 1), limits = c(-4, 4)) +
@@ -400,7 +399,6 @@ examp_dat %>%
 
 ```r
 examp_dat %>%
-  mutate(z_std = as.numeric(scale(z))) %>%
   ggplot(mapping = aes(x = x, y = y)) +
   geom_point() +
   scale_y_continuous(breaks = seq(-5, 15, 5), limits = c(-5, 15)) +
@@ -422,3 +420,32 @@ examp_dat %>%
 ```
 
 ![](visualizing_moderation_files/figure-html/unnamed-chunk-8-1.png)<!-- -->
+
+# my 3rd recommended (2-dimensional) plot
+* includes uncertainty in regression slopes
+* includes points
+* includes color gradient (light to dark) to depict how z varies with x and y
+* includes slopes at multiple levels of z
+
+
+```r
+examp_dat %>%
+  ggplot(mapping = aes(x = x, y = y, color = z_std)) +
+  geom_point() +
+  scale_x_continuous(breaks = seq(-4, 4, 1), limits = c(-4, 4)) +
+  scale_y_continuous(breaks = seq(-5, 15, 5), limits = c(-5, 15)) +
+  geom_smooth(method = "lm", se = TRUE, color = "black") +
+  facet_wrap(~ z_grp) +
+  theme_minimal() +
+  scale_color_gradient2() +
+  theme(legend.position = "top",
+        legend.title = element_text(size = 14),
+        legend.text = element_text(size = 14),
+        axis.title.x = element_text(size = 14),
+        axis.title.y = element_text(size = 14),
+        axis.text.x = element_text(size = 14),
+        axis.text.y = element_text(size = 14))
+```
+
+![](visualizing_moderation_files/figure-html/unnamed-chunk-9-1.png)<!-- -->
+
