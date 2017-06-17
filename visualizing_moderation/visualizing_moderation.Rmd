@@ -18,7 +18,7 @@ output:
 
 ```{r}
 # packages I"ll want in this analysis
-want_packages <- c("tidyverse")
+want_packages <- c("tidyverse", "lavaan")
 
 # which of those packages do I already have? (logical vector)
 have_packages <- want_packages %in% rownames(installed.packages())
@@ -44,72 +44,115 @@ y <- x * z + rnorm(n = 100, mean = 0, sd = 1)
 
 # store in a dataframe
 examp_dat <- data.frame(y, x, z)
-```
 
-# models
-
-```{r}
-# without interaction term
-model_1 <- lm(y ~ x + z)
-summary(model_1)
-
-# with interaction term
-model_2 <- lm(y ~ x * z)
-summary(model_2)
-```
-
-# traditional plot
-
-```{r}
-examp_dat %>%
+# standardize z and then make a grouping variable for visualizing high and low z (standardized)
+examp_dat <- examp_dat %>%
   mutate(z_std = as.numeric(scale(z)),
+         x_z_std = x * z_std,
          z_grp = ifelse(z_std < (-1), -1,
                  ifelse(z_std > 1, 1, 0)),
          z_grp = factor(z_grp, levels = c(-1, 0, 1),
                         labels = c("Low (-1 SD)",
                                    "Moderate (-1 SD ≥ z ≤ +1 SD)",
                                    "High (+1 SD)"),
-                        ordered = TRUE)) %>%
+                        ordered = TRUE))
+```
+
+# models
+
+```{r}
+
+# without interaction term
+examp_dat %>%
+  lm(y ~ x + z_std, data = .) %>%
+  summary(.)
+
+# with interaction term
+examp_dat %>%
+  lm(y ~ x * z_std, data = .) %>%
+  summary(.)
+
+# simple slopes
+test_hi_low <- "# regressions
+                  y ~ b1 * x
+                  y ~ b2 * z_std
+                  y ~ b3 * x_z_std
+
+                # mean of z_std
+                  z_std ~ z_std_mean * 1
+
+                # variance of z_std
+                  z_std ~~ z_std_var * z_std
+
+                # simple slopes estimates
+                  z_low := b1 + b3 * (z_std_mean - sqrt(z_std_var))
+                  z_hi := b1 + b3 * (z_std_mean + sqrt(z_std_var))"
+
+# fit model
+test_hi_low %>%
+  sem(data = examp_dat) %>%
+  summary(.)
+
+# select bootstrapped estimates
+test_hi_low %>%
+  sem(data = examp_dat) %>%
+  parameterestimates(boot.ci.type = "bca.simple",
+                     level = .95,
+                     ci = TRUE,
+                     standardized = FALSE) %>%
+  filter(lhs == "y" & op != "~~" | op == ":=" & op != "~~")
+
+```
+
+# traditional plot
+* can't see uncertainty in regression slopes
+* can't see points
+* can't see how z varies with x and y
+
+```{r}
+examp_dat %>%
   filter(z_grp != "Moderate (-1 SD ≥ z ≤ +1 SD)") %>%
   ggplot(mapping = aes(x = x, y = y, lty = z_grp)) +
   geom_smooth(method = "lm", se = FALSE, color = "black") +
   scale_x_continuous(breaks = seq(-3, 3, 1), limits = c(-3, 3)) +
   scale_y_continuous(breaks = seq(-4, 8, 2), limits = c(-4, 8)) +
-  theme(legend.position = "top")
+  theme(legend.position = "top",
+        legend.title = element_text(size = 14),
+        legend.text = element_text(size = 14),
+        axis.title.x = element_text(size = 14),
+        axis.title.y = element_text(size = 14),
+        axis.text.x = element_text(size = 14),
+        axis.text.y = element_text(size = 14))
 ```
 
 # better plot
+* includes uncertainty in regression slopes
+* can't see points
+* can't see how z varies with x and y
 
 ```{r}
 examp_dat %>%
-  mutate(z_std = as.numeric(scale(z)),
-         z_grp = ifelse(z_std < (-1), -1,
-                        ifelse(z_std > 1, 1, 0)),
-         z_grp = factor(z_grp, levels = c(-1, 0, 1),
-                        labels = c("Low (-1 SD)",
-                                   "Moderate (-1 SD ≥ z ≤ +1 SD)",
-                                   "High (+1 SD)"),
-                        ordered = TRUE)) %>%
   filter(z_grp != "Moderate (-1 SD ≥ z ≤ +1 SD)") %>%
   ggplot(mapping = aes(x = x, y = y, lty = z_grp)) +
   geom_smooth(method = "lm", se = TRUE, color = "black") +
   scale_x_continuous(breaks = seq(-3, 3, 1), limits = c(-3, 3)) +
   scale_y_continuous(breaks = seq(-4, 8, 2), limits = c(-4, 8)) +
-  theme(legend.position = "top")
+  theme(legend.position = "top",
+        legend.title = element_text(size = 14),
+        legend.text = element_text(size = 14),
+        axis.title.x = element_text(size = 14),
+        axis.title.y = element_text(size = 14),
+        axis.text.x = element_text(size = 14),
+        axis.text.y = element_text(size = 14))
 ```
 
 # even better plot
+* includes uncertainty in regression slopes
+* includes points
+* can't see how z varies with x and y
 
 ```{r}
 examp_dat %>%
-  mutate(z_std = as.numeric(scale(z)),
-         z_grp = ifelse(z_std < (-1), -1,
-                        ifelse(z_std > 1, 1, 0)),
-         z_grp = factor(z_grp, levels = c(-1, 0, 1),
-                        labels = c("Low (-1 SD)",
-                                   "Moderate (-1 SD ≥ z ≤ +1 SD)",
-                                   "High (+1 SD)"),
-                        ordered = TRUE)) %>%
   filter(z_grp != "Moderate (-1 SD ≥ z ≤ +1 SD)") %>%
   ggplot(mapping = aes(x = x, y = y, lty = z_grp, color = z_grp)) +
   geom_smooth(method = "lm", se = TRUE, color = "black") +
@@ -117,10 +160,19 @@ examp_dat %>%
   scale_color_manual(values = c("white", "black")) +
   scale_x_continuous(breaks = seq(-3, 3, 1), limits = c(-3, 3)) +
   scale_y_continuous(breaks = seq(-4, 8, 2), limits = c(-4, 8)) +
-  theme(legend.position = "top")
+  theme(legend.position = "top",
+        legend.title = element_text(size = 14),
+        legend.text = element_text(size = 14),
+        axis.title.x = element_text(size = 14),
+        axis.title.y = element_text(size = 14),
+        axis.text.x = element_text(size = 14),
+        axis.text.y = element_text(size = 14))
 ```
 
-# my FAVORITE plot
+# my recommended (2-dimensional) plot
+* includes uncertainty in regression slopes
+* includes points
+* includes how z varies with x and y
 
 ```{r}
 examp_dat %>%
@@ -128,15 +180,14 @@ examp_dat %>%
   ggplot(mapping = aes(x = x, y = y, color = z)) +
   geom_point() +
   geom_smooth(data = examp_dat %>%
-                mutate(z_grp = ifelse(as.numeric(scale(z)) < (-1), -1,
-                               ifelse(as.numeric(scale(z)) > 1, 1, 0)),
-                       z_grp = factor(z_grp,
-                                      levels = c(-1, 0, 1),
-                                      labels = c("Low (-1 SD)",
-                                                 "Moderate (-1 SD ≥ z ≤ +1 SD)",
-                                                 "High (+1 SD)"))) %>%
                 filter(z_grp != "Moderate (-1 SD ≥ z ≤ +1 SD)"),
               aes(lty = z_grp), method = "lm", se = TRUE, color = "black") +
   scale_color_gradient(low = "white", high = "black") +
-  theme(legend.position = "top")
+  theme(legend.position = "top",
+        legend.title = element_text(size = 14),
+        legend.text = element_text(size = 14),
+        axis.title.x = element_text(size = 14),
+        axis.title.y = element_text(size = 14),
+        axis.text.x = element_text(size = 14),
+        axis.text.y = element_text(size = 14))
 ```
