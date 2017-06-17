@@ -270,8 +270,8 @@ examp_dat %>%
   geom_smooth(data = examp_dat %>%
                 filter(z_grp != "Moderate (-1 SD ≥ z ≤ +1 SD)"),
               method = "lm", se = FALSE, color = "black") +
-  scale_x_continuous(breaks = seq(-3, 3, 1), limits = c(-3, 3)) +
-  scale_y_continuous(breaks = seq(-4, 8, 2), limits = c(-4, 8)) +
+  scale_x_continuous(breaks = seq(-4, 4, 1), limits = c(-4, 4)) +
+  scale_y_continuous(breaks = seq(-5, 15, 5), limits = c(-5, 15)) +
   theme(legend.position = "top",
         legend.title = element_text(size = 14),
         legend.text = element_text(size = 14),
@@ -279,10 +279,6 @@ examp_dat %>%
         axis.title.y = element_text(size = 14),
         axis.text.x = element_text(size = 14),
         axis.text.y = element_text(size = 14))
-```
-
-```
-## Warning: Removed 3 rows containing non-finite values (stat_smooth).
 ```
 
 ![](visualizing_moderation_files/figure-html/unnamed-chunk-4-1.png)<!-- -->
@@ -299,8 +295,8 @@ examp_dat %>%
   geom_smooth(data = examp_dat %>%
                 filter(z_grp != "Moderate (-1 SD ≥ z ≤ +1 SD)"),
               method = "lm", se = TRUE, color = "black") +
-  scale_x_continuous(breaks = seq(-3, 3, 1), limits = c(-3, 3)) +
-  scale_y_continuous(breaks = seq(-4, 8, 2), limits = c(-4, 8)) +
+  scale_x_continuous(breaks = seq(-4, 4, 1), limits = c(-4, 4)) +
+  scale_y_continuous(breaks = seq(-5, 15, 5), limits = c(-5, 15)) +
   theme(legend.position = "top",
         legend.title = element_text(size = 14),
         legend.text = element_text(size = 14),
@@ -308,10 +304,6 @@ examp_dat %>%
         axis.title.y = element_text(size = 14),
         axis.text.x = element_text(size = 14),
         axis.text.y = element_text(size = 14))
-```
-
-```
-## Warning: Removed 3 rows containing non-finite values (stat_smooth).
 ```
 
 ![](visualizing_moderation_files/figure-html/unnamed-chunk-5-1.png)<!-- -->
@@ -329,8 +321,8 @@ examp_dat %>%
                 filter(z_grp != "Moderate (-1 SD ≥ z ≤ +1 SD)"),
               aes(lty = z_grp), method = "lm", se = TRUE, color = "black") +
   geom_point() +
-  scale_x_continuous(breaks = seq(-3, 3, 1), limits = c(-3, 3)) +
-  scale_y_continuous(breaks = seq(-4, 8, 2), limits = c(-4, 8)) +
+  scale_x_continuous(breaks = seq(-4, 4, 1), limits = c(-4, 4)) +
+  scale_y_continuous(breaks = seq(-5, 15, 5), limits = c(-5, 15)) +
   theme_minimal() +
   theme(legend.position = "top",
         legend.title = element_text(size = 14),
@@ -339,14 +331,6 @@ examp_dat %>%
         axis.title.y = element_text(size = 14),
         axis.text.x = element_text(size = 14),
         axis.text.y = element_text(size = 14))
-```
-
-```
-## Warning: Removed 3 rows containing non-finite values (stat_smooth).
-```
-
-```
-## Warning: Removed 3 rows containing missing values (geom_point).
 ```
 
 ![](visualizing_moderation_files/figure-html/unnamed-chunk-6-1.png)<!-- -->
@@ -362,8 +346,8 @@ examp_dat %>%
   mutate(z_std = as.numeric(scale(z))) %>%
   ggplot(mapping = aes(x = x, y = y, color = z)) +
   geom_point() +
-  scale_x_continuous(breaks = seq(-3, 3, 1), limits = c(-3, 3)) +
-  scale_y_continuous(breaks = seq(-4, 8, 2), limits = c(-4, 8)) +
+  scale_x_continuous(breaks = seq(-4, 4, 1), limits = c(-4, 4)) +
+  scale_y_continuous(breaks = seq(-5, 15, 5), limits = c(-5, 15)) +
   geom_smooth(data = examp_dat %>%
                 filter(z_grp != "Moderate (-1 SD ≥ z ≤ +1 SD)"),
               aes(lty = z_grp), method = "lm", se = TRUE, color = "black") +
@@ -376,14 +360,6 @@ examp_dat %>%
         axis.title.y = element_text(size = 14),
         axis.text.x = element_text(size = 14),
         axis.text.y = element_text(size = 14))
-```
-
-```
-## Warning: Removed 3 rows containing non-finite values (stat_smooth).
-```
-
-```
-## Warning: Removed 3 rows containing missing values (geom_point).
 ```
 
 ![](visualizing_moderation_files/figure-html/unnamed-chunk-7-1.png)<!-- -->
@@ -399,12 +375,13 @@ examp_dat %>%
   mutate(z_std = as.numeric(scale(z))) %>%
   ggplot(mapping = aes(x = x, y = y)) +
   geom_point() +
-  scale_x_continuous(breaks = seq(-3, 3, 1), limits = c(-3, 3)) +
-  scale_y_continuous(breaks = seq(-4, 8, 2), limits = c(-4, 8)) +
+  scale_x_continuous(breaks = seq(-4, 4, 1), limits = c(-4, 4)) +
+  scale_y_continuous(breaks = seq(-5, 15, 5), limits = c(-5, 15)) +
+  coord_cartesian(xlim = c(-4, 4), ylim = c(-5, 15)) +
   geom_smooth(data = examp_dat %>%
                 filter(z_grp != "Moderate (-1 SD ≥ z ≤ +1 SD)"),
               aes(lty = z_grp), method = "lm", se = TRUE, color = "black") +
-  geom_rug(aes(x = z), sides = "b") +
+  geom_rug(aes(x = z_std), sides = "b") +
   scale_color_gradient2() +
   theme_minimal() +
   theme(legend.position = "top",
@@ -414,14 +391,6 @@ examp_dat %>%
         axis.title.y = element_text(size = 14),
         axis.text.x = element_text(size = 14),
         axis.text.y = element_text(size = 14))
-```
-
-```
-## Warning: Removed 3 rows containing non-finite values (stat_smooth).
-```
-
-```
-## Warning: Removed 3 rows containing missing values (geom_point).
 ```
 
 ![](visualizing_moderation_files/figure-html/unnamed-chunk-8-1.png)<!-- -->
