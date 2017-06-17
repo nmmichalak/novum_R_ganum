@@ -318,9 +318,10 @@ examp_dat %>%
   ggplot(mapping = aes(x = x, y = y, lty = z_grp, color = z_grp)) +
   geom_smooth(method = "lm", se = TRUE, color = "black") +
   geom_point() +
-  scale_color_manual(values = c("white", "black")) +
+  scale_color_manual(values = c("red", "blue")) +
   scale_x_continuous(breaks = seq(-3, 3, 1), limits = c(-3, 3)) +
   scale_y_continuous(breaks = seq(-4, 8, 2), limits = c(-4, 8)) +
+  theme_minimal() +
   theme(legend.position = "top",
         legend.title = element_text(size = 14),
         legend.text = element_text(size = 14),
@@ -346,7 +347,8 @@ examp_dat %>%
   geom_smooth(data = examp_dat %>%
                 filter(z_grp != "Moderate (-1 SD ≥ z ≤ +1 SD)"),
               aes(lty = z_grp), method = "lm", se = TRUE, color = "black") +
-  scale_color_gradient(low = "white", high = "black") +
+  scale_color_gradient2() +
+  theme_minimal() +
   theme(legend.position = "top",
         legend.title = element_text(size = 14),
         legend.text = element_text(size = 14),
