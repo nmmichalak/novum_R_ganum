@@ -1,0 +1,110 @@
+---
+title: "Testing parameters in structural equation models"
+author: "Nicholas Michalak"
+date: "6/12/2017"
+output: html_document
+---
+
+# packages
+
+```{r}
+
+# packages wanted for script
+want_packages <- c("lavaan", "tidyverse")
+
+# wanted packages in list of installed packages
+have_packages <- want_packages %in% rownames(installed.packages())
+
+# if any packages aren't in the installed list
+if(any(!have_packages) == TRUE)
+
+# install them
+install.packages(want_packages[!have_packages])
+
+# load libraries
+lapply(want_packages, library, character.only = TRUE)
+```
+
+# covariance matrix
+
+```{r}
+
+# The classic Wheaton et. al. (1977) model
+# panel data on he stability of alienation
+wheaton_cov <- "11.834,
+                6.947, 9.364,
+                6.819, 5.091, 12.532,
+                4.783, 5.028, 7.495, 9.986"
+
+wheaton_names <- paste0("V", 1:4)
+
+# convert to a full symmetric covariance matrix with names
+wheaton_cov <- getCov(wheaton_cov,
+                      lower = TRUE,
+                      diagonal = TRUE,
+                      names = wheaton_names)
+```
+
+>  In this simple model there are two latent variables, each with two indicators; there are also equality constraints on the error variances, *V*(E1) = *V*(E3) = \(\phi_1\) and *V*(E2) = *V*(E4) = \(\phi_2\), and the loadings. The model and data are taken from the EQS manual (Bentler, 1995). The critical parameter for our illustration is the covariance between the two latent variables (\(\phi_{12}\)). Restrictions are needed in order to set the scale of the latent variables. The analyst may fix the variance of each of the latent variables to a constant or may fix indicator coefficients to a constant (by convention, this constant is chosen to be 1; e.g., Bollen, 1989). We refer to such restrictions as *model identifications*. Figures 1 and 2 illustrate the model under two different identifications, or scale restrictions. The model in Figure 1 forces one indicator loading to 1 within each latent variable and treats the latent variances as parameters to estimate, whereas the model in Figure 2 forces the latent variances to 1 and treats the indicator loadings as parameters. Except for this difference in identification, the two models are equivalent, and both models produce identical fits to the observed covariance matrix.
+
+```{r}
+# Figure 1 model
+# V1 and V3 estimates should be 1
+# V2 and V4 estimates should be free
+# cov for V1 and V3 should be equal
+# cov for V2 and V4 should be equal
+model_1 <- "# latent 1
+              latent_1 =~ V1 + l1*V2
+
+            # latent 2
+              latent_2 =~ V3 + l1*V4
+          
+            # covariances
+              V1 ~~ a*V1
+              V2 ~~ b*V2
+              V3 ~~ a*V3
+              V4 ~~ b*V4
+              V3 ~~ co*V1
+              V4 ~~ co*V2
+              latent_1 ~~ lat_var*latent_1
+              latent_2 ~~ lat_var*latent_2"
+
+# fit sem model
+fit_1 <- sem(model_1,
+             sample.cov = wheaton_cov,
+             sample.nobs = 932)
+
+# fit measures
+fitmeasures(fit_1)
+```
+
+```{r}
+# Figure 2 model
+# free estimate all exogenous
+# latent 1 and latent 2 should be 1
+# exogenous var for V1 and V3 should be equal
+# exogenous var for V2 and V4 should be equal
+model_2 <- "# latent 1
+              latent_1 =~ NA*V1 + NA*V2
+
+            # latent 2
+              latent_2 =~ NA*V3 + NA*V4
+          
+            # covariances
+              V1 ~~ a*V1
+              V2 ~~ b*V2
+              V3 ~~ a*V3
+              V4 ~~ b*V4
+              V3 ~~ co*V1
+              V4 ~~ co*V2
+              latent_1 ~~ 1*latent_1
+              latent_2 ~~ 1*latent_2"
+
+# fit sem model
+fit_2 <- sem(model_2,
+             sample.cov = wheaton_cov,
+             sample.nobs = 932)
+
+# fit measures
+fitmeasures(fit_2)
+```

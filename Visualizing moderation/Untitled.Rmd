@@ -1,0 +1,149 @@
+---
+title: "Moderaion plots"
+author: "Nicholas Michalak"
+date: "6/17/2017"
+output: 
+  html_document: 
+    fig_height: 7.5
+    fig_width: 10.5
+    keep_md: yes
+    theme: readable
+    toc: yes
+    toc_float:
+      collapsed: yes
+      smooth_scroll: yes
+---
+
+# packages
+```{r}
+# packages I"ll want in this analysis
+want_packages <- c("tidyverse")
+
+# which of those packages do I already have? (logical vector)
+have_packages <- want_packages %in% rownames(installed.packages())
+
+# if I don"t have any of those, install them
+if(any(have_packages == FALSE)) install.packages(want_packages[have_packages == FALSE])
+
+# load wanted packages
+lapply(want_packages, library, character.only = TRUE)
+```
+
+# data
+
+```{r}
+# set randomizer seed
+set.seed(1234)
+
+# random normal data
+# two-way interaction
+x <- rnorm(n = 100, mean = 0, sd = )
+z <- x * 0.4 + rnorm(n = 100, mean = 0, sd = 1)
+y <- x * z + rnorm(n = 100, mean = 0, sd = 1)
+
+# store in a dataframe
+examp_dat <- data.frame(y, x, z)
+```
+
+# models
+
+```{r}
+# without interaction term
+model_1 <- lm(y ~ x + z)
+summary(model_1)
+
+# with interaction term
+model_2 <- lm(y ~ x * z)
+summary(model_2)
+```
+
+# traditional plot
+
+```{r}
+examp_dat %>%
+  mutate(z_std = as.numeric(scale(z)),
+         z_grp = ifelse(z_std < (-1), -1,
+                 ifelse(z_std > 1, 1, 0)),
+         z_grp = factor(z_grp, levels = c(-1, 0, 1),
+                        labels = c("Low (-1 SD)",
+                                   "Moderate (-1 SD ≥ z ≤ +1 SD)",
+                                   "High (+1 SD)"),
+                        ordered = TRUE)) %>%
+  filter(z_grp != "Moderate (-1 SD ≥ z ≤ +1 SD)") %>%
+  ggplot(mapping = aes(x = x, y = y, lty = z_grp)) +
+  geom_smooth(method = "lm", se = FALSE, color = "black") +
+  theme(legend.position = "top")
+```
+
+# better plot
+```{r}
+examp_dat %>%
+  mutate(z_std = as.numeric(scale(z)),
+         z_grp = ifelse(z_std < (-1), -1,
+                        ifelse(z_std > 1, 1, 0)),
+         z_grp = factor(z_grp, levels = c(-1, 0, 1),
+                        labels = c("Low (-1 SD)",
+                                   "Moderate (-1 SD ≥ z ≤ +1 SD)",
+                                   "High (+1 SD)"),
+                        ordered = TRUE)) %>%
+  filter(z_grp != "Moderate (-1 SD ≥ z ≤ +1 SD)") %>%
+  ggplot(mapping = aes(x = x, y = y, lty = z_grp)) +
+  geom_smooth(method = "lm", se = TRUE, color = "black") +
+  theme(legend.position = "top")
+```
+
+# even better plot
+```{r}
+examp_dat %>%
+  mutate(z_std = as.numeric(scale(z)),
+         z_grp = ifelse(z_std < (-1), -1,
+                        ifelse(z_std > 1, 1, 0)),
+         z_grp = factor(z_grp, levels = c(-1, 0, 1),
+                        labels = c("Low (-1 SD)",
+                                   "Moderate (-1 SD ≥ z ≤ +1 SD)",
+                                   "High (+1 SD)"),
+                        ordered = TRUE)) %>%
+  filter(z_grp != "Moderate (-1 SD ≥ z ≤ +1 SD)") %>%
+  ggplot(mapping = aes(x = x, y = y, lty = z_grp)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = TRUE, color = "black") +
+  theme(legend.position = "top")
+```
+
+# even EVEN better plot
+```{r}
+examp_dat %>%
+  mutate(z_std = as.numeric(scale(z)),
+         z_grp = ifelse(z_std < (-1), -1,
+                        ifelse(z_std > 1, 1, 0)),
+         z_grp = factor(z_grp, levels = c(-1, 0, 1),
+                        labels = c("Low (-1 SD)",
+                                   "Moderate (-1 SD ≥ z ≤ +1 SD)",
+                                   "High (+1 SD)"),
+                        ordered = TRUE)) %>%
+  ggplot(mapping = aes(x = x, y = y, lty = z_grp)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = TRUE, color = "black") +
+  theme(legend.position = "top")
+```
+
+# my FAVORITE plot
+
+```{r}
+examp_dat %>%
+  mutate(z_std = as.numeric(scale(z))) %>%
+  ggplot(mapping = aes(x = x, y = y, color = z)) +
+  geom_point() +
+  geom_smooth(data = examp_dat %>%
+                mutate(z_grp = ifelse(as.numeric(scale(z)) < (-1), -1,
+                               ifelse(as.numeric(scale(z)) > 1, 1, 0)),
+                       z_grp = factor(z_grp,
+                                      levels = c(-1, 0, 1),
+                                      labels = c("Low (-1 SD)",
+                                                 "Moderate (-1 SD ≥ z ≤ +1 SD)",
+                                                 "High (+1 SD)"))) %>%
+                filter(z_grp != "Moderate (-1 SD ≥ z ≤ +1 SD)"),
+              aes(lty = z_grp), method = "lm", se = TRUE, color = "black") +
+  scale_color_gradient(low = "white", high = "black") +
+  theme(legend.position = "top")
+```

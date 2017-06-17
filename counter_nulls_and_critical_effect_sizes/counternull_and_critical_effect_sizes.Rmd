@@ -1,0 +1,92 @@
+---
+title: "Counternulls and critical effect sizes"
+author: "Nicholas Michalak"
+date: "6/11/2017"
+output: html_document
+---
+
+# *t* Tests for Contrasts
+
+> "If we have the *n* per condition, the condition means, and an error term, an appropriate method for computing t for a contrast is:
+
+## \[t = \frac{\sum M_i \lambda_i}{\sqrt{S^2(\sum\frac{\lambda^2_i}{n_i})}}\]
+
+> where \(M_i\) = *i*th condition mean; \(S^2\) = the usual MS error from a between-subjects analysis of variance (ANOVA) summary table; \(n_i\) = number of observations in *i*th condition; and \(\lambda^2\) = contrast weight required for ith condition by our theory, hypothesis, or hunch."
+
+> The lambda weights we select can take on any convenient numerical value as long as \(\sum \lambda\) = 0. The degrees of freedom (*df*) for the t for contrasts are the same as those for the mean square error, \(S^2\).
+
+> The error term can be estimated by weighting each squared standard deviation by its *df* and dividing by the sum of the *df*.
+
+> 1. We determine the size of the maximum possible contrast F (symbolized as \(F_{MPC}\) by multiplying the reported omnibus *F* by its numerator *df*. This quantity represents the largest value of *F* that any contrast carved out of the sum of squares for the numerator of *F* could possibly achieve. It could achieve this value only if all of the variation among the means tested by the overall *F* were associated with the contrast computed, with nothing left over.
+
+> 2. We identify the proportion of variation (\(r^2_{M\lambda}\)) among the means that is accounted for by our planned contrast as defined by its \(\lambda\) weights. That is, we compute the alerting correlation between the condition means and the lambdas associated with these means and then square this result.
+
+> 3. We multiply the results of Steps 1 and 2 to obtain our *F* for linear trends, that is,
+
+## \[F_{Contrast} = (F_{MPC})(r^2_{M\lambda})\]
+
+# R Function
+
+```{r}
+f_contrast <- function(omnibus_f, df_numerator, means, n_total, cont, alpha = .05, ns = NULL) {
+  
+  # largest value of F that any contrast carved out of the sum of squares for the numerator of F could possibly achieve
+  f_max <- omnibus_f * df_numerator
+  
+  # the proportion of variation among the means that is accounted for by the planned contrast
+  contrast_var <- cor(means, cont) ** 2
+  
+  # f statistic for the planned contrast
+  f_stat <- f_max * contrast_var
+  
+  # t statistic for the planned contrast
+  t_stat <- sqrt(f_stat)
+  
+  # contrast estimate
+  estimate <- cont %*% means
+  
+  # standard error
+  se <- t_stat ** -1 * estimate
+
+  # df
+  if(is.null(ns) == FALSE) {
+    df <- sum(ns) - length(ns)
+  }
+  else{
+    df <- n_total - length(means)
+  }
+  
+  # p-value
+  p_val <- 2 * pt(q = -abs(t_stat), df = df)
+  
+  # t-critical
+  t_crit <- qt(p = 1 - (alpha / 2), df = df)
+  
+  # lower and upper confidence interval
+  lwr <- estimate - se * t_crit
+  upr <- estimate + se * t_crit
+  
+  # result
+  data.frame(estimate, se, t_stat, p_val, lwr, upr)
+  
+}
+
+```
+
+# Example
+> The article reports four groups---Group 1 (*M* = 3), Group 2 (*M* = 1), Group 3 (*M* = 9), Group 4 (*M* = 7)---and the omnibus test, *F* (1, 16) = 66.67.
+
+```{r}
+f_contrast(omnibus_f = 66.67,
+           df_numerator = 3,
+           means = c(3, 1, 9, 7),
+           ns = c(5, 5, 5, 5),
+           cont = c(-3, -1, 1, 3),
+           alpha = .05)
+```
+
+> Routine computation and reporting of the counternull, in addition to the p value, virtually eliminates the common error of taking failure to reject the null as equivalent to estimating the effect size as equal to zero.
+
+> The following equation shows a general procedure for I finding the counternull value of the effect size for any effect size with a symmetric reference distribution (e.g., the normal or t distribution) no matter what the magnitude of the effect size (ES) is under the null:
+
+\[ES_{Counternull} = 2ES_{Obtained} - ES_{Null}\]
