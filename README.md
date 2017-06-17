@@ -1,2 +1,2 @@
 # novum_R_ganum
-Translating common procedures in SPSS to R. Also my opinions.
+Translating common statistics and data wrangling procedures in social science to R. Also my opinions.
