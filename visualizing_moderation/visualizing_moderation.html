@@ -224,7 +224,7 @@ div.tocify {
 <div id="packages" class="section level1">
 <h1>packages</h1>
 <pre class="r"><code># packages I&quot;ll want in this analysis
-want_packages &lt;- c(&quot;tidyverse&quot;, &quot;lavaan&quot;)
+want_packages &lt;- c(&quot;tidyverse&quot;, &quot;lavaan&quot;, &quot;probemod&quot;)
 
 # which of those packages do I already have? (logical vector)
 have_packages &lt;- want_packages %in% rownames(installed.packages())
@@ -253,7 +253,13 @@ lapply(want_packages, library, character.only = TRUE)</code></pre>
 ## [[2]]
 ##  [1] &quot;lavaan&quot;    &quot;dplyr&quot;     &quot;purrr&quot;     &quot;readr&quot;     &quot;tidyr&quot;    
 ##  [6] &quot;tibble&quot;    &quot;ggplot2&quot;   &quot;tidyverse&quot; &quot;stats&quot;     &quot;graphics&quot; 
-## [11] &quot;grDevices&quot; &quot;utils&quot;     &quot;datasets&quot;  &quot;methods&quot;   &quot;base&quot;</code></pre>
+## [11] &quot;grDevices&quot; &quot;utils&quot;     &quot;datasets&quot;  &quot;methods&quot;   &quot;base&quot;     
+## 
+## [[3]]
+##  [1] &quot;probemod&quot;  &quot;lavaan&quot;    &quot;dplyr&quot;     &quot;purrr&quot;     &quot;readr&quot;    
+##  [6] &quot;tidyr&quot;     &quot;tibble&quot;    &quot;ggplot2&quot;   &quot;tidyverse&quot; &quot;stats&quot;    
+## [11] &quot;graphics&quot;  &quot;grDevices&quot; &quot;utils&quot;     &quot;datasets&quot;  &quot;methods&quot;  
+## [16] &quot;base&quot;</code></pre>
 </div>
 <div id="data" class="section level1">
 <h1>data</h1>
@@ -422,6 +428,22 @@ test_hi_low %&gt;%
 ## 4 -1.5379144 0.1240696 -0.21445523  0.0258759
 ## 5 -9.9128380 0.0000000 -1.38796950 -0.9297171
 ## 6 10.0871333 0.0000000  0.96223804  1.4263484</code></pre>
+<pre class="r"><code># Johnson-Neyman
+examp_dat %&gt;%
+  lm(y ~ x * z_std, data = .) %&gt;%
+  jn(dv = &quot;y&quot;, iv = &quot;x&quot;, mod = &quot;z_std&quot;, alpha = .05)</code></pre>
+<pre><code>## Call:
+## jn(model = ., dv = &quot;y&quot;, iv = &quot;x&quot;, mod = &quot;z_std&quot;, alpha = 0.05)
+## 
+## Conditional effects of  x  on  y  at values of  z_std 
+##  z_std Effect     se       t p   llci   ulci
+##      1 1.1967 0.0783 15.2775 0 1.0424 1.3509
+##      2 2.3756 0.1130 21.0146 0 2.1529 2.5982
+##      3 3.5545 0.1544 23.0155 0 3.2503 3.8587
+##      4 4.7334 0.1984 23.8608 0 4.3427 5.1242
+##      5 5.9124 0.2435 24.2825 0 5.4328 6.3920
+##      6 7.0913 0.2892 24.5194 0 6.5216 7.6610
+##      7 8.2702 0.3353 24.6645 0 7.6098 8.9307</code></pre>
 </div>
 <div id="traditional-plot" class="section level1">
 <h1>traditional plot</h1>

@@ -7,7 +7,7 @@ Nicholas Michalak
 
 ```r
 # packages I"ll want in this analysis
-want_packages <- c("tidyverse", "lavaan")
+want_packages <- c("tidyverse", "lavaan", "probemod")
 
 # which of those packages do I already have? (logical vector)
 have_packages <- want_packages %in% rownames(installed.packages())
@@ -54,7 +54,13 @@ lapply(want_packages, library, character.only = TRUE)
 ## [[2]]
 ##  [1] "lavaan"    "dplyr"     "purrr"     "readr"     "tidyr"    
 ##  [6] "tibble"    "ggplot2"   "tidyverse" "stats"     "graphics" 
-## [11] "grDevices" "utils"     "datasets"  "methods"   "base"
+## [11] "grDevices" "utils"     "datasets"  "methods"   "base"     
+## 
+## [[3]]
+##  [1] "probemod"  "lavaan"    "dplyr"     "purrr"     "readr"    
+##  [6] "tidyr"     "tibble"    "ggplot2"   "tidyverse" "stats"    
+## [11] "graphics"  "grDevices" "utils"     "datasets"  "methods"  
+## [16] "base"
 ```
 
 # data
@@ -256,6 +262,28 @@ test_hi_low %>%
 ## 4 -1.5379144 0.1240696 -0.21445523  0.0258759
 ## 5 -9.9128380 0.0000000 -1.38796950 -0.9297171
 ## 6 10.0871333 0.0000000  0.96223804  1.4263484
+```
+
+```r
+# Johnson-Neyman
+examp_dat %>%
+  lm(y ~ x * z_std, data = .) %>%
+  jn(dv = "y", iv = "x", mod = "z_std", alpha = .05)
+```
+
+```
+## Call:
+## jn(model = ., dv = "y", iv = "x", mod = "z_std", alpha = 0.05)
+## 
+## Conditional effects of  x  on  y  at values of  z_std 
+##  z_std Effect     se       t p   llci   ulci
+##      1 1.1967 0.0783 15.2775 0 1.0424 1.3509
+##      2 2.3756 0.1130 21.0146 0 2.1529 2.5982
+##      3 3.5545 0.1544 23.0155 0 3.2503 3.8587
+##      4 4.7334 0.1984 23.8608 0 4.3427 5.1242
+##      5 5.9124 0.2435 24.2825 0 5.4328 6.3920
+##      6 7.0913 0.2892 24.5194 0 6.5216 7.6610
+##      7 8.2702 0.3353 24.6645 0 7.6098 8.9307
 ```
 
 # traditional plot

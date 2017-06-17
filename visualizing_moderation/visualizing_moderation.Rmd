@@ -18,7 +18,7 @@ output:
 
 ```{r}
 # packages I"ll want in this analysis
-want_packages <- c("tidyverse", "lavaan")
+want_packages <- c("tidyverse", "lavaan", "probemod")
 
 # which of those packages do I already have? (logical vector)
 have_packages <- want_packages %in% rownames(installed.packages())
@@ -101,6 +101,11 @@ test_hi_low %>%
                      ci = TRUE,
                      standardized = FALSE) %>%
   filter(lhs == "y" & op != "~~" | op == ":=" & op != "~~")
+
+# Johnson-Neyman
+examp_dat %>%
+  lm(y ~ x * z_std, data = .) %>%
+  jn(dv = "y", iv = "x", mod = "z_std", alpha = .05)
 
 ```
 
