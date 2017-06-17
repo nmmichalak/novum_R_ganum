@@ -375,13 +375,13 @@ examp_dat %>%
   mutate(z_std = as.numeric(scale(z))) %>%
   ggplot(mapping = aes(x = x, y = y)) +
   geom_point() +
-  scale_x_continuous(breaks = seq(-4, 4, 1), limits = c(-4, 4)) +
   scale_y_continuous(breaks = seq(-5, 15, 5), limits = c(-5, 15)) +
   coord_cartesian(xlim = c(-4, 4), ylim = c(-5, 15)) +
   geom_smooth(data = examp_dat %>%
                 filter(z_grp != "Moderate (-1 SD ≥ z ≤ +1 SD)"),
               aes(lty = z_grp), method = "lm", se = TRUE, color = "black") +
   geom_rug(aes(x = z_std), sides = "b") +
+  scale_x_continuous(aes(x = z_std), breaks = seq(-4, 4, 1), limits = c(-4, 4)) +
   scale_color_gradient2() +
   theme_minimal() +
   theme(legend.position = "top",
