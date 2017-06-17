@@ -1,5 +1,5 @@
 ---
-title: "Moderaion plots"
+title: "Visualizing a 2-way interaction (continuous moderator)"
 author: "Nicholas Michalak"
 date: "6/17/2017"
 output: 

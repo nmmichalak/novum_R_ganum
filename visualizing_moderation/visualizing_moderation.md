@@ -1,4 +1,4 @@
-# Moderaion plots
+# Visualizing a 2-way interaction (continuous moderator)
 Nicholas Michalak  
 6/17/2017  
 
@@ -142,7 +142,7 @@ examp_dat %>%
   theme(legend.position = "top")
 ```
 
-![](Untitled_files/figure-html/unnamed-chunk-4-1.png)<!-- -->
+![](visualizing_moderation_files/figure-html/unnamed-chunk-4-1.png)<!-- -->
 
 # better plot
 
@@ -165,7 +165,7 @@ examp_dat %>%
   theme(legend.position = "top")
 ```
 
-![](Untitled_files/figure-html/unnamed-chunk-5-1.png)<!-- -->
+![](visualizing_moderation_files/figure-html/unnamed-chunk-5-1.png)<!-- -->
 
 # even better plot
 
@@ -190,7 +190,7 @@ examp_dat %>%
   theme(legend.position = "top")
 ```
 
-![](Untitled_files/figure-html/unnamed-chunk-6-1.png)<!-- -->
+![](visualizing_moderation_files/figure-html/unnamed-chunk-6-1.png)<!-- -->
 
 # my FAVORITE plot
 
@@ -214,4 +214,4 @@ examp_dat %>%
   theme(legend.position = "top")
 ```
 
-![](Untitled_files/figure-html/unnamed-chunk-7-1.png)<!-- -->
+![](visualizing_moderation_files/figure-html/unnamed-chunk-7-1.png)<!-- -->
