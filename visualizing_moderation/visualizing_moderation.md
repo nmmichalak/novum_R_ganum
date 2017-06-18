@@ -148,7 +148,7 @@ examp_dat %>%
 ```
 
 ```r
-# simple slopes
+# simple slopes with sem
 test_hi_low <- "# regressions
                   y ~ b1 * x
                   y ~ b2 * z_std
@@ -337,8 +337,8 @@ examp_dat <- examp_dat %>%
 ```r
 examp_dat %>%
   ggplot(mapping = aes(x = x, y = y)) +
-  geom_line(aes(y = low_fit, linetype = "Low (-1 SD")) +
-  geom_line(aes(y = hi_fit, linetype = "High (+1 SD")) +
+  geom_line(aes(y = low_fit, linetype = "Low (-1 SD)")) +
+  geom_line(aes(y = hi_fit, linetype = "High (+1 SD)")) +
   scale_x_continuous(breaks = seq(-4, 4, 1), limits = c(-4, 4)) +
   scale_y_continuous(breaks = seq(-5, 15, 5), limits = c(-5, 15)) +
   theme(legend.position = "top",
@@ -362,8 +362,8 @@ examp_dat %>%
 ```r
 examp_dat %>%
   ggplot(mapping = aes(x = x, y = y)) +
-  geom_line(aes(y = low_fit, linetype = "Low (-1 SD")) +
-  geom_line(aes(y = hi_fit, linetype = "High (+1 SD")) +
+  geom_line(aes(y = low_fit, linetype = "Low (-1 SD)")) +
+  geom_line(aes(y = hi_fit, linetype = "High (+1 SD)")) +
   geom_ribbon(aes(ymin = low_lwr, max = low_upr), alpha = 0.2) +
   geom_ribbon(aes(ymin = hi_lwr, max = hi_upr), alpha = 0.2) +
   scale_x_continuous(breaks = seq(-4, 4, 1), limits = c(-4, 4)) +
@@ -390,8 +390,8 @@ examp_dat %>%
 examp_dat %>%
   ggplot(mapping = aes(x = x, y = y)) +
   geom_point(alpha = 0.75) +
-  geom_line(aes(y = low_fit, linetype = "Low (-1 SD")) +
-  geom_line(aes(y = hi_fit, linetype = "High (+1 SD")) +
+  geom_line(aes(y = low_fit, linetype = "Low (-1 SD)")) +
+  geom_line(aes(y = hi_fit, linetype = "High (+1 SD)")) +
   geom_ribbon(aes(ymin = low_lwr, max = low_upr), alpha = 0.2) +
   geom_ribbon(aes(ymin = hi_lwr, max = hi_upr), alpha = 0.2) +
   scale_x_continuous(breaks = seq(-4, 4, 1), limits = c(-4, 4)) +
@@ -418,8 +418,8 @@ examp_dat %>%
 examp_dat %>%
   ggplot(mapping = aes(x = x, y = y)) +
   geom_point(aes(color = z_std)) +
-  geom_line(aes(y = low_fit, linetype = "Low (-1 SD")) +
-  geom_line(aes(y = hi_fit, linetype = "High (+1 SD")) +
+  geom_line(aes(y = low_fit, linetype = "Low (-1 SD)")) +
+  geom_line(aes(y = hi_fit, linetype = "High (+1 SD)")) +
   geom_ribbon(aes(ymin = low_lwr, max = low_upr), alpha = 0.2) +
   geom_ribbon(aes(ymin = hi_lwr, max = hi_upr), alpha = 0.2) +
   scale_y_continuous(breaks = seq(-5, 15, 5), limits = c(-5, 15)) +
@@ -446,8 +446,8 @@ examp_dat %>%
 examp_dat %>%
   ggplot(mapping = aes(x = x, y = y)) +
   geom_point(alpha = 0.75) +
-  geom_line(aes(y = low_fit, linetype = "Low (-1 SD")) +
-  geom_line(aes(y = hi_fit, linetype = "High (+1 SD")) +
+  geom_line(aes(y = low_fit, linetype = "Low (-1 SD)")) +
+  geom_line(aes(y = hi_fit, linetype = "High (+1 SD)")) +
   geom_ribbon(aes(ymin = low_lwr, max = low_upr), alpha = 0.2) +
   geom_ribbon(aes(ymin = hi_lwr, max = hi_upr), alpha = 0.2) +
   geom_rug(aes(x = z_std), sides = "b") +
