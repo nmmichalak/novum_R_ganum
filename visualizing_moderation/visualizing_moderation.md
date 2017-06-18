@@ -82,14 +82,7 @@ examp_dat <- data.frame(y, x, z)
 # standardize z and then make a grouping variable for visualizing high and low z (standardized)
 examp_dat <- examp_dat %>%
   mutate(z_std = as.numeric(scale(z)),
-         x_z_std = x * z_std,
-         z_grp = ifelse(z_std < (-1), -1,
-                 ifelse(z_std > 1, 1, 0)),
-         z_grp = factor(z_grp, levels = c(-1, 0, 1),
-                        labels = c("Low (-1 SD)",
-                                   "Moderate (-1 SD ≥ z ≤ +1 SD)",
-                                   "High (+1 SD)"),
-                        ordered = TRUE))
+         x_z_std = x * z_std)
 ```
 
 # models
@@ -286,6 +279,55 @@ examp_dat %>%
 ##      7 8.2702 0.3353 24.6645 0 7.6098 8.9307
 ```
 
+# data for plotting simple slopes
+
+
+```r
+model_int <- examp_dat %>%
+  lm(y ~ x * z_std, data = .)
+
+low <- examp_dat %>%
+  lm(y ~ x * z_std, data = .) %>%
+  predict.lm(newdata = data.frame(x = x, z_std = mean(examp_dat$z_std) - sd(examp_dat$z_std)),
+             se.fit = TRUE,
+             interval = "confidence") %>%
+  .$fit %>%
+  data.frame(.)
+
+avg <- examp_dat %>%
+  lm(y ~ x * z_std, data = .) %>%
+  predict.lm(newdata = data.frame(x = x, z_std = mean(examp_dat$z_std)),
+             se.fit = TRUE,
+             interval = "confidence") %>%
+  .$fit %>%
+  data.frame(.)
+
+hi <- examp_dat %>%
+  lm(y ~ x * z_std, data = .) %>%
+  predict.lm(newdata = data.frame(x = x, z_std = mean(examp_dat$z_std) + sd(examp_dat$z_std)),
+             se.fit = TRUE,
+             interval = "confidence") %>%
+  .$fit %>%
+  data.frame(.)
+
+examp_dat <- examp_dat %>%
+  mutate(z_std_group = ifelse(z_std < (-1), -1,
+                       ifelse(z_std > 1, 1, 0)),
+         z_std_group = factor(z_std_group,
+                              levels = c(-1, 0, 1),
+                              labels = c("-1 SD", "0 SD", "+1 SD"),
+                              ordered = TRUE),
+         low_fit = as.numeric(low$fit),
+         low_lwr = as.numeric(low$lwr),
+         low_upr = as.numeric(low$upr),
+         avg_fit = as.numeric(avg$fit),
+         avg_lwr = as.numeric(avg$lwr),
+         avg_upr = as.numeric(avg$upr),
+         hi_fit = as.numeric(hi$fit),
+         hi_lwr = as.numeric(hi$lwr),
+         hi_upr = as.numeric(hi$upr))
+```
+
 # traditional plot
 * can't see uncertainty in regression slopes
 * can't see points
@@ -294,10 +336,9 @@ examp_dat %>%
 
 ```r
 examp_dat %>%
-  ggplot(mapping = aes(x = x, y = y, lty = z_grp)) +
-  geom_smooth(data = examp_dat %>%
-                filter(z_grp != "Moderate (-1 SD ≥ z ≤ +1 SD)"),
-              method = "lm", se = FALSE, color = "black") +
+  ggplot(mapping = aes(x = x, y = y)) +
+  geom_line(aes(y = low_fit, linetype = "Low (-1 SD")) +
+  geom_line(aes(y = hi_fit, linetype = "High (+1 SD")) +
   scale_x_continuous(breaks = seq(-4, 4, 1), limits = c(-4, 4)) +
   scale_y_continuous(breaks = seq(-5, 15, 5), limits = c(-5, 15)) +
   theme(legend.position = "top",
@@ -306,10 +347,11 @@ examp_dat %>%
         axis.title.x = element_text(size = 14),
         axis.title.y = element_text(size = 14),
         axis.text.x = element_text(size = 14),
-        axis.text.y = element_text(size = 14))
+        axis.text.y = element_text(size = 14)) +
+  labs(linetype = "z_std")
 ```
 
-![](visualizing_moderation_files/figure-html/unnamed-chunk-4-1.png)<!-- -->
+![](visualizing_moderation_files/figure-html/unnamed-chunk-5-1.png)<!-- -->
 
 # better plot
 * includes uncertainty in regression slopes
@@ -319,10 +361,11 @@ examp_dat %>%
 
 ```r
 examp_dat %>%
-  ggplot(mapping = aes(x = x, y = y, lty = z_grp)) +
-  geom_smooth(data = examp_dat %>%
-                filter(z_grp != "Moderate (-1 SD ≥ z ≤ +1 SD)"),
-              method = "lm", se = TRUE, color = "black") +
+  ggplot(mapping = aes(x = x, y = y)) +
+  geom_line(aes(y = low_fit, linetype = "Low (-1 SD")) +
+  geom_line(aes(y = hi_fit, linetype = "High (+1 SD")) +
+  geom_ribbon(aes(ymin = low_lwr, max = low_upr), alpha = 0.2) +
+  geom_ribbon(aes(ymin = hi_lwr, max = hi_upr), alpha = 0.2) +
   scale_x_continuous(breaks = seq(-4, 4, 1), limits = c(-4, 4)) +
   scale_y_continuous(breaks = seq(-5, 15, 5), limits = c(-5, 15)) +
   theme(legend.position = "top",
@@ -331,10 +374,11 @@ examp_dat %>%
         axis.title.x = element_text(size = 14),
         axis.title.y = element_text(size = 14),
         axis.text.x = element_text(size = 14),
-        axis.text.y = element_text(size = 14))
+        axis.text.y = element_text(size = 14)) +
+  labs(linetype = "z_std")
 ```
 
-![](visualizing_moderation_files/figure-html/unnamed-chunk-5-1.png)<!-- -->
+![](visualizing_moderation_files/figure-html/unnamed-chunk-6-1.png)<!-- -->
 
 # even better plot
 * includes uncertainty in regression slopes
@@ -345,23 +389,24 @@ examp_dat %>%
 ```r
 examp_dat %>%
   ggplot(mapping = aes(x = x, y = y)) +
-  geom_smooth(data = examp_dat %>%
-                filter(z_grp != "Moderate (-1 SD ≥ z ≤ +1 SD)"),
-              aes(lty = z_grp), method = "lm", se = TRUE, color = "black") +
-  geom_point() +
+  geom_point(alpha = 0.75) +
+  geom_line(aes(y = low_fit, linetype = "Low (-1 SD")) +
+  geom_line(aes(y = hi_fit, linetype = "High (+1 SD")) +
+  geom_ribbon(aes(ymin = low_lwr, max = low_upr), alpha = 0.2) +
+  geom_ribbon(aes(ymin = hi_lwr, max = hi_upr), alpha = 0.2) +
   scale_x_continuous(breaks = seq(-4, 4, 1), limits = c(-4, 4)) +
   scale_y_continuous(breaks = seq(-5, 15, 5), limits = c(-5, 15)) +
-  theme_minimal() +
   theme(legend.position = "top",
         legend.title = element_text(size = 14),
         legend.text = element_text(size = 14),
         axis.title.x = element_text(size = 14),
         axis.title.y = element_text(size = 14),
         axis.text.x = element_text(size = 14),
-        axis.text.y = element_text(size = 14))
+        axis.text.y = element_text(size = 14)) +
+  labs(linetype = "z_std")
 ```
 
-![](visualizing_moderation_files/figure-html/unnamed-chunk-6-1.png)<!-- -->
+![](visualizing_moderation_files/figure-html/unnamed-chunk-7-1.png)<!-- -->
 
 # my 1st recommended (2-dimensional) plot
 * includes uncertainty in regression slopes
@@ -371,25 +416,25 @@ examp_dat %>%
 
 ```r
 examp_dat %>%
-  ggplot(mapping = aes(x = x, y = y, color = z)) +
-  geom_point() +
-  scale_x_continuous(breaks = seq(-4, 4, 1), limits = c(-4, 4)) +
+  ggplot(mapping = aes(x = x, y = y)) +
+  geom_point(aes(color = z_std)) +
+  geom_line(aes(y = low_fit, linetype = "Low (-1 SD")) +
+  geom_line(aes(y = hi_fit, linetype = "High (+1 SD")) +
+  geom_ribbon(aes(ymin = low_lwr, max = low_upr), alpha = 0.2) +
+  geom_ribbon(aes(ymin = hi_lwr, max = hi_upr), alpha = 0.2) +
   scale_y_continuous(breaks = seq(-5, 15, 5), limits = c(-5, 15)) +
-  geom_smooth(data = examp_dat %>%
-                filter(z_grp != "Moderate (-1 SD ≥ z ≤ +1 SD)"),
-              aes(lty = z_grp), method = "lm", se = TRUE, color = "black") +
-  scale_color_gradient2() +
-  theme_minimal() +
+  scale_color_gradient(low = "white", high = "black") +
   theme(legend.position = "top",
         legend.title = element_text(size = 14),
         legend.text = element_text(size = 14),
         axis.title.x = element_text(size = 14),
         axis.title.y = element_text(size = 14),
         axis.text.x = element_text(size = 14),
-        axis.text.y = element_text(size = 14))
+        axis.text.y = element_text(size = 14)) +
+  labs(linetype = "z_std")
 ```
 
-![](visualizing_moderation_files/figure-html/unnamed-chunk-7-1.png)<!-- -->
+![](visualizing_moderation_files/figure-html/unnamed-chunk-8-1.png)<!-- -->
 
 # my 2nd recommended (2-dimensional) plot
 * includes uncertainty in regression slopes
@@ -400,26 +445,26 @@ examp_dat %>%
 ```r
 examp_dat %>%
   ggplot(mapping = aes(x = x, y = y)) +
-  geom_point() +
-  scale_y_continuous(breaks = seq(-5, 15, 5), limits = c(-5, 15)) +
-  coord_cartesian(xlim = c(-4, 4), ylim = c(-5, 15)) +
-  geom_smooth(data = examp_dat %>%
-                filter(z_grp != "Moderate (-1 SD ≥ z ≤ +1 SD)"),
-              aes(lty = z_grp), method = "lm", se = TRUE, color = "black") +
+  geom_point(alpha = 0.75) +
+  geom_line(aes(y = low_fit, linetype = "Low (-1 SD")) +
+  geom_line(aes(y = hi_fit, linetype = "High (+1 SD")) +
+  geom_ribbon(aes(ymin = low_lwr, max = low_upr), alpha = 0.2) +
+  geom_ribbon(aes(ymin = hi_lwr, max = hi_upr), alpha = 0.2) +
   geom_rug(aes(x = z_std), sides = "b") +
-  scale_x_continuous(aes(x = z_std), breaks = seq(-4, 4, 1), limits = c(-4, 4)) +
-  scale_color_gradient2() +
-  theme_minimal() +
+  scale_x_continuous(breaks = seq(-4, 4, 1), limits = c(-4, 4)) +
+  scale_y_continuous(breaks = seq(-5, 15, 5), limits = c(-5, 15)) +
+  scale_color_gradient(low = "white", high = "black") +
   theme(legend.position = "top",
         legend.title = element_text(size = 14),
         legend.text = element_text(size = 14),
         axis.title.x = element_text(size = 14),
         axis.title.y = element_text(size = 14),
         axis.text.x = element_text(size = 14),
-        axis.text.y = element_text(size = 14))
+        axis.text.y = element_text(size = 14)) +
+  labs(linetype = "z_std")
 ```
 
-![](visualizing_moderation_files/figure-html/unnamed-chunk-8-1.png)<!-- -->
+![](visualizing_moderation_files/figure-html/unnamed-chunk-9-1.png)<!-- -->
 
 # my 3rd recommended (2-dimensional) plot
 * includes uncertainty in regression slopes
@@ -430,22 +475,33 @@ examp_dat %>%
 
 ```r
 examp_dat %>%
-  ggplot(mapping = aes(x = x, y = y, color = z_std)) +
-  geom_point() +
-  scale_x_continuous(breaks = seq(-4, 4, 1), limits = c(-4, 4)) +
+  ggplot(mapping = aes(x = x, y = y)) +
+  geom_point(aes(color = z_std)) +
+  facet_wrap(~ z_std_group) +
+  geom_line(data = examp_dat %>%
+              filter(z_std_group == "-1 SD"), aes(y = low_fit, linetype = "Low (-1 SD)")) +
+  geom_line(data = examp_dat %>%
+              filter(z_std_group == "0 SD"), aes(y = avg_fit, linetype = "Mean (0 SD)")) +
+  geom_line(data = examp_dat %>%
+              filter(z_std_group == "+1 SD"), aes(y = hi_fit, linetype = "High (+1 SD)")) +
+  geom_ribbon(data = examp_dat %>%
+              filter(z_std_group == "-1 SD"), aes(ymin = low_lwr, ymax = low_upr), alpha = 0.2) +
+  geom_ribbon(data = examp_dat %>%
+              filter(z_std_group == "0 SD"), aes(ymin = avg_lwr, ymax = avg_upr), alpha = 0.2) +
+  geom_ribbon(data = examp_dat %>%
+              filter(z_std_group == "+1 SD"), aes(ymin = hi_lwr, ymax = hi_upr), alpha = 0.2) +
+  scale_x_continuous(breaks = seq(-4, 4, 2), limits = c(-4, 4)) +
   scale_y_continuous(breaks = seq(-5, 15, 5), limits = c(-5, 15)) +
-  geom_smooth(method = "lm", se = TRUE, color = "black") +
-  facet_wrap(~ z_grp) +
-  theme_minimal() +
-  scale_color_gradient2() +
+  scale_color_gradient(low = "white", high = "black") +
   theme(legend.position = "top",
         legend.title = element_text(size = 14),
         legend.text = element_text(size = 14),
         axis.title.x = element_text(size = 14),
         axis.title.y = element_text(size = 14),
         axis.text.x = element_text(size = 14),
-        axis.text.y = element_text(size = 14))
+        axis.text.y = element_text(size = 14)) +
+  labs(linetype = "z_std")
 ```
 
-![](visualizing_moderation_files/figure-html/unnamed-chunk-9-1.png)<!-- -->
+![](visualizing_moderation_files/figure-html/unnamed-chunk-10-1.png)<!-- -->
 
