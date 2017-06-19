@@ -18,7 +18,7 @@ output:
 
 ```{r}
 # packages I"ll want in this analysis
-want_packages <- c("tidyverse", "lavaan", "probemod")
+want_packages <- c("tidyverse", "lavaan", "probemod", "haven")
 
 # which of those packages do I already have? (logical vector)
 have_packages <- want_packages %in% rownames(installed.packages())
@@ -48,7 +48,15 @@ examp_dat <- data.frame(y, x, z)
 # standardize z and then make a grouping variable for visualizing high and low z (standardized)
 examp_dat <- examp_dat %>%
   mutate(z_std = as.numeric(scale(z)),
-         x_z_std = x * z_std)
+         x_std = as.numeric(scale(x)),
+         x_z_std = x_std * z_std)
+```
+
+# write data to file
+
+```{r}
+examp_dat %>%
+  write_csv(path = "examp_dat.csv")
 ```
 
 # models
@@ -57,17 +65,76 @@ examp_dat <- examp_dat %>%
 
 # without interaction term
 examp_dat %>%
-  lm(y ~ x + z_std, data = .) %>%
+  lm(y ~ x_std * z_std, data = .) %>%
   summary(.)
 
 # with interaction term
 examp_dat %>%
-  lm(y ~ x * z_std, data = .) %>%
+  lm(y ~ x_std * z_std, data = .) %>%
   summary(.)
 
-# simple slopes with sem
+# simple slopes function
+test_slopes <- function(y, x, z, alpha = .05) {
+  
+  # fit model
+  model <- lm(y ~ x * z)
+  
+  # mean of z
+  z_mean <- mean(z, na.rm = TRUE)
+  
+  # sd of z
+  z_sd <- sd(z, na.rm = TRUE)
+  
+  # model covariance matrix
+  model_vcov <- vcov(model)
+  
+  # estimate @ mean - 1 SD
+  low_est <- coefficients(model)["x"] + coefficients(model)["x:z"] * (z_mean - z_sd)
+  
+  # estimate @ mean
+  mean_est <- coefficients(model)["x"] + coefficients(model)["x:z"] * (z_mean)
+  
+  # estimate @ mean + 1 SD
+  high_est <- coefficients(model)["x"] + coefficients(model)["x:z"] * (z_mean + z_sd)
+  
+  # standard error @ mean - 1 SD
+  low_se <- sqrt(model_vcov["x", "x"] + 2 * (z_mean - z_sd) * model_vcov["x", "x:z"] + (z_mean - z_sd) * (z_mean - z_sd) * model_vcov["x:z", "x:z"])
+  
+  # standard error @ mean
+  mean_se <- sqrt(model_vcov["x", "x"] + 2 * (z_mean) * model_vcov["x", "x:z"] + (z_mean) * (z_mean) * model_vcov["x:z", "x:z"])
+  
+  # standard error @ mean + 1 SD
+  high_se <- sqrt(model_vcov["x", "x"] + 2 * (z_mean + z_sd) * model_vcov["x", "x:z"] + (z_mean + z_sd) * (z_mean + z_sd) * model_vcov["x:z", "x:z"])
+  
+  # result table: estimates and standard errors
+  result <- data.frame(test = c("Low (-1 SD)", "Mean (0 SD)", "High (+1 SD)"),
+                       est = c(low_est, mean_est, high_est),
+                       se = c(low_se, mean_se, high_se))
+  
+  # t-statistics
+  result$t_val <- with(data = result, est / se)
+  
+  # p-values
+  result$p_val <- with(data = result, 2 * pt(q = -abs(t_val), df = model$df.residual))
+  
+  # t-critical
+  t_crit <- qt(p = 1 - alpha / 2, df = model$df.residual)
+  
+  # lower confidence intervals
+  result$lwr_ci <- with(data = result, est - t_crit * se)
+  
+  # upper confidence intervals
+  result$upr_ci <- with(data = result, est + t_crit * se)
+  
+  return(result)
+}
+
+# simple slopes with custom function
+with(examp_dat, test_slopes(y = y, x = x_std, z = z_std, alpha = .05))
+
+# alternatively, simple slopes with sem from lavaan
 test_hi_low <- "# regressions
-                  y ~ b1 * x
+                  y ~ b1 * x_std
                   y ~ b2 * z_std
                   y ~ b3 * x_z_std
 
@@ -79,6 +146,7 @@ test_hi_low <- "# regressions
 
                 # simple slopes estimates
                   z_low := b1 + b3 * (z_std_mean - sqrt(z_std_var))
+                  z_mean := b1 + b3 * (z_std_mean)
                   z_hi := b1 + b3 * (z_std_mean + sqrt(z_std_var))"
 
 # fit model
@@ -97,8 +165,8 @@ test_hi_low %>%
 
 # Johnson-Neyman
 examp_dat %>%
-  lm(y ~ x * z_std, data = .) %>%
-  jn(dv = "y", iv = "x", mod = "z_std", alpha = .05)
+  lm(y ~ x_std * z_std, data = .) %>%
+  jn(dv = "y", iv = "x_std", mod = "z_std", alpha = .05)
 
 ```
 
@@ -106,27 +174,27 @@ examp_dat %>%
 
 ```{r}
 model_int <- examp_dat %>%
-  lm(y ~ x * z_std, data = .)
+  lm(y ~ x_std * z_std, data = .)
 
 low <- examp_dat %>%
-  lm(y ~ x * z_std, data = .) %>%
-  predict.lm(newdata = data.frame(x = x, z_std = mean(examp_dat$z_std) - sd(examp_dat$z_std)),
+  lm(y ~ x_std * z_std, data = .) %>%
+  predict.lm(newdata = data.frame(x_std = examp_dat$x_std, z_std = mean(examp_dat$z_std) - sd(examp_dat$z_std)),
              se.fit = TRUE,
              interval = "confidence") %>%
   .$fit %>%
   data.frame(.)
 
 avg <- examp_dat %>%
-  lm(y ~ x * z_std, data = .) %>%
-  predict.lm(newdata = data.frame(x = x, z_std = mean(examp_dat$z_std)),
+  lm(y ~ x_std * z_std, data = .) %>%
+  predict.lm(newdata = data.frame(x_std = examp_dat$x_std, z_std = mean(examp_dat$z_std)),
              se.fit = TRUE,
              interval = "confidence") %>%
   .$fit %>%
   data.frame(.)
 
 hi <- examp_dat %>%
-  lm(y ~ x * z_std, data = .) %>%
-  predict.lm(newdata = data.frame(x = x, z_std = mean(examp_dat$z_std) + sd(examp_dat$z_std)),
+  lm(y ~ x_std * z_std, data = .) %>%
+  predict.lm(newdata = data.frame(x_std = examp_dat$x_std, z_std = mean(examp_dat$z_std) + sd(examp_dat$z_std)),
              se.fit = TRUE,
              interval = "confidence") %>%
   .$fit %>%
@@ -158,7 +226,7 @@ examp_dat <- examp_dat %>%
 
 ```{r}
 examp_dat %>%
-  ggplot(mapping = aes(x = x, y = y)) +
+  ggplot(mapping = aes(x = x_std, y = y)) +
   geom_line(aes(y = low_fit, linetype = "Low (-1 SD)")) +
   geom_line(aes(y = hi_fit, linetype = "High (+1 SD)")) +
   scale_x_continuous(breaks = seq(-4, 4, 1), limits = c(-4, 4)) +
@@ -180,7 +248,7 @@ examp_dat %>%
 
 ```{r}
 examp_dat %>%
-  ggplot(mapping = aes(x = x, y = y)) +
+  ggplot(mapping = aes(x = x_std, y = y)) +
   geom_line(aes(y = low_fit, linetype = "Low (-1 SD)")) +
   geom_line(aes(y = hi_fit, linetype = "High (+1 SD)")) +
   geom_ribbon(aes(ymin = low_lwr, max = low_upr), alpha = 0.2) +
@@ -204,7 +272,7 @@ examp_dat %>%
 
 ```{r}
 examp_dat %>%
-  ggplot(mapping = aes(x = x, y = y)) +
+  ggplot(mapping = aes(x = x_std, y = y)) +
   geom_point(alpha = 0.75) +
   geom_line(aes(y = low_fit, linetype = "Low (-1 SD)")) +
   geom_line(aes(y = hi_fit, linetype = "High (+1 SD)")) +
@@ -229,7 +297,7 @@ examp_dat %>%
 
 ```{r}
 examp_dat %>%
-  ggplot(mapping = aes(x = x, y = y)) +
+  ggplot(mapping = aes(x = x_std, y = y)) +
   geom_point(aes(color = z_std)) +
   geom_line(aes(y = low_fit, linetype = "Low (-1 SD)")) +
   geom_line(aes(y = hi_fit, linetype = "High (+1 SD)")) +
@@ -255,7 +323,7 @@ examp_dat %>%
 ```{r}
 
 examp_dat %>%
-  ggplot(mapping = aes(x = x, y = y)) +
+  ggplot(mapping = aes(x = x_std, y = y)) +
   geom_point(alpha = 0.75) +
   geom_line(aes(y = low_fit, linetype = "Low (-1 SD)")) +
   geom_line(aes(y = hi_fit, linetype = "High (+1 SD)")) +
@@ -284,7 +352,7 @@ examp_dat %>%
 
 ```{r}
 examp_dat %>%
-  ggplot(mapping = aes(x = x, y = y)) +
+  ggplot(mapping = aes(x = x_std, y = y)) +
   geom_point(aes(color = z_std)) +
   facet_wrap(~ z_std_group) +
   geom_line(data = examp_dat %>%

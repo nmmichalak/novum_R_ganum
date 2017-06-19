@@ -7,7 +7,7 @@ Nicholas Michalak
 
 ```r
 # packages I"ll want in this analysis
-want_packages <- c("tidyverse", "lavaan", "probemod")
+want_packages <- c("tidyverse", "lavaan", "probemod", "haven")
 
 # which of those packages do I already have? (logical vector)
 have_packages <- want_packages %in% rownames(installed.packages())
@@ -60,7 +60,13 @@ lapply(want_packages, library, character.only = TRUE)
 ##  [1] "probemod"  "lavaan"    "dplyr"     "purrr"     "readr"    
 ##  [6] "tidyr"     "tibble"    "ggplot2"   "tidyverse" "stats"    
 ## [11] "graphics"  "grDevices" "utils"     "datasets"  "methods"  
-## [16] "base"
+## [16] "base"     
+## 
+## [[4]]
+##  [1] "haven"     "probemod"  "lavaan"    "dplyr"     "purrr"    
+##  [6] "readr"     "tidyr"     "tibble"    "ggplot2"   "tidyverse"
+## [11] "stats"     "graphics"  "grDevices" "utils"     "datasets" 
+## [16] "methods"   "base"
 ```
 
 # data
@@ -82,7 +88,16 @@ examp_dat <- data.frame(y, x, z)
 # standardize z and then make a grouping variable for visualizing high and low z (standardized)
 examp_dat <- examp_dat %>%
   mutate(z_std = as.numeric(scale(z)),
-         x_z_std = x * z_std)
+         x_std = as.numeric(scale(x)),
+         x_z_std = x_std * z_std)
+```
+
+# write data to file
+
+
+```r
+examp_dat %>%
+  write_csv(path = "examp_dat.csv")
 ```
 
 # models
@@ -91,43 +106,14 @@ examp_dat <- examp_dat %>%
 ```r
 # without interaction term
 examp_dat %>%
-  lm(y ~ x + z_std, data = .) %>%
+  lm(y ~ x_std * z_std, data = .) %>%
   summary(.)
 ```
 
 ```
 ## 
 ## Call:
-## lm(formula = y ~ x + z_std, data = .)
-## 
-## Residuals:
-##     Min      1Q  Median      3Q     Max 
-## -5.1672 -0.9687 -0.1271  0.7018 13.8515 
-## 
-## Coefficients:
-##             Estimate Std. Error t value Pr(>|t|)   
-## (Intercept)  0.32673    0.11190   2.920  0.00382 **
-## x            0.01765    0.11776   0.150  0.88100   
-## z_std       -0.07259    0.11981  -0.606  0.54513   
-## ---
-## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-## 
-## Residual standard error: 1.769 on 247 degrees of freedom
-## Multiple R-squared:  0.001503,	Adjusted R-squared:  -0.006582 
-## F-statistic: 0.1859 on 2 and 247 DF,  p-value: 0.8305
-```
-
-```r
-# with interaction term
-examp_dat %>%
-  lm(y ~ x * z_std, data = .) %>%
-  summary(.)
-```
-
-```
-## 
-## Call:
-## lm(formula = y ~ x * z_std, data = .)
+## lm(formula = y ~ x_std * z_std, data = .)
 ## 
 ## Residuals:
 ##      Min       1Q   Median       3Q      Max 
@@ -135,10 +121,10 @@ examp_dat %>%
 ## 
 ## Coefficients:
 ##             Estimate Std. Error t value Pr(>|t|)    
-## (Intercept) -0.09429    0.06183  -1.525    0.129    
-## x            0.01772    0.06261   0.283    0.777    
-## z_std        0.06580    0.06394   1.029    0.304    
-## x:z_std      1.17893    0.04706  25.053   <2e-16 ***
+## (Intercept) -0.09436    0.06183  -1.526    0.128    
+## x_std        0.01803    0.06370   0.283    0.777    
+## z_std        0.06099    0.06393   0.954    0.341    
+## x_std:z_std  1.19946    0.04788  25.053   <2e-16 ***
 ## ---
 ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 ## 
@@ -148,9 +134,111 @@ examp_dat %>%
 ```
 
 ```r
-# simple slopes with sem
+# with interaction term
+examp_dat %>%
+  lm(y ~ x_std * z_std, data = .) %>%
+  summary(.)
+```
+
+```
+## 
+## Call:
+## lm(formula = y ~ x_std * z_std, data = .)
+## 
+## Residuals:
+##      Min       1Q   Median       3Q      Max 
+## -2.78989 -0.62795  0.07566  0.62157  2.44049 
+## 
+## Coefficients:
+##             Estimate Std. Error t value Pr(>|t|)    
+## (Intercept) -0.09436    0.06183  -1.526    0.128    
+## x_std        0.01803    0.06370   0.283    0.777    
+## z_std        0.06099    0.06393   0.954    0.341    
+## x_std:z_std  1.19946    0.04788  25.053   <2e-16 ***
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 0.9407 on 246 degrees of freedom
+## Multiple R-squared:  0.7188,	Adjusted R-squared:  0.7154 
+## F-statistic: 209.6 on 3 and 246 DF,  p-value: < 2.2e-16
+```
+
+```r
+# simple slopes function
+test_slopes <- function(y, x, z, alpha = .05) {
+  
+  # fit model
+  model <- lm(y ~ x * z)
+  
+  # mean of z
+  z_mean <- mean(z, na.rm = TRUE)
+  
+  # sd of z
+  z_sd <- sd(z, na.rm = TRUE)
+  
+  # model covariance matrix
+  model_vcov <- vcov(model)
+  
+  # estimate @ mean - 1 SD
+  low_est <- coefficients(model)["x"] + coefficients(model)["x:z"] * (z_mean - z_sd)
+  
+  # estimate @ mean
+  mean_est <- coefficients(model)["x"] + coefficients(model)["x:z"] * (z_mean)
+  
+  # estimate @ mean + 1 SD
+  high_est <- coefficients(model)["x"] + coefficients(model)["x:z"] * (z_mean + z_sd)
+  
+  # standard error @ mean - 1 SD
+  low_se <- sqrt(model_vcov["x", "x"] + 2 * (z_mean - z_sd) * model_vcov["x", "x:z"] + (z_mean - z_sd) * (z_mean - z_sd) * model_vcov["x:z", "x:z"])
+  
+  # standard error @ mean
+  mean_se <- sqrt(model_vcov["x", "x"] + 2 * (z_mean) * model_vcov["x", "x:z"] + (z_mean) * (z_mean) * model_vcov["x:z", "x:z"])
+  
+  # standard error @ mean + 1 SD
+  high_se <- sqrt(model_vcov["x", "x"] + 2 * (z_mean + z_sd) * model_vcov["x", "x:z"] + (z_mean + z_sd) * (z_mean + z_sd) * model_vcov["x:z", "x:z"])
+  
+  # result table: estimates and standard errors
+  result <- data.frame(test = c("Low (-1 SD)", "Mean (0 SD)", "High (+1 SD)"),
+                       est = c(low_est, mean_est, high_est),
+                       se = c(low_se, mean_se, high_se))
+  
+  # t-statistics
+  result$t_val <- with(data = result, est / se)
+  
+  # p-values
+  result$p_val <- with(data = result, 2 * pt(q = -abs(t_val), df = model$df.residual))
+  
+  # t-critical
+  t_crit <- qt(p = 1 - alpha / 2, df = model$df.residual)
+  
+  # lower confidence intervals
+  result$lwr_ci <- with(data = result, est - t_crit * se)
+  
+  # upper confidence intervals
+  result$upr_ci <- with(data = result, est + t_crit * se)
+  
+  return(result)
+}
+
+# simple slopes with custom function
+with(examp_dat, test_slopes(y = y, x = x_std, z = z_std, alpha = .05))
+```
+
+```
+##           test         est         se       t_val        p_val     lwr_ci
+## 1  Low (-1 SD) -1.18142368 0.07968783 -14.8256472 5.803386e-36 -1.3383812
+## 2  Mean (0 SD)  0.01803363 0.06370381   0.2830856 7.773493e-01 -0.1074408
+## 3 High (+1 SD)  1.21749094 0.07969164  15.2775241 1.657131e-37  1.0605260
+##       upr_ci
+## 1 -1.0244662
+## 2  0.1435081
+## 3  1.3744559
+```
+
+```r
+# alternatively, simple slopes with sem from lavaan
 test_hi_low <- "# regressions
-                  y ~ b1 * x
+                  y ~ b1 * x_std
                   y ~ b2 * z_std
                   y ~ b3 * x_z_std
 
@@ -162,6 +250,7 @@ test_hi_low <- "# regressions
 
                 # simple slopes estimates
                   z_low := b1 + b3 * (z_std_mean - sqrt(z_std_var))
+                  z_mean := b1 + b3 * (z_std_mean)
                   z_hi := b1 + b3 * (z_std_mean + sqrt(z_std_var))"
 
 # fit model
@@ -182,7 +271,7 @@ test_hi_low %>%
 ##   Number of observations                           250
 ## 
 ##   Estimator                                         ML
-##   Minimum Function Test Statistic               35.028
+##   Minimum Function Test Statistic               34.900
 ##   Degrees of freedom                                 2
 ##   P-value (Chi-square)                           0.000
 ## 
@@ -194,33 +283,34 @@ test_hi_low %>%
 ## Regressions:
 ##                    Estimate  Std.Err  z-value  P(>|z|)
 ##   y ~                                                 
-##     x         (b1)    0.018    0.058    0.305    0.761
-##     z_std     (b2)    0.066    0.059    1.113    0.266
-##     x_z_std   (b3)    1.179    0.047   25.350    0.000
+##     x_std     (b1)    0.018    0.059    0.305    0.761
+##     z_std     (b2)    0.061    0.059    1.031    0.302
+##     x_z_std   (b3)    1.199    0.047   25.344    0.000
 ## 
 ## Covariances:
 ##                    Estimate  Std.Err  z-value  P(>|z|)
-##   x ~~                                                
-##     x_z_std          -0.042    0.082   -0.515    0.607
+##   x_std ~~                                            
+##     x_z_std          -0.039    0.079   -0.497    0.619
 ## 
 ## Intercepts:
 ##                    Estimate  Std.Err  z-value  P(>|z|)
 ##     z_std   (z_s_)   -0.000    0.063   -0.000    1.000
-##    .y                -0.094    0.061   -1.538    0.124
-##     x                -0.004    0.064   -0.064    0.949
-##     x_z_std           0.357    0.080    4.447    0.000
+##    .y                -0.094    0.061   -1.539    0.124
+##     x_std             0.000    0.063    0.000    1.000
+##     x_z_std           0.351    0.079    4.448    0.000
 ## 
 ## Variances:
 ##                    Estimate  Std.Err  z-value  P(>|z|)
 ##     z_std   (z_s_)    0.996    0.089   11.180    0.000
 ##    .y                 0.871    0.078   11.180    0.000
-##     x                 1.031    0.092   11.180    0.000
-##     x_z_std           1.612    0.144   11.180    0.000
+##     x_std             0.996    0.089   11.180    0.000
+##     x_z_std           1.557    0.139   11.180    0.000
 ## 
 ## Defined Parameters:
 ##                    Estimate  Std.Err  z-value  P(>|z|)
-##     z_low            -1.159    0.117   -9.913    0.000
-##     z_hi              1.194    0.118   10.087    0.000
+##     z_low            -1.179    0.119   -9.910    0.000
+##     z_mean            0.018    0.096    0.188    0.851
+##     z_hi              1.215    0.120   10.089    0.000
 ```
 
 ```r
@@ -241,42 +331,44 @@ test_hi_low %>%
 ```
 
 ```
-##     lhs op                                rhs label         est         se
-## 1     y  ~                                  x    b1  0.01772498 0.05815649
-## 2     y  ~                              z_std    b2  0.06579734 0.05913779
-## 3     y  ~                            x_z_std    b3  1.17892848 0.04650581
-## 4     y ~1                                          -0.09428967 0.06131009
-## 5 z_low := b1+b3*(z_std_mean-sqrt(z_std_var)) z_low -1.15884328 0.11690328
-## 6  z_hi := b1+b3*(z_std_mean+sqrt(z_std_var))  z_hi  1.19429324 0.11839769
-##            z    pvalue    ci.lower   ci.upper
-## 1  0.3047808 0.7605331 -0.09625965  0.1317096
-## 2  1.1126108 0.2658756 -0.05011060  0.1817053
-## 3 25.3501316 0.0000000  1.08777877  1.2700782
-## 4 -1.5379144 0.1240696 -0.21445523  0.0258759
-## 5 -9.9128380 0.0000000 -1.38796950 -0.9297171
-## 6 10.0871333 0.0000000  0.96223804  1.4263484
+##      lhs op                                rhs  label         est
+## 1      y  ~                              x_std     b1  0.01803366
+## 2      y  ~                              z_std     b2  0.06098860
+## 3      y  ~                            x_z_std     b3  1.19945730
+## 4      y ~1                                           -0.09436195
+## 5  z_low := b1+b3*(z_std_mean-sqrt(z_std_var))  z_low -1.17902234
+## 6 z_mean :=                 b1+b3*(z_std_mean) z_mean  0.01803366
+## 7   z_hi := b1+b3*(z_std_mean+sqrt(z_std_var))   z_hi  1.21508966
+##           se          z    pvalue    ci.lower    ci.upper
+## 1 0.05916706  0.3047922 0.7605244 -0.09793164  0.13399896
+## 2 0.05913779  1.0312966 0.3024017 -0.05491934  0.17689654
+## 3 0.04732769 25.3436707 0.0000000  1.10669674  1.29221786
+## 4 0.06131287 -1.5390236 0.1237985 -0.21453297  0.02580906
+## 5 0.11896882 -9.9103477 0.0000000 -1.41219694 -0.94584774
+## 6 0.09608597  0.1876825 0.8511255 -0.17029137  0.20635869
+## 7 0.12043720 10.0889896 0.0000000  0.97903708  1.45114223
 ```
 
 ```r
 # Johnson-Neyman
 examp_dat %>%
-  lm(y ~ x * z_std, data = .) %>%
-  jn(dv = "y", iv = "x", mod = "z_std", alpha = .05)
+  lm(y ~ x_std * z_std, data = .) %>%
+  jn(dv = "y", iv = "x_std", mod = "z_std", alpha = .05)
 ```
 
 ```
 ## Call:
-## jn(model = ., dv = "y", iv = "x", mod = "z_std", alpha = 0.05)
+## jn(model = ., dv = "y", iv = "x_std", mod = "z_std", alpha = 0.05)
 ## 
-## Conditional effects of  x  on  y  at values of  z_std 
+## Conditional effects of  x_std  on  y  at values of  z_std 
 ##  z_std Effect     se       t p   llci   ulci
-##      1 1.1967 0.0783 15.2775 0 1.0424 1.3509
-##      2 2.3756 0.1130 21.0146 0 2.1529 2.5982
-##      3 3.5545 0.1544 23.0155 0 3.2503 3.8587
-##      4 4.7334 0.1984 23.8608 0 4.3427 5.1242
-##      5 5.9124 0.2435 24.2825 0 5.4328 6.3920
-##      6 7.0913 0.2892 24.5194 0 6.5216 7.6610
-##      7 8.2702 0.3353 24.6645 0 7.6098 8.9307
+##      1 1.2175 0.0797 15.2775 0 1.0605 1.3745
+##      2 2.4169 0.1150 21.0146 0 2.1904 2.6435
+##      3 3.6164 0.1571 23.0155 0 3.3069 3.9259
+##      4 4.8159 0.2018 23.8608 0 4.4183 5.2134
+##      5 6.0153 0.2477 24.2825 0 5.5274 6.5033
+##      6 7.2148 0.2942 24.5194 0 6.6352 7.7944
+##      7 8.4142 0.3411 24.6645 0 7.7423 9.0862
 ```
 
 # data for plotting simple slopes
@@ -284,27 +376,27 @@ examp_dat %>%
 
 ```r
 model_int <- examp_dat %>%
-  lm(y ~ x * z_std, data = .)
+  lm(y ~ x_std * z_std, data = .)
 
 low <- examp_dat %>%
-  lm(y ~ x * z_std, data = .) %>%
-  predict.lm(newdata = data.frame(x = x, z_std = mean(examp_dat$z_std) - sd(examp_dat$z_std)),
+  lm(y ~ x_std * z_std, data = .) %>%
+  predict.lm(newdata = data.frame(x_std = examp_dat$x_std, z_std = mean(examp_dat$z_std) - sd(examp_dat$z_std)),
              se.fit = TRUE,
              interval = "confidence") %>%
   .$fit %>%
   data.frame(.)
 
 avg <- examp_dat %>%
-  lm(y ~ x * z_std, data = .) %>%
-  predict.lm(newdata = data.frame(x = x, z_std = mean(examp_dat$z_std)),
+  lm(y ~ x_std * z_std, data = .) %>%
+  predict.lm(newdata = data.frame(x_std = examp_dat$x_std, z_std = mean(examp_dat$z_std)),
              se.fit = TRUE,
              interval = "confidence") %>%
   .$fit %>%
   data.frame(.)
 
 hi <- examp_dat %>%
-  lm(y ~ x * z_std, data = .) %>%
-  predict.lm(newdata = data.frame(x = x, z_std = mean(examp_dat$z_std) + sd(examp_dat$z_std)),
+  lm(y ~ x_std * z_std, data = .) %>%
+  predict.lm(newdata = data.frame(x_std = examp_dat$x_std, z_std = mean(examp_dat$z_std) + sd(examp_dat$z_std)),
              se.fit = TRUE,
              interval = "confidence") %>%
   .$fit %>%
@@ -336,36 +428,9 @@ examp_dat <- examp_dat %>%
 
 ```r
 examp_dat %>%
-  ggplot(mapping = aes(x = x, y = y)) +
+  ggplot(mapping = aes(x = x_std, y = y)) +
   geom_line(aes(y = low_fit, linetype = "Low (-1 SD)")) +
   geom_line(aes(y = hi_fit, linetype = "High (+1 SD)")) +
-  scale_x_continuous(breaks = seq(-4, 4, 1), limits = c(-4, 4)) +
-  scale_y_continuous(breaks = seq(-5, 15, 5), limits = c(-5, 15)) +
-  theme(legend.position = "top",
-        legend.title = element_text(size = 14),
-        legend.text = element_text(size = 14),
-        axis.title.x = element_text(size = 14),
-        axis.title.y = element_text(size = 14),
-        axis.text.x = element_text(size = 14),
-        axis.text.y = element_text(size = 14)) +
-  labs(linetype = "z_std")
-```
-
-![](visualizing_moderation_files/figure-html/unnamed-chunk-5-1.png)<!-- -->
-
-# better plot
-* includes uncertainty in regression slopes
-* can't see points
-* can't see how z varies with x and y
-
-
-```r
-examp_dat %>%
-  ggplot(mapping = aes(x = x, y = y)) +
-  geom_line(aes(y = low_fit, linetype = "Low (-1 SD)")) +
-  geom_line(aes(y = hi_fit, linetype = "High (+1 SD)")) +
-  geom_ribbon(aes(ymin = low_lwr, max = low_upr), alpha = 0.2) +
-  geom_ribbon(aes(ymin = hi_lwr, max = hi_upr), alpha = 0.2) +
   scale_x_continuous(breaks = seq(-4, 4, 1), limits = c(-4, 4)) +
   scale_y_continuous(breaks = seq(-5, 15, 5), limits = c(-5, 15)) +
   theme(legend.position = "top",
@@ -380,16 +445,15 @@ examp_dat %>%
 
 ![](visualizing_moderation_files/figure-html/unnamed-chunk-6-1.png)<!-- -->
 
-# even better plot
+# better plot
 * includes uncertainty in regression slopes
-* includes points
+* can't see points
 * can't see how z varies with x and y
 
 
 ```r
 examp_dat %>%
-  ggplot(mapping = aes(x = x, y = y)) +
-  geom_point(alpha = 0.75) +
+  ggplot(mapping = aes(x = x_std, y = y)) +
   geom_line(aes(y = low_fit, linetype = "Low (-1 SD)")) +
   geom_line(aes(y = hi_fit, linetype = "High (+1 SD)")) +
   geom_ribbon(aes(ymin = low_lwr, max = low_upr), alpha = 0.2) +
@@ -408,6 +472,34 @@ examp_dat %>%
 
 ![](visualizing_moderation_files/figure-html/unnamed-chunk-7-1.png)<!-- -->
 
+# even better plot
+* includes uncertainty in regression slopes
+* includes points
+* can't see how z varies with x and y
+
+
+```r
+examp_dat %>%
+  ggplot(mapping = aes(x = x_std, y = y)) +
+  geom_point(alpha = 0.75) +
+  geom_line(aes(y = low_fit, linetype = "Low (-1 SD)")) +
+  geom_line(aes(y = hi_fit, linetype = "High (+1 SD)")) +
+  geom_ribbon(aes(ymin = low_lwr, max = low_upr), alpha = 0.2) +
+  geom_ribbon(aes(ymin = hi_lwr, max = hi_upr), alpha = 0.2) +
+  scale_x_continuous(breaks = seq(-4, 4, 1), limits = c(-4, 4)) +
+  scale_y_continuous(breaks = seq(-5, 15, 5), limits = c(-5, 15)) +
+  theme(legend.position = "top",
+        legend.title = element_text(size = 14),
+        legend.text = element_text(size = 14),
+        axis.title.x = element_text(size = 14),
+        axis.title.y = element_text(size = 14),
+        axis.text.x = element_text(size = 14),
+        axis.text.y = element_text(size = 14)) +
+  labs(linetype = "z_std")
+```
+
+![](visualizing_moderation_files/figure-html/unnamed-chunk-8-1.png)<!-- -->
+
 # my 1st recommended (2-dimensional) plot
 * includes uncertainty in regression slopes
 * includes points
@@ -416,7 +508,7 @@ examp_dat %>%
 
 ```r
 examp_dat %>%
-  ggplot(mapping = aes(x = x, y = y)) +
+  ggplot(mapping = aes(x = x_std, y = y)) +
   geom_point(aes(color = z_std)) +
   geom_line(aes(y = low_fit, linetype = "Low (-1 SD)")) +
   geom_line(aes(y = hi_fit, linetype = "High (+1 SD)")) +
@@ -434,7 +526,7 @@ examp_dat %>%
   labs(linetype = "z_std")
 ```
 
-![](visualizing_moderation_files/figure-html/unnamed-chunk-8-1.png)<!-- -->
+![](visualizing_moderation_files/figure-html/unnamed-chunk-9-1.png)<!-- -->
 
 # my 2nd recommended (2-dimensional) plot
 * includes uncertainty in regression slopes
@@ -444,7 +536,7 @@ examp_dat %>%
 
 ```r
 examp_dat %>%
-  ggplot(mapping = aes(x = x, y = y)) +
+  ggplot(mapping = aes(x = x_std, y = y)) +
   geom_point(alpha = 0.75) +
   geom_line(aes(y = low_fit, linetype = "Low (-1 SD)")) +
   geom_line(aes(y = hi_fit, linetype = "High (+1 SD)")) +
@@ -464,7 +556,7 @@ examp_dat %>%
   labs(linetype = "z_std")
 ```
 
-![](visualizing_moderation_files/figure-html/unnamed-chunk-9-1.png)<!-- -->
+![](visualizing_moderation_files/figure-html/unnamed-chunk-10-1.png)<!-- -->
 
 # my 3rd recommended (2-dimensional) plot
 * includes uncertainty in regression slopes
@@ -475,7 +567,7 @@ examp_dat %>%
 
 ```r
 examp_dat %>%
-  ggplot(mapping = aes(x = x, y = y)) +
+  ggplot(mapping = aes(x = x_std, y = y)) +
   geom_point(aes(color = z_std)) +
   facet_wrap(~ z_std_group) +
   geom_line(data = examp_dat %>%
@@ -503,5 +595,5 @@ examp_dat %>%
   labs(linetype = "z_std")
 ```
 
-![](visualizing_moderation_files/figure-html/unnamed-chunk-10-1.png)<!-- -->
+![](visualizing_moderation_files/figure-html/unnamed-chunk-11-1.png)<!-- -->
 
