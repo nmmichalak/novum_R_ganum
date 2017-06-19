@@ -166,6 +166,15 @@ examp_dat %>%
 ```r
 # simple slopes function
 test_slopes <- function(y, x, z, alpha = .05) {
+  # Computes confidence intervals and test statistics at 3 moderator values: -1 SD, Mean, and +1 SD
+  # Arguments: 
+  #   y:     outcome variable
+  #   x:     predictor variable
+  #   z:     moderator variable
+  #   alpha: alpha level for 1-alpha confidence
+  # Returns:
+  #   table of values for each of three tests: test names, estimates, standard errors, t-statistics,
+  #   p-values, and lower and upper confidence intervals
   
   # fit model
   model <- lm(y ~ x * z)
@@ -500,7 +509,7 @@ examp_dat %>%
 
 ![](visualizing_moderation_files/figure-html/unnamed-chunk-8-1.png)<!-- -->
 
-# my 1st recommended (2-dimensional) plot
+# 1st recommended (2-dimensional) plot
 * includes uncertainty in regression slopes
 * includes points
 * includes color gradient (light to dark) to depict how z varies with x and y
@@ -528,7 +537,7 @@ examp_dat %>%
 
 ![](visualizing_moderation_files/figure-html/unnamed-chunk-9-1.png)<!-- -->
 
-# my 2nd recommended (2-dimensional) plot
+# 2nd recommended (2-dimensional) plot
 * includes uncertainty in regression slopes
 * includes points
 * includes marginal rug to depict how z varies along x and y
@@ -558,7 +567,7 @@ examp_dat %>%
 
 ![](visualizing_moderation_files/figure-html/unnamed-chunk-10-1.png)<!-- -->
 
-# my 3rd recommended (2-dimensional) plot
+# 3rd recommended (2-dimensional) plot
 * includes uncertainty in regression slopes
 * includes points
 * includes color gradient (light to dark) to depict how z varies with x and y
