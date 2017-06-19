@@ -165,13 +165,14 @@ examp_dat %>%
 
 ```r
 # simple slopes function
-test_slopes <- function(y, x, z, alpha = .05) {
+test_slopes <- function(y, x, z, sd_values = seq(-3, 3, 0.5), alpha = .05) {
   # Computes confidence intervals and test statistics at 3 moderator values: -1 SD, Mean, and +1 SD
   # Arguments: 
-  #   y:     outcome variable
-  #   x:     predictor variable
-  #   z:     moderator variable
-  #   alpha: alpha level for 1-alpha confidence
+  #   y:         outcome variable
+  #   x:         predictor variable
+  #   z:         moderator variable
+  #   sd_values: standard deviation values for testing slopes
+  #   alpha:     alpha level for 1-alpha confidence
   # Returns:
   #   table of values for each of three tests: test names, estimates, standard errors, t-statistics,
   #   p-values, and lower and upper confidence intervals
@@ -188,28 +189,17 @@ test_slopes <- function(y, x, z, alpha = .05) {
   # model covariance matrix
   model_vcov <- vcov(model)
   
-  # estimate @ mean - 1 SD
-  low_est <- coefficients(model)["x"] + coefficients(model)["x:z"] * (z_mean - z_sd)
-  
-  # estimate @ mean
-  mean_est <- coefficients(model)["x"] + coefficients(model)["x:z"] * (z_mean)
-  
-  # estimate @ mean + 1 SD
-  high_est <- coefficients(model)["x"] + coefficients(model)["x:z"] * (z_mean + z_sd)
-  
-  # standard error @ mean - 1 SD
-  low_se <- sqrt(model_vcov["x", "x"] + 2 * (z_mean - z_sd) * model_vcov["x", "x:z"] + (z_mean - z_sd) * (z_mean - z_sd) * model_vcov["x:z", "x:z"])
-  
-  # standard error @ mean
-  mean_se <- sqrt(model_vcov["x", "x"] + 2 * (z_mean) * model_vcov["x", "x:z"] + (z_mean) * (z_mean) * model_vcov["x:z", "x:z"])
-  
-  # standard error @ mean + 1 SD
-  high_se <- sqrt(model_vcov["x", "x"] + 2 * (z_mean + z_sd) * model_vcov["x", "x:z"] + (z_mean + z_sd) * (z_mean + z_sd) * model_vcov["x:z", "x:z"])
+  est <- list()
+  se <- list()
+  for(i in 1:length(sd_values)) {
+    est[[i]] <- coefficients(model)["x"] + coefficients(model)["x:z"] * (z_mean + sd_values[i] * z_sd)
+    se[[i]] <- sqrt(model_vcov["x", "x"] + 2 * (z_mean + sd_values[i] * z_sd) * model_vcov["x", "x:z"] + (z_mean + sd_values[i] * z_sd) * (z_mean + sd_values[i] * z_sd) * model_vcov["x:z", "x:z"])
+  }
   
   # result table: estimates and standard errors
-  result <- data.frame(test = c("Low (-1 SD)", "Mean (0 SD)", "High (+1 SD)"),
-                       est = c(low_est, mean_est, high_est),
-                       se = c(low_se, mean_se, high_se))
+  result <- data.frame(test = paste0(sd_values, " SD"),
+                       est = unlist(est),
+                       se = unlist(se))
   
   # t-statistics
   result$t_val <- with(data = result, est / se)
@@ -234,14 +224,34 @@ with(examp_dat, test_slopes(y = y, x = x_std, z = z_std, alpha = .05))
 ```
 
 ```
-##           test         est         se       t_val        p_val     lwr_ci
-## 1  Low (-1 SD) -1.18142368 0.07968783 -14.8256472 5.803386e-36 -1.3383812
-## 2  Mean (0 SD)  0.01803363 0.06370381   0.2830856 7.773493e-01 -0.1074408
-## 3 High (+1 SD)  1.21749094 0.07969164  15.2775241 1.657131e-37  1.0605260
-##       upr_ci
-## 1 -1.0244662
-## 2  0.1435081
-## 3  1.3744559
+##       test         est         se       t_val        p_val     lwr_ci
+## 1    -3 SD -3.58033830 0.15712343 -22.7867881 1.470571e-62 -3.8898171
+## 2  -2.5 SD -2.98060965 0.13558819 -21.9828113 5.573830e-60 -3.2476715
+## 3    -2 SD -2.38088099 0.11500732 -20.7019959 8.279795e-56 -2.6074056
+## 4  -1.5 SD -1.78115233 0.09599660 -18.5543275 1.170238e-48 -1.9702324
+## 5    -1 SD -1.18142368 0.07968783 -14.8256472 5.803386e-36 -1.3383812
+## 6  -0.5 SD -0.58169502 0.06805214  -8.5477849 1.343849e-15 -0.7157342
+## 7     0 SD  0.01803363 0.06370381   0.2830856 7.773493e-01 -0.1074408
+## 8   0.5 SD  0.61776229 0.06805437   9.0774820 3.702606e-17  0.4837187
+## 9     1 SD  1.21749094 0.07969164  15.2775241 1.657131e-37  1.0605260
+## 10  1.5 SD  1.81721960 0.09600134  18.9291065 6.431428e-50  1.6281302
+## 11    2 SD  2.41694825 0.11501259  21.0146401 7.811694e-57  2.1904132
+## 12  2.5 SD  3.01667691 0.13559379  22.2478992 7.805274e-61  2.7496040
+## 13    3 SD  3.61640556 0.15712922  23.0154867 2.753366e-63  3.3069153
+##        upr_ci
+## 1  -3.2708595
+## 2  -2.7135478
+## 3  -2.1543563
+## 4  -1.5920722
+## 5  -1.0244662
+## 6  -0.4476558
+## 7   0.1435081
+## 8   0.7518059
+## 9   1.3744559
+## 10  2.0063090
+## 11  2.6434833
+## 12  3.2837498
+## 13  3.9258958
 ```
 
 ```r
