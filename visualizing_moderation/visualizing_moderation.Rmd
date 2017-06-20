@@ -240,6 +240,20 @@ examp_dat %>%
   labs(linetype = "z_std")
 ```
 
+# marginal effects plot
+
+```{r, eval = FALSE}
+with(examp_dat, test_slopes(y = y, x = x_std, z = z_std, alpha = .05)) %>%
+  mutate(z = seq(-3, 3, 0.5)) %>%
+  ggplot(mapping = aes(x = z, y = est)) +
+  geom_point() +
+  geom_line(color = "black") +
+  geom_ribbon(data = with(examp_dat, test_slopes(y = y, x = x_std, z = z_std, alpha = .05)),
+              aes(ymin = lwr_ci, ymax = upr_ci), alpha = 0.2) +
+  geom_rug(data = examp_dat, aes(x = z_std), sides = "b") +
+  scale_x_continuous(aes(x = z_std), breaks = seq(-3, 3, 0.5), limits = c(-3, 3))
+```
+
 # better plot
 * includes uncertainty in regression slopes
 * can't see points
