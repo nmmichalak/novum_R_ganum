@@ -1,0 +1,75 @@
+---
+title: "Vovk-Sellke Maximum p-ratio"
+author: "Nicholas Michalak"
+date: "6/21/2017"
+output: 
+  html_document: 
+    fig_height: 7.5
+    fig_width: 10.5
+    keep_md: yes
+    theme: readable
+    toc: yes
+    toc_float:
+      collapsed: yes
+      smooth_scroll: yes
+---
+
+# packages
+
+```{r}
+# packages I"ll want in this analysis
+want_packages <- c("tidyverse")
+
+# which of those packages do I already have? (logical vector)
+have_packages <- want_packages %in% rownames(installed.packages())
+
+# if I don"t have any of those, install them
+if(any(have_packages == FALSE)) install.packages(want_packages[have_packages == FALSE])
+
+# load wanted packages
+lapply(want_packages, library, character.only = TRUE)
+```
+
+# Vovk-Sellke maximum p-ratio function (adapted from [JASP-stats Github](https://github.com/jasp-stats/jasp-desktop/blob/14615936cfaf0c49739346d31847047f9af72032/JASP-Engine/JASP/R/commonMPR.R))
+* feed compute_vs_mpr function p-value, and it outputs the Vovk-Sellke maximum p-ratio: the maximum diagnosticity of a two-sided p-value (see [web comic](https://jasp-stats.org/2017/06/12/mysterious-vs-mpr/))
+
+```{r}
+
+compute_vs_mpr <- function(p_val) {
+  vs_mpr <- ifelse(p_val >= 1 / exp(1), 1, 1 / (-exp(1) * p_val * log(p_val)))
+  if(is.nan(vs_mpr) == TRUE) 
+    vs_mpr <- Inf
+  return(vs_mpr)
+}
+```
+
+# default example from [shiny app](http://www.shinyapps.org/apps/vs-mpr/): p = .05
+
+```{r}
+compute_vs_mpr(p_val = .05)
+```
+
+# view p-values from .1 to .0001
+
+```{r}
+data.frame(p_val = seq(.001, .05, .001),
+           vs_mpr = compute_vs_mpr(seq(.001, .05, .001))) %>%
+  mutate(vs_mpr = round(vs_mpr, 2)) %>%
+  ggplot(mapping = aes(x = p_val, y = vs_mpr, label = vs_mpr)) +
+  geom_line() +
+  geom_point(shape = 21, fill = "white", color = "black") +
+  scale_x_continuous(breaks = seq(0, .05, .005), limits = c(0, .05)) +
+  scale_y_continuous(breaks = seq(0, 60, 5), limits = c(0, 60)) +
+  coord_cartesian(xlim = c(0, .05), ylim = c(0, 60)) +
+  geom_text(check_overlap = TRUE, nudge_x = .00125, nudge_y = 1.5) +
+  theme_minimal() +
+  theme(legend.position = "top",
+        axis.title.x = element_text(size = 14),
+        axis.title.y = element_text(size = 14),
+        axis.text.x = element_text(size = 14),
+        axis.text.y = element_text(size = 14))
+```
+
+# References
+* Vovk, V. G. (1993). A logic of probability, with application to the foundations of statistics. *Journal of the Royal Statistical Society Series B, 55*, 317-351.
+* Sellke, T., Bayarri, M., and Berger, J. O. (2001). Calibration of p values for testing precise null hypotheses. *The American Statistician, 55*, 62-71.
