@@ -74,18 +74,32 @@ examp_dat %>%
   summary(.)
 
 # simple slopes function
-test_slopes <- function(y, x, z, sd_values = seq(-3, 3, 0.5), alpha = .05) {
+test_slopes <- function(y, x, z, sd_values = seq(-3, 3, 0.5), mean_center = TRUE, alpha = .05) {
   # Computes confidence intervals and test statistics at 3 moderator values: -1 SD, Mean, and +1 SD
   # Arguments: 
-  #   y:         outcome variable
-  #   x:         predictor variable
-  #   z:         moderator variable
-  #   sd_values: standard deviation values for testing slopes
-  #   alpha:     alpha level for 1-alpha confidence
+  #   y:           continuous outcome variable
+  #   x:           continuous predictor variable
+  #   z:           moderator variable (can be continuous or categorical but MUST be numeric or integer)
+  #   sd_values:   standard deviation multipliers of z for testing slopes
+  #   mean_center: center x and y around the their means (default set to TRUE)
+  #   alpha:       alpha level for 1-alpha confidence
   # Returns:
-  #   table of values for each of three tests: test names, estimates, standard errors, t-statistics,
-  #   p-values, and lower and upper confidence intervals
+  #   some data descriptives and table of values for each of three tests: sd values for z, estimates, standard errors, t-statistics, p-values, and lower and upper confidence intervals
   
+  if(mean_center == TRUE) {
+    x <- x - mean(x, na.rm = TRUE)
+    z <- z - mean(z, na.rm = TRUE)
+  }
+  
+descriptives <- sapply(list(y = y, x = x, z = z), function(v) {
+  round(c(N = sum(is.na(v) == FALSE),
+    Mean = mean(v, na.rm = TRUE),
+    SD = sd(v, na.rm = TRUE),
+    Median = median(v, na.rm = TRUE),
+    Min = min(v, na.rm = TRUE),
+    Max = max(v, na.rm = TRUE)), digits = 3)
+  })
+
   # fit model
   model <- lm(y ~ x * z)
   
@@ -106,7 +120,7 @@ test_slopes <- function(y, x, z, sd_values = seq(-3, 3, 0.5), alpha = .05) {
   }
   
   # result table: estimates and standard errors
-  result <- data.frame(test = paste0(sd_values, " SD"),
+  result <- data.frame(z_sd = sd_values * descriptives[3, 3],
                        est = unlist(est),
                        se = unlist(se))
   
@@ -125,8 +139,11 @@ test_slopes <- function(y, x, z, sd_values = seq(-3, 3, 0.5), alpha = .05) {
   # upper confidence intervals
   result$upr_ci <- with(data = result, est + t_crit * se)
   
+  print(paste0("Descriptives"))
+  print(descriptives)
   return(result)
 }
+
 
 # simple slopes with custom function
 with(examp_dat, test_slopes(y = y, x = x_std, z = z_std, alpha = .05))

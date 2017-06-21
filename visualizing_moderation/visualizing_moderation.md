@@ -165,18 +165,32 @@ examp_dat %>%
 
 ```r
 # simple slopes function
-test_slopes <- function(y, x, z, sd_values = seq(-3, 3, 0.5), alpha = .05) {
+test_slopes <- function(y, x, z, sd_values = seq(-3, 3, 0.5), mean_center = TRUE, alpha = .05) {
   # Computes confidence intervals and test statistics at 3 moderator values: -1 SD, Mean, and +1 SD
   # Arguments: 
-  #   y:         outcome variable
-  #   x:         predictor variable
-  #   z:         moderator variable
-  #   sd_values: standard deviation values for testing slopes
-  #   alpha:     alpha level for 1-alpha confidence
+  #   y:           continuous outcome variable
+  #   x:           continuous predictor variable
+  #   z:           moderator variable (can be continuous or categorical but MUST be numeric or integer)
+  #   sd_values:   standard deviation multipliers of z for testing slopes
+  #   mean_center: center x and y around the their means (default set to TRUE)
+  #   alpha:       alpha level for 1-alpha confidence
   # Returns:
-  #   table of values for each of three tests: test names, estimates, standard errors, t-statistics,
-  #   p-values, and lower and upper confidence intervals
+  #   some data descriptives and table of values for each of three tests: sd values for z, estimates, standard errors, t-statistics, p-values, and lower and upper confidence intervals
   
+  if(mean_center == TRUE) {
+    x <- x - mean(x, na.rm = TRUE)
+    z <- z - mean(z, na.rm = TRUE)
+  }
+  
+descriptives <- sapply(list(y = y, x = x, z = z), function(v) {
+  round(c(N = sum(is.na(v) == FALSE),
+    Mean = mean(v, na.rm = TRUE),
+    SD = sd(v, na.rm = TRUE),
+    Median = median(v, na.rm = TRUE),
+    Min = min(v, na.rm = TRUE),
+    Max = max(v, na.rm = TRUE)), digits = 3)
+  })
+
   # fit model
   model <- lm(y ~ x * z)
   
@@ -197,7 +211,7 @@ test_slopes <- function(y, x, z, sd_values = seq(-3, 3, 0.5), alpha = .05) {
   }
   
   # result table: estimates and standard errors
-  result <- data.frame(test = paste0(sd_values, " SD"),
+  result <- data.frame(z_sd = sd_values * descriptives[3, 3],
                        est = unlist(est),
                        se = unlist(se))
   
@@ -216,28 +230,42 @@ test_slopes <- function(y, x, z, sd_values = seq(-3, 3, 0.5), alpha = .05) {
   # upper confidence intervals
   result$upr_ci <- with(data = result, est + t_crit * se)
   
+  print(paste0("Descriptives"))
+  print(descriptives)
   return(result)
 }
+
 
 # simple slopes with custom function
 with(examp_dat, test_slopes(y = y, x = x_std, z = z_std, alpha = .05))
 ```
 
 ```
-##       test         est         se       t_val        p_val     lwr_ci
-## 1    -3 SD -3.58033830 0.15712343 -22.7867881 1.470571e-62 -3.8898171
-## 2  -2.5 SD -2.98060965 0.13558819 -21.9828113 5.573830e-60 -3.2476715
-## 3    -2 SD -2.38088099 0.11500732 -20.7019959 8.279795e-56 -2.6074056
-## 4  -1.5 SD -1.78115233 0.09599660 -18.5543275 1.170238e-48 -1.9702324
-## 5    -1 SD -1.18142368 0.07968783 -14.8256472 5.803386e-36 -1.3383812
-## 6  -0.5 SD -0.58169502 0.06805214  -8.5477849 1.343849e-15 -0.7157342
-## 7     0 SD  0.01803363 0.06370381   0.2830856 7.773493e-01 -0.1074408
-## 8   0.5 SD  0.61776229 0.06805437   9.0774820 3.702606e-17  0.4837187
-## 9     1 SD  1.21749094 0.07969164  15.2775241 1.657131e-37  1.0605260
-## 10  1.5 SD  1.81721960 0.09600134  18.9291065 6.431428e-50  1.6281302
-## 11    2 SD  2.41694825 0.11501259  21.0146401 7.811694e-57  2.1904132
-## 12  2.5 SD  3.01667691 0.13559379  22.2478992 7.805274e-61  2.7496040
-## 13    3 SD  3.61640556 0.15712922  23.0154867 2.753366e-63  3.3069153
+## [1] "Descriptives"
+##              y       x       z
+## N      250.000 250.000 250.000
+## Mean     0.327   0.000   0.000
+## SD       1.763   1.000   1.000
+## Median   0.225  -0.039  -0.042
+## Min     -4.633  -3.174  -3.578
+## Max     14.381   2.996   2.453
+```
+
+```
+##    z_sd         est         se       t_val        p_val     lwr_ci
+## 1  -3.0 -3.58033830 0.15712343 -22.7867881 1.470571e-62 -3.8898171
+## 2  -2.5 -2.98060965 0.13558819 -21.9828113 5.573830e-60 -3.2476715
+## 3  -2.0 -2.38088099 0.11500732 -20.7019959 8.279795e-56 -2.6074056
+## 4  -1.5 -1.78115233 0.09599660 -18.5543275 1.170238e-48 -1.9702324
+## 5  -1.0 -1.18142368 0.07968783 -14.8256472 5.803386e-36 -1.3383812
+## 6  -0.5 -0.58169502 0.06805214  -8.5477849 1.343849e-15 -0.7157342
+## 7   0.0  0.01803363 0.06370381   0.2830856 7.773493e-01 -0.1074408
+## 8   0.5  0.61776229 0.06805437   9.0774820 3.702606e-17  0.4837187
+## 9   1.0  1.21749094 0.07969164  15.2775241 1.657131e-37  1.0605260
+## 10  1.5  1.81721960 0.09600134  18.9291065 6.431428e-50  1.6281302
+## 11  2.0  2.41694825 0.11501259  21.0146401 7.811694e-57  2.1904132
+## 12  2.5  3.01667691 0.13559379  22.2478992 7.805274e-61  2.7496040
+## 13  3.0  3.61640556 0.15712922  23.0154867 2.753366e-63  3.3069153
 ##        upr_ci
 ## 1  -3.2708595
 ## 2  -2.7135478
@@ -464,6 +492,21 @@ examp_dat %>%
 
 ![](visualizing_moderation_files/figure-html/unnamed-chunk-6-1.png)<!-- -->
 
+# marginal effects plot
+
+
+```r
+with(examp_dat, test_slopes(y = y, x = x_std, z = z_std, alpha = .05)) %>%
+  mutate(z = seq(-3, 3, 0.5)) %>%
+  ggplot(mapping = aes(x = z, y = est)) +
+  geom_point() +
+  geom_line(color = "black") +
+  geom_ribbon(data = with(examp_dat, test_slopes(y = y, x = x_std, z = z_std, alpha = .05)),
+              aes(ymin = lwr_ci, ymax = upr_ci), alpha = 0.2) +
+  geom_rug(data = examp_dat, aes(x = z_std), sides = "b") +
+  scale_x_continuous(aes(x = z_std), breaks = seq(-3, 3, 0.5), limits = c(-3, 3))
+```
+
 # better plot
 * includes uncertainty in regression slopes
 * can't see points
@@ -489,7 +532,7 @@ examp_dat %>%
   labs(linetype = "z_std")
 ```
 
-![](visualizing_moderation_files/figure-html/unnamed-chunk-7-1.png)<!-- -->
+![](visualizing_moderation_files/figure-html/unnamed-chunk-8-1.png)<!-- -->
 
 # even better plot
 * includes uncertainty in regression slopes
@@ -517,7 +560,7 @@ examp_dat %>%
   labs(linetype = "z_std")
 ```
 
-![](visualizing_moderation_files/figure-html/unnamed-chunk-8-1.png)<!-- -->
+![](visualizing_moderation_files/figure-html/unnamed-chunk-9-1.png)<!-- -->
 
 # 1st recommended (2-dimensional) plot
 * includes uncertainty in regression slopes
@@ -545,7 +588,7 @@ examp_dat %>%
   labs(linetype = "z_std")
 ```
 
-![](visualizing_moderation_files/figure-html/unnamed-chunk-9-1.png)<!-- -->
+![](visualizing_moderation_files/figure-html/unnamed-chunk-10-1.png)<!-- -->
 
 # 2nd recommended (2-dimensional) plot
 * includes uncertainty in regression slopes
@@ -575,7 +618,7 @@ examp_dat %>%
   labs(linetype = "z_std")
 ```
 
-![](visualizing_moderation_files/figure-html/unnamed-chunk-10-1.png)<!-- -->
+![](visualizing_moderation_files/figure-html/unnamed-chunk-11-1.png)<!-- -->
 
 # 3rd recommended (2-dimensional) plot
 * includes uncertainty in regression slopes
@@ -614,5 +657,5 @@ examp_dat %>%
   labs(linetype = "z_std")
 ```
 
-![](visualizing_moderation_files/figure-html/unnamed-chunk-11-1.png)<!-- -->
+![](visualizing_moderation_files/figure-html/unnamed-chunk-12-1.png)<!-- -->
 
