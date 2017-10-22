@@ -94,6 +94,15 @@ five_numbers %>% scale() %>% parse_number() %>% mean()
 
 ```
 
+## tanget: most R introductions will teach you to code the example above like this
+> * I think this is counterintuitive. You're reading this sentence from left to right. That's how I think code should read like: how you read sentences. Forget this way of coding for now. You can learn the "read R code inside out" when you have time. I'm assuming you don't.
+
+```{r}
+
+mean(parse_number(scale(five_numbers)))
+
+```
+
 ## functions
 > "A function is a piece of code written to carry out a specified task; it can or can not accept arguments or parameters and it can or can not return one or more values." Functions **do** things for you. **Source:** https://www.datacamp.com/community/tutorials/functions-in-r-a-tutorial#what
 
@@ -184,8 +193,8 @@ scale_points
 # all the 1s are divided by 7
 control_probs <- c(1, 1, 1, 1, 1, 1, 1) / 7
 
-# let's make bigger values more likely for the treatment condition
-treatment_probs <- c(0.1, 0.1, 0.1, 0.1, 0.1, 0.2, 0.3)
+# let's make bigger values more likely for the manipulation condition
+manipulation_probs <- c(0.1, 0.1, 0.1, 0.1, 0.1, 0.2, 0.3)
 
 ```
 
@@ -196,7 +205,7 @@ treatment_probs <- c(0.1, 0.1, 0.1, 0.1, 0.1, 0.2, 0.3)
 
 control_values <- scale_points %>% sample(size = 50, replace = TRUE, prob = control_probs)
 
-treatment_values <- scale_points %>% sample(size = 50, replace = TRUE, prob = treatment_probs)
+manipulation_values <- scale_points %>% sample(size = 50, replace = TRUE, prob = manipulation_probs)
 
 ```
 
@@ -204,7 +213,7 @@ treatment_values <- scale_points %>% sample(size = 50, replace = TRUE, prob = tr
 
 ```{r}
 
-dep_var <- c(control_values, treatment_values)
+dep_var <- c(control_values, manipulation_values)
 
 # print dep_var by just excecuting/running the name of the object
 dep_var
@@ -287,7 +296,7 @@ example_data %>%
 
 ```
 
-# filter specific rows
+## filter specific rows
 > * `filter()` returns rows that all meet some condition you give it.
 > * Note, `==` means "exactly equal to". See ?Comparison.
 
@@ -298,7 +307,7 @@ example_data %>%
 
 ```
 
-# make your own table of summary data
+## make your own table of summary data
 > * `summarize()` let's you apply functions to your data to reduce it to single values. Typically, you create new summary values based on groups (e.g., condition, gender, id); for this, use `group_by()` first.
 
 ```{r}
@@ -312,7 +321,7 @@ example_data %>%
 ```
 
 
-# ggplot2
+# plotting your data ggplot2
 > "ggplot2 is a plotting system for R, based on the grammar of graphics, which tries to take the good parts of base and lattice graphics and none of the bad parts. It takes care of many of the fiddly details that make plotting a hassle (like drawing legends) as well as providing a powerful model of graphics that makes it easy to produce complex multi-layered graphics." **Source:**: http://ggplot2.org/
 
 ## make ggplots in layers
@@ -438,6 +447,8 @@ coffee_filepath <- "coffee.txt"
 coffee_data <- coffee_filepath %>% read_delim(delim = " ")
 
 ```
+
+# modeling your data
 
 ## `t.test()`
 
