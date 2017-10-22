@@ -1,0 +1,459 @@
+---
+title: "Learn R for Psychology Research: A Crash Course"
+author: Nicholas Michalak
+date: October 21, 2017
+output: html_notebook
+---
+
+# Introduction
+> I wrote this for psychologists who want to learn how to use R in their research **right now.** What does a psychologist need to know to use R to import, wrangle, plot, and model their data today? Here we go.
+
+# Foundations: resources that inspired me.
+> * Dan Robinson (July 05, 2017) convinced me that beginneRs should learn tidyverse first, not Base R. I wrote this tutorial with this in mind. All you need to know about the differnece is in his blog post. If you've learned some R before this, you might understand that difference as you go through this tutorial.
+> * If you want a more detailed introduction to R, start with R for Data Science (Wickham & Grolemund, 2017). The chapters are short, easy to read, and filled with simple coding examples that demonstrate big principles. And **it's free.**
+> * Hadley Wickham is a legend in the R community. He's responsible for the tidyverse, including ggplot2. Read his books and papers (e.g., Wickham, 2014). Watch his talks (e.g., ReadCollegePDX, October 19, 2015). He's profoundly changed how people think about structuring and visualizing data.
+
+## Recommended resources
+> * ReadCollegePDX (2015, October 19). Hadley Wickham "Data Science with R". Retrieved from https://youtu.be/K-ss_ag2k9E?list=PLNtpLD4WiWbw9Cgcg6IU75u-44TrrN3A4
+> * Robinson, D. (2017, July 05). Teach the tidyverse to beginners. Variance Explained. Retreived from http://varianceexplained.org/r/teach-tidyverse/
+> * Wickham, H. (2014). [Tidy data](http://vita.had.co.nz/papers/tidy-data.html). Journal of Statistical Software, 59(10), 1-23.
+> * [The tidyverse style guide](http://style.tidyverse.org/) by Hadley Wickham
+> * Wickham, H., & Grolemund, G. (2017). [R for Data Science: Import, Tidy, Transform, Visualize, and Model Data](http://r4ds.had.co.nz/). Sebastopol, CA: O'Reilly Media, Inc.
+
+## packages
+> "Packages are collections of R functions, data, and compiled code in a well-defined format. The directory where packages are stored is called the library. R comes with a standard set of packages. Others are available for download and installation. Once installed, they have to be loaded into the session to be used." **Source:** https://www.statmethods.net/interface/packages.html
+
+```{r, message = FALSE, warning = FALSE}
+
+library(tidyverse)
+library(haven)
+library(psych)
+library(car)
+
+```
+
+## objects
+> "`object <- fuction(x)`, which means 'object is created from function(x)'. An object is anything created in R. It could be a variable, a collection of variables, a statistical model, etc. Objects can be single values (such as the mean of a set of scores) or collections of information; for example, when you run an analysis, you create an object that contains the output of that analysis, which means that this object contains many different values and variables. Functions are the things that you do in R to create your objects." **Source:** Field, A., Miles., J., & Field, Z. (2012). Discovering statistics using R. London: SAGE Publications.
+
+## `c()` function
+> "c" stands for combine. Use this to combine values into a vector. "A vector is a sequence of data 'elements' of the same basic type." **Source:** http://www.r-tutor.com/r-introduction/vector
+> Below, we create an object called five_numbers. We are naming it for what it is, but we could name it whatever we want: some_numbers, maple_tree, platypus. It doesn't matter. We'll use this in the examples in later chunks of code.
+
+```{r}
+
+five_numbers <- c(1, 2, 3, 4, 5)
+
+# print five_numbers by just excecuting/running the name of the object
+five_numbers
+
+```
+
+## R Help: `help()` and `?`
+> "The help() function and ? help operator in R provide access to the documentation pages for R functions, data sets, and other objects, both for packages in the standard R distribution and for contributed packages. To access documentation for the standard lm (linear model) function, for example, enter the command help(lm) or help("lm"), or ?lm or ?"lm" (i.e., the quotes are optional)." **Source:** https://www.r-project.org/help.html
+
+## piping, `%>%`
+> The `%>%` operator allows you to "pipe" a value forward into an expression or function; something along the lines of x `%>%` f, rather than f(x). See http://magrittr.tidyverse.org/articles/magrittr.html for more details, but check out these examples below.
+
+## compute z-scores for those five numbers, called five_numbers
+
+```{r}
+
+five_numbers %>% scale()
+
+```
+
+## compute z-scores for five_numbers and then convert the result into only numbers
+
+```{r}
+
+five_numbers %>% scale() %>% parse_number()
+
+```
+
+## compute z-scores for five_numbers and then convert the result into only numbers and then compute the mean
+
+```{r}
+
+five_numbers %>% scale() %>% parse_number() %>% mean()
+
+```
+
+## functions
+> "A function is a piece of code written to carry out a specified task; it can or can not accept arguments or parameters and it can or can not return one or more values." Functions **do** things for you. **Source:** https://www.datacamp.com/community/tutorials/functions-in-r-a-tutorial#what
+
+## compute the num of five_numbers
+
+```{r}
+
+five_numbers %>% sum()
+
+```
+
+## compute the length of five_numbers
+
+```{r}
+
+five_numbers %>% length()
+
+```
+
+## compute the sum of five_numbers and divide by the length of five_numbers
+
+```{r}
+
+five_numbers %>% sum() / five_numbers %>% length()
+
+```
+
+## define a new function called compute_mean
+
+```{r}
+
+compute_mean <- function(some_numbers) {
+  some_numbers %>% sum() / some_numbers %>% length()
+}
+
+```
+
+## compute the mean of five_numbers
+
+```{r}
+
+five_numbers %>% compute_mean()
+
+```
+
+# create data for psychology-like examples
+
+## subject numbers
+
+```{r}
+
+subj_num <- seq(from = 1, to = 100, by = 1)
+
+# print subj_num by just excecuting/running the name of the object
+subj_num
+
+```
+
+## condition assignments
+
+```{r}
+
+condition <- c("control", "manipulation") %>% rep(each = 50) %>% factor()
+
+# print condition by just excecuting/running the name of the object
+condition
+
+```
+
+## dependent measure
+
+### create a vector of 7 values representing points on a 7-point scale
+
+```{r}
+
+scale_points <- seq(from = 1, to = 7, by = 1)
+
+# print scale_points by just excecuting/running the name of the object
+scale_points
+
+```
+
+### how likely is each value, from 1 to 7?
+> Below, I'm making a vector of 7 values for each condition that represent the "true" probablity of observing that value; I'll use this in a random sampling function in the next chunk of code.
+
+```{r}
+
+# all the 1s are divided by 7
+control_probs <- c(1, 1, 1, 1, 1, 1, 1) / 7
+
+# let's make bigger values more likely for the treatment condition
+treatment_probs <- c(0.1, 0.1, 0.1, 0.1, 0.1, 0.2, 0.3)
+
+```
+
+
+### randomly sample from those points using the probability values we made above
+
+```{r}
+
+control_values <- scale_points %>% sample(size = 50, replace = TRUE, prob = control_probs)
+
+treatment_values <- scale_points %>% sample(size = 50, replace = TRUE, prob = treatment_probs)
+
+```
+
+### combine those and save as our dependent variable
+
+```{r}
+
+dep_var <- c(control_values, treatment_values)
+
+# print dep_var by just excecuting/running the name of the object
+dep_var
+
+```
+
+## create a potentially confounding variable or a control variable
+> read the code below like this: dep_var multiplied by 0.5 + the result of a random sample of 100 from scale_points, with replacement. Round this result to 0 digits.
+
+```{r}
+
+confound <- (dep_var * 0.5 + scale_points %>% sample(size = 100, replace = TRUE)) %>% round(digits = 0)
+
+# print confound by just excecuting/running the name of the object
+confound
+
+```
+
+## subject gender
+
+```{r}
+
+gender <- c("Woman", "Man") %>% rep(times = 50) %>% factor()
+
+# print gender by just excecuting/running the name of the object
+gender
+
+```
+
+## subject age
+
+```{r}
+
+age <- seq(from = 18, to = 25, by = 1) %>% sample(size = 100, replace = TRUE)
+
+# print gender by just excecuting/running the name of the object
+age
+
+```
+
+## `data.frame()` and `tibble()`
+> "The concept of a data frame comes from the world of statistical software used in empirical research; it generally refers to "tabular" data: a data structure representing cases (rows), each of which consists of a number of observations or measurements (columns). Alternatively, each row may be treated as a single observation of multiple "variables". In any case, each row and each column has the same data type, but the row ("record") datatype may be heterogenous (a tuple of different types), while the column datatype must be homogenous. Data frames usually contain some metadata in addition to data; for example, column and row names." **Source:** https://github.com/mobileink/data.frame/wiki/What-is-a-Data-Frame%3F
+
+> "**Tibbles** are a modern take on data frames. They keep the features that have stood the test of time, and drop the features that used to be convenient but are now frustrating (i.e. converting character vectors to factors)." **Source:** https://cran.r-project.org/web/packages/tibble/vignettes/tibble.html
+
+## put all our variable we made into a tibble
+
+```{r}
+
+example_data <- tibble(subj_num, condition, dep_var, confound, gender, age)
+
+# print example_data by just excecuting/running the name of the object
+example_data
+
+```
+
+## create new variables in data.frame or tibble
+> * `mutate()` adds new variables to your tibble.
+
+```{r}
+
+example_data <- example_data %>%
+  mutate(dep_var_z = dep_var %>% scale() %>% parse_number(),
+         confound_z = confound %>% scale() %>% parse_number())
+
+# print below
+example_data
+
+```
+
+## select specific columns
+> * `select()` selects your tibble's variables by name.
+
+```{r}
+
+example_data %>% 
+  select(subj_num, condition, dep_var)
+
+```
+
+# filter specific rows
+> * `filter()` returns rows that all meet some condition you give it.
+> * Note, `==` means "exactly equal to". See ?Comparison.
+
+```{r}
+
+example_data %>% 
+  filter(condition == "control")
+
+```
+
+# ggplot2
+> "ggplot2 is a plotting system for R, based on the grammar of graphics, which tries to take the good parts of base and lattice graphics and none of the bad parts. It takes care of many of the fiddly details that make plotting a hassle (like drawing legends) as well as providing a powerful model of graphics that makes it easy to produce complex multi-layered graphics." **Source:**: http://ggplot2.org/
+
+## make ggplots in layers
+> * Aesthetic mappings describe how variables in the data are mapped to visual properties (aesthetics) of geoms. **Source:** http://ggplot2.tidyverse.org/reference/aes.html
+> * Below, we map condition on our plot's x-axis and dep_var on its y-axis 
+
+```{r}
+
+example_data %>%
+  ggplot(mapping = aes(x = condition, y = dep_var))
+
+```
+
+## boxplot
+> * next, we add—yes, add, with a `+`—a geom, a geometric element: `geom_boxplot()`
+
+```{r}
+
+example_data %>%
+  ggplot(mapping = aes(x = condition, y = dep_var)) +
+  geom_boxplot()
+
+```
+
+## QQ-plots
+> * Below, we plot the sample quantiles of dep_var against the theoretical quantiles
+> * Useful for exploring the distriubtion of a variable (default theoretial quantiles are normal, see ?geom_qq)
+
+```{r}
+
+example_data %>%
+  ggplot(mapping = aes(sample = dep_var)) +
+  geom_qq()
+
+```
+
+## means and 95% confidence intervals
+> * add a new aesthetic, fill, which will fill the geoms with different colors, depending on the variable (e.g., levels of categorical variables are assigned their own fill color)
+> * stat_summary() does what its name suggests: it applies statistical summaries to your raw data to make the geoms (bars and error bars in our case below)
+> * the width argument sets the width of the error bars.
+
+```{r}
+
+example_data %>%
+  ggplot(mapping = aes(x = condition, y = dep_var, fill = condition)) +
+  stat_summary(geom = "bar", fun.data = mean_cl_normal) +
+  stat_summary(geom = "errorbar", fun.data = mean_cl_normal, width = 0.1)
+  
+
+```
+
+## scatterplots
+> * we add `geom_point()` and `geom_smooth()` below to add points to the scatterplot and fit a linear regression line with 95% confidence ribbons/bands around that line
+
+```{r}
+
+example_data %>%
+  ggplot(mapping = aes(x = confound, y = dep_var)) +
+  geom_point() +
+  geom_smooth(method = "lm")
+
+```
+
+# descriptive statistics
+> * `describe()`
+> * `describeBy()`
+
+## for whole sample
+
+```{r}
+
+example_data %>% 
+  select(dep_var, dep_var_z, confound, confound_z) %>% 
+  describe()
+
+```
+
+## by condition
+> The code below is a little confusing. First, we're piping our subsetted tibble with only our four variables—dep_var and confound and their z-scored versions—into the first argument for the `describeBy()` function. But we need to give data to the group argument, so then we just give it another subsetted tibble with only our grouping variable, condition.
+
+```{r}
+
+example_data %>% 
+  select(dep_var, dep_var_z, confound, confound_z) %>% 
+  describeBy(group = example_data %>% select(condition))
+
+```
+
+# read in your own data
+> * .csv file: `read_csv()`
+> * .txt file: `read_delim()`
+> * SPSS .sav file: `read_sav()`
+
+## SPSS
+
+```{r}
+
+# path to where file lives on your computer
+coffee_filepath <- "~/Google Drive/2017F_PSYCH_613/demos/teach_R_to_psychologist_in_minutes/coffee.sav"
+
+coffee_data <- coffee_filepath %>% read_sav()
+
+```
+
+## CSV
+
+```{r}
+
+# path to where file lives on your computer
+coffee_filepath <- "~/Google Drive/2017F_PSYCH_613/demos/teach_R_to_psychologist_in_minutes/coffee.csv"
+
+coffee_data <- coffee_filepath %>% read_csv()
+
+```
+
+## TXT
+
+```{r}
+
+# path to where file lives on your computer
+coffee_filepath <- "~/Google Drive/2017F_PSYCH_613/demos/teach_R_to_psychologist_in_minutes/coffee.txt"
+
+coffee_data <- coffee_filepath %>% read_delim(delim = " ")
+
+```
+
+## `t.test()`
+
+```{r}
+
+t.test(dep_var ~ condition, data = example_data)
+
+```
+
+## `lm()`
+
+```{r}
+
+lm_fit <- lm(dep_var ~ condition + confound, data = example_data)
+
+# print lm_fit by just excecuting/running the name of the object
+lm_fit
+
+```
+
+## `summary()`
+
+```{r}
+
+lm_fit %>% summary()
+
+```
+
+## `Anova()`
+
+```{r}
+
+lm_fit %>% Anova(type = "III")
+
+```
+
+# More advanced data wrangling and analysis techniques
+> * [R programming for research](https://github.com/nmmichalak/R_programming_for_research), a workshop instructed by Nick Michalak and Iris Wang at the University of Michigan
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,281 @@
+---
+title: 'Simple slopes in R and SPSS: Use the regression equation'
+author: "Nicholas Michalak"
+date: "10/14/2017"
+output: html_document
+---
+
+## packages
+
+```{r, message = FALSE, warning = FALSE}
+
+library(tidyverse)
+library(multcomp)
+library(effects)
+
+```
+
+## set random seed
+
+```{r}
+
+set.seed(100)
+
+```
+
+## create the main predictor variable, x
+
+```{r}
+
+x <- rnorm(n = 100, mean = 0, sd = 1)
+
+```
+
+## create the continuous moderating variable, z
+
+```{r}
+
+z <- rnorm(n = 100, mean = 0, sd = 1) 
+
+```
+
+## create the categorical moderator, cat
+
+```{r}
+
+cat <- rep(c(-1, 1), each = 50)
+
+```
+
+## create the outcome variable, y
+
+```{r}
+
+y <- x * z * cat + rnorm(n = 100, mean = 0, sd = 1)
+
+```
+
+## store these in a data.frame
+
+```{r}
+
+example_data <- tibble(y, x, cat, z)
+
+```
+
+## create new variable that cuts x and z into quantiles
+
+#### function for cutting into quantiles
+
+```{r}
+
+cut_quants <- function(x) {
+  ## get quantiles
+  qs <- quantile(x)
+  
+  ## cut x by those quantiles; output is factor
+  cut(x, breaks = unique(qs), include.lowest = TRUE)
+}
+
+```
+
+#### now make those variables
+
+```{r}
+
+example_data <- example_data %>% 
+  mutate(x_quant = x %>% cut_quants(),
+         z_quant = z %>% cut_quants())
+
+```
+
+## plot relationship, no regression lines
+
+```{r}
+
+example_data %>% 
+  ggplot(mapping = aes(x = x, y = y, color = factor(cat))) +
+  geom_point() +
+  facet_wrap(facets = ~ z_quant)
+
+```
+
+## fit linear regression
+
+```{r}
+
+lm_01 <- lm(y ~ x * cat * z, data = example_data)
+
+```
+
+## summary of that regression
+
+```{r}
+
+lm_01 %>% summary()
+
+```
+
+## plot regression slopes
+> first make sure there are actually z and z values across eachother's distribution
+
+```{r}
+
+example_data %>% 
+  ggplot(mapping = aes(x = z, fill = z_quant)) +
+  geom_histogram(alpha = 0.50) +
+  facet_wrap(facets = ~ x_quant)
+
+```
+
+
+```{r}
+
+lm_01 %>% effect(mod = .,
+                 term = "x:cat:z",
+                 x.var = "x",
+                 xlevels = list(cat = c(-1, 1),
+                                z = quantile(example_data$z))) %>% 
+  as_tibble() %>% 
+  mutate(cat = cat %>% factor(),
+         z = z %>% round(2) %>% factor()) %>% 
+  ggplot(mapping = aes(x = x, y = fit, 
+                       
+                       
+                       
+                       
+                       
+                       
+                       
+                       
+                       
+                       
+                       cat)) +
+  facet_wrap(facets = ~ z) +
+  geom_point(data = example_data %>%
+               dplyr::select(-z), aes(x = x, y = y, color = factor(cat))) +
+  geom_smooth(method = "lm") +
+  geom_ribbon(alpha = 0.25, aes(ymin = lower, ymax = upper, fill = cat, color = NULL))
+
+```
+
+## test conditional regression slopes
+> get quantile values for z; save them
+
+```{r}
+
+zqs <- quantile(example_data$z)
+
+```
+
+#### 0% quantile of z, cat = -1
+
+```{r}
+
+lm_01 %>%
+  glht(linfct = rbind(c(0, 1, 0, 0, -1, zqs[1], 0, -1 * zqs[1]))) %>% 
+  summary(test = adjusted("none"))
+
+```
+
+#### 0% quantile of z, cat = 1
+
+```{r}
+
+lm_01 %>%
+  glht(linfct = rbind(c(0, 1, 0, 0, 1, zqs[1], 0, 1 * zqs[1]))) %>% 
+  summary(test = adjusted("none"))
+
+```
+
+#### 25% quantile of z, cat = -1
+
+```{r}
+
+lm_01 %>%
+  glht(linfct = rbind(c(0, 1, 0, 0, -1, zqs[2], 0, -1 * zqs[2]))) %>% 
+  summary(test = adjusted("none"))
+
+```
+
+#### 25% quantile of z, cat = 1
+
+```{r}
+
+lm_01 %>%
+  glht(linfct = rbind(c(0, 1, 0, 0, 1, zqs[2], 0, 1 * zqs[2]))) %>% 
+  summary(test = adjusted("none"))
+
+```
+
+#### 50% quantile of z, cat = -1
+
+```{r}
+
+lm_01 %>%
+  glht(linfct = rbind(c(0, 1, 0, 0, -1, zqs[3], 0, -1 * zqs[3]))) %>% 
+  summary(test = adjusted("none"))
+
+```
+
+#### 50% quantile of z, cat = 1
+
+```{r}
+
+lm_01 %>%
+  glht(linfct = rbind(c(0, 1, 0, 0, 1, zqs[3], 0, 1 * zqs[3]))) %>% 
+  summary(test = adjusted("none"))
+
+```
+
+#### 75% quantile of z, cat = -1
+
+```{r}
+
+lm_01 %>%
+  glht(linfct = rbind(c(0, 1, 0, 0, -1, zqs[4], 0, -1 * zqs[4]))) %>% 
+  summary(test = adjusted("none"))
+
+```
+
+#### 75% quantile of z, cat = 1
+
+```{r}
+
+lm_01 %>%
+  glht(linfct = rbind(c(0, 1, 0, 0, 1, zqs[4], 0, 1 * zqs[4]))) %>% 
+  summary(test = adjusted("none"))
+
+```
+
+#### 100% quantile of z, cat = -1
+
+```{r}
+
+lm_01 %>%
+  glht(linfct = rbind(c(0, 1, 0, 0, -1, zqs[5], 0, -1 * zqs[5]))) %>% 
+  summary(test = adjusted("none"))
+
+```
+
+#### 100% quantile of z, cat = 1
+
+```{r}
+
+lm_01 %>%
+  glht(linfct = rbind(c(0, 1, 0, 0, 1, zqs[5], 0, 1 * zqs[5]))) %>% 
+  summary(test = adjusted("none"))
+
+```
+
+
+
+
+
+
+
+
+
+
+
+
