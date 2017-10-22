@@ -3,10 +3,10 @@ title: 'learn R for psychology research: a crash course'
 author: "Nicholas Michalak"
 date: "October 21, 2017"
 output:
-  html_document:
+  html_notebook:
     code_folding: show
-    fig_height: 9
-    fig_width: 12
+    fig_height: 7.5
+    fig_width: 10
     keep_md: yes
     theme: readable
     toc: yes
@@ -34,6 +34,12 @@ output:
 > "Packages are collections of R functions, data, and compiled code in a well-defined format. The directory where packages are stored is called the library. R comes with a standard set of packages. Others are available for download and installation. Once installed, they have to be loaded into the session to be used." **Source:** https://www.statmethods.net/interface/packages.html
 
 ```{r, message = FALSE, warning = FALSE}
+
+# before you can load these libraries, use can need to install them first:
+# install.packages(tidyverse)
+# install.packages(haven)
+# install.packages(psych)
+# install.packages(car)
 
 library(tidyverse)
 library(haven)
@@ -438,6 +444,17 @@ coffee_data <- coffee_filepath %>% read_delim(delim = " ")
 ```{r}
 
 t.test(dep_var ~ condition, data = example_data)
+
+```
+
+## `pairs.panels()`
+> shows a scatter plot of matrices (SPLOM), with bivariate scatter plots below the diagonal, histograms on the diagonal, and the Pearson correlation above the diagonal (see ?pairs.panels).
+
+```{r}
+
+example_data %>% 
+  select(dep_var, confound) %>% 
+  pairs.panels()
 
 ```
 
