@@ -7,7 +7,6 @@ output:
     code_folding: show
     fig_height: 7.5
     fig_width: 10
-    keep_md: yes
     theme: readable
     toc: yes
     toc_float: yes
@@ -29,6 +28,16 @@ output:
 > * Wickham, H., & Grolemund, G. (2017). [R for Data Science: Import, Tidy, Transform, Visualize, and Model Data](http://r4ds.had.co.nz/). Sebastopol, CA: O'Reilly Media, Inc.
 
 # need-to-know basics
+
+## Install R and R Studio (you need both in that order)
+> * Installing (and uninstalling) R and R Studio
+> * Installing R ( [Macintosh](https://stats.idre.ucla.edu/r/icu/installing-r-for-macintosh/) / [Windows](https://stats.idre.ucla.edu/r/icu/installing-r-for-windows/))
+> * Uninstalling R ( [Macintosh](https://cran.r-project.org/doc/manuals/r-release/R-admin.html#Uninstalling-under-macOS) / [Windows](https://cran.r-project.org/doc/manuals/r-release/R-admin.html#Uninstallation))
+> * [Installing R Studio](https://www.rstudio.com/products/rstudio/download/)
+> * [Uninstalling R Studio](https://support.rstudio.com/hc/en-us/articles/200554736-How-To-Uninstall-RStudio-Desktop)
+
+## what are all these panels in R Studio?
+![Four panels in R Studio](r_studio_panels_tutorial.png)
 
 ## packages
 > "Packages are collections of R functions, data, and compiled code in a well-defined format. The directory where packages are stored is called the library. R comes with a standard set of packages. Others are available for download and installation. Once installed, they have to be loaded into the session to be used." **Source:** https://www.statmethods.net/interface/packages.html

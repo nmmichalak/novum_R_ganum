@@ -19,6 +19,16 @@ October 21, 2017
 
 # need-to-know basics
 
+## Install R and R Studio (you need both in that order)
+> * Installing (and uninstalling) R and R Studio
+> * Installing R ( [Macintosh](https://stats.idre.ucla.edu/r/icu/installing-r-for-macintosh/) / [Windows](https://stats.idre.ucla.edu/r/icu/installing-r-for-windows/))
+> * Uninstalling R ( [Macintosh](https://cran.r-project.org/doc/manuals/r-release/R-admin.html#Uninstalling-under-macOS) / [Windows](https://cran.r-project.org/doc/manuals/r-release/R-admin.html#Uninstallation))
+> * [Installing R Studio](https://www.rstudio.com/products/rstudio/download/)
+> * [Uninstalling R Studio](https://support.rstudio.com/hc/en-us/articles/200554736-How-To-Uninstall-RStudio-Desktop)
+
+## what are all these panels in R Studio?
+![Four panels in R Studio](r_studio_panels_tutorial.png)
+
 ## packages
 > "Packages are collections of R functions, data, and compiled code in a well-defined format. The directory where packages are stored is called the library. R comes with a standard set of packages. Others are available for download and installation. Once installed, they have to be loaded into the session to be used." **Source:** https://www.statmethods.net/interface/packages.html
 
@@ -275,9 +285,9 @@ dep_var
 ```
 
 ```
-##   [1] 3 4 5 6 6 5 7 7 7 4 7 7 6 3 3 1 5 6 7 1 2 4 3 5 4 3 3 5 2 7 5 4 6 6 2
-##  [36] 2 4 4 5 1 6 6 7 2 3 2 7 5 2 4 5 4 3 6 7 7 3 6 7 5 7 5 7 7 2 1 5 3 4 5
-##  [71] 7 4 2 6 5 1 4 6 2 7 4 5 1 2 3 1 6 6 7 2 7 2 7 6 4 7 7 7 7 2
+##   [1] 2 6 4 4 6 5 4 5 5 3 3 3 7 4 2 7 3 6 1 2 1 1 2 7 6 2 1 7 3 3 6 4 1 6 4
+##  [36] 2 7 5 6 7 1 3 3 2 2 3 2 4 7 1 6 7 3 4 2 5 4 7 7 6 7 7 5 3 6 6 6 2 3 7
+##  [71] 7 1 3 6 5 1 6 7 6 7 7 6 4 6 3 7 7 3 2 1 1 7 1 7 1 1 7 6 2 3
 ```
 
 ## create a potentially confounding variable or a control variable
@@ -292,11 +302,11 @@ confound
 ```
 
 ```
-##   [1]  6  9  4 10  9  8  8 10  4  9  6  8  7  8  4  2  4  9  4  2  2  7  4
-##  [24]  8  9  2  6 10  3  8  4  5  4  9  5  5  7  7  6  8  7  8  6  8  4  8
-##  [47]  8  6  4  3  6  6  6  5  8 10  6 10  4  6  4  8  6 10  3  4  6  8  4
-##  [70]  6  6  3  7  5 10  2  8 10  3 10  7  6  2  4  6  4 10  7 10  8  6  8
-##  [93]  4  8  4 10  8  8  6  6
+##   [1]  8  9  5  9  5  8  4 10  8  2  2  6  6  8  7 10  8  4  2  3  4  2  4
+##  [24]  8  8  7  8  8  4  6  7  4  4 10  3  6  8 10  7  6  8  8  6  3  7  4
+##  [47]  2  9 10  2  4 10  4  9  6  8  7  6  6  6  6  8  4  2  7  4  5  4  8
+##  [70]  8 10  4  6  9  4  2  6  8  4  8  6  8  5  8  2  6 10  6  8  6  4  4
+##  [93]  2  6  8  2  8  6  3  4
 ```
 
 ## subject gender
@@ -334,11 +344,11 @@ age
 ```
 
 ```
-##   [1] 24 21 25 22 18 24 20 25 25 25 18 20 21 24 19 24 18 22 20 18 23 22 23
-##  [24] 21 24 18 19 23 24 23 21 21 21 22 22 18 19 23 25 20 19 24 22 20 23 20
-##  [47] 20 24 20 24 25 21 21 22 20 21 22 19 25 22 22 21 20 19 21 22 18 23 19
-##  [70] 23 22 21 21 25 24 23 23 22 20 19 24 21 21 18 18 19 19 22 25 19 23 20
-##  [93] 19 21 24 23 21 23 22 18
+##   [1] 24 18 21 23 24 23 19 24 24 19 24 21 23 22 18 22 23 24 18 19 23 19 23
+##  [24] 23 21 21 20 21 21 23 18 19 19 22 23 22 21 18 25 18 20 21 20 24 21 22
+##  [47] 24 23 18 24 19 23 24 18 25 21 19 18 20 23 23 22 20 18 19 20 24 22 21
+##  [70] 18 25 23 19 25 20 22 18 20 25 20 23 21 22 21 23 20 23 18 25 25 25 25
+##  [93] 25 21 20 20 23 23 24 22
 ```
 
 ## `data.frame()` and `tibble()`
@@ -360,16 +370,16 @@ example_data
 ## # A tibble: 100 x 6
 ##    subj_num condition dep_var confound gender   age
 ##       <dbl>    <fctr>   <dbl>    <dbl> <fctr> <dbl>
-##  1        1   control       3        6  Woman    24
-##  2        2   control       4        9    Man    21
-##  3        3   control       5        4  Woman    25
-##  4        4   control       6       10    Man    22
-##  5        5   control       6        9  Woman    18
-##  6        6   control       5        8    Man    24
-##  7        7   control       7        8  Woman    20
-##  8        8   control       7       10    Man    25
-##  9        9   control       7        4  Woman    25
-## 10       10   control       4        9    Man    25
+##  1        1   control       2        8  Woman    24
+##  2        2   control       6        9    Man    18
+##  3        3   control       4        5  Woman    21
+##  4        4   control       4        9    Man    23
+##  5        5   control       6        5  Woman    24
+##  6        6   control       5        8    Man    23
+##  7        7   control       4        4  Woman    19
+##  8        8   control       5       10    Man    24
+##  9        9   control       5        8  Woman    24
+## 10       10   control       3        2    Man    19
 ## # ... with 90 more rows
 ```
 
@@ -392,16 +402,16 @@ example_data
 ## # A tibble: 100 x 8
 ##    subj_num condition dep_var confound gender   age  dep_var_z confound_z
 ##       <dbl>    <fctr>   <dbl>    <dbl> <fctr> <dbl>      <dbl>      <dbl>
-##  1        1   control       3        6  Woman    24 -0.7925308 -0.1455200
-##  2        2   control       4        9    Man    21 -0.2877341  1.1384802
-##  3        3   control       5        4  Woman    25  0.2170626 -1.0015202
-##  4        4   control       6       10    Man    22  0.7218593  1.5664803
-##  5        5   control       6        9  Woman    18  0.7218593  1.1384802
-##  6        6   control       5        8    Man    24  0.2170626  0.7104801
-##  7        7   control       7        8  Woman    20  1.2266560  0.7104801
-##  8        8   control       7       10    Man    25  1.2266560  1.5664803
-##  9        9   control       7        4  Woman    25  1.2266560 -1.0015202
-## 10       10   control       4        9    Man    25 -0.2877341  1.1384802
+##  1        1   control       2        8  Woman    24 -1.0384615  0.8295807
+##  2        2   control       6        9    Man    18  0.8076923  1.2485608
+##  3        3   control       4        5  Woman    21 -0.1153846 -0.4273598
+##  4        4   control       4        9    Man    23 -0.1153846  1.2485608
+##  5        5   control       6        5  Woman    24  0.8076923 -0.4273598
+##  6        6   control       5        8    Man    23  0.3461538  0.8295807
+##  7        7   control       4        4  Woman    19 -0.1153846 -0.8463399
+##  8        8   control       5       10    Man    24  0.3461538  1.6675410
+##  9        9   control       5        8  Woman    24  0.3461538  0.8295807
+## 10       10   control       3        2    Man    19 -0.5769231 -1.6843002
 ## # ... with 90 more rows
 ```
 
@@ -418,16 +428,16 @@ example_data %>%
 ## # A tibble: 100 x 3
 ##    subj_num condition dep_var
 ##       <dbl>    <fctr>   <dbl>
-##  1        1   control       3
-##  2        2   control       4
-##  3        3   control       5
-##  4        4   control       6
+##  1        1   control       2
+##  2        2   control       6
+##  3        3   control       4
+##  4        4   control       4
 ##  5        5   control       6
 ##  6        6   control       5
-##  7        7   control       7
-##  8        8   control       7
-##  9        9   control       7
-## 10       10   control       4
+##  7        7   control       4
+##  8        8   control       5
+##  9        9   control       5
+## 10       10   control       3
 ## # ... with 90 more rows
 ```
 
@@ -445,16 +455,16 @@ example_data %>%
 ## # A tibble: 50 x 8
 ##    subj_num condition dep_var confound gender   age  dep_var_z confound_z
 ##       <dbl>    <fctr>   <dbl>    <dbl> <fctr> <dbl>      <dbl>      <dbl>
-##  1        1   control       3        6  Woman    24 -0.7925308 -0.1455200
-##  2        2   control       4        9    Man    21 -0.2877341  1.1384802
-##  3        3   control       5        4  Woman    25  0.2170626 -1.0015202
-##  4        4   control       6       10    Man    22  0.7218593  1.5664803
-##  5        5   control       6        9  Woman    18  0.7218593  1.1384802
-##  6        6   control       5        8    Man    24  0.2170626  0.7104801
-##  7        7   control       7        8  Woman    20  1.2266560  0.7104801
-##  8        8   control       7       10    Man    25  1.2266560  1.5664803
-##  9        9   control       7        4  Woman    25  1.2266560 -1.0015202
-## 10       10   control       4        9    Man    25 -0.2877341  1.1384802
+##  1        1   control       2        8  Woman    24 -1.0384615  0.8295807
+##  2        2   control       6        9    Man    18  0.8076923  1.2485608
+##  3        3   control       4        5  Woman    21 -0.1153846 -0.4273598
+##  4        4   control       4        9    Man    23 -0.1153846  1.2485608
+##  5        5   control       6        5  Woman    24  0.8076923 -0.4273598
+##  6        6   control       5        8    Man    23  0.3461538  0.8295807
+##  7        7   control       4        4  Woman    19 -0.1153846 -0.8463399
+##  8        8   control       5       10    Man    24  0.3461538  1.6675410
+##  9        9   control       5        8  Woman    24  0.3461538  0.8295807
+## 10       10   control       3        2    Man    19 -0.5769231 -1.6843002
 ## # ... with 40 more rows
 ```
 
@@ -475,10 +485,10 @@ example_data %>%
 ## # Groups:   gender [?]
 ##   gender    condition  Mean       SD     n
 ##   <fctr>       <fctr> <dbl>    <dbl> <int>
-## 1    Man      control  7.08 2.515287    25
-## 2    Man manipulation  6.88 2.420744    25
-## 3  Woman      control  5.40 1.892969    25
-## 4  Woman manipulation  6.00 2.198484    25
+## 1    Man      control  6.48 2.770680    25
+## 2    Man manipulation  6.08 2.325941    25
+## 3  Woman      control  5.80 2.291288    25
+## 4  Woman manipulation  5.72 2.189368    25
 ```
 
 
@@ -565,15 +575,15 @@ example_data %>%
 
 ```
 ##            vars   n mean   sd median trimmed  mad   min   max range  skew
-## dep_var       1 100 4.57 1.98   5.00    4.67 2.97  1.00  7.00  6.00 -0.27
-## dep_var_z     2 100 0.00 1.00   0.22    0.05 1.50 -1.80  1.23  3.03 -0.27
-## confound      3 100 6.34 2.34   6.00    6.38 2.97  2.00 10.00  8.00 -0.10
-## confound_z    4 100 0.00 1.00  -0.15    0.01 1.27 -1.86  1.57  3.42 -0.10
+## dep_var       1 100 4.25 2.17   4.00    4.31 2.97  1.00  7.00  6.00 -0.10
+## dep_var_z     2 100 0.00 1.00  -0.12    0.03 1.37 -1.50  1.27  2.77 -0.10
+## confound      3 100 6.02 2.39   6.00    6.05 2.97  2.00 10.00  8.00 -0.12
+## confound_z    4 100 0.00 1.00  -0.01    0.01 1.24 -1.68  1.67  3.35 -0.12
 ##            kurtosis   se
-## dep_var       -1.24 0.20
-## dep_var_z     -1.24 0.10
-## confound      -1.02 0.23
-## confound_z    -1.02 0.10
+## dep_var       -1.47 0.22
+## dep_var_z     -1.47 0.10
+## confound      -1.06 0.24
+## confound_z    -1.06 0.10
 ```
 
 ## by condition
@@ -591,27 +601,27 @@ example_data %>%
 ##  Descriptive statistics by group 
 ## condition: control
 ##            vars  n  mean   sd median trimmed  mad   min   max range  skew
-## dep_var       1 50  4.42 1.89   4.50    4.47 2.22  1.00  7.00  6.00 -0.16
-## dep_var_z     2 50 -0.08 0.95  -0.04   -0.05 1.12 -1.80  1.23  3.03 -0.16
-## confound      3 50  6.24 2.36   6.50    6.33 2.97  2.00 10.00  8.00 -0.22
-## confound_z    4 50 -0.04 1.01   0.07   -0.01 1.27 -1.86  1.57  3.42 -0.22
+## dep_var       1 50  3.82 2.03   3.50    3.77 2.22  1.00  7.00  6.00  0.21
+## dep_var_z     2 50 -0.20 0.94  -0.35   -0.22 1.03 -1.50  1.27  2.77  0.21
+## confound      3 50  6.14 2.54   6.50    6.17 2.97  2.00 10.00  8.00 -0.20
+## confound_z    4 50  0.05 1.06   0.20    0.06 1.24 -1.68  1.67  3.35 -0.20
 ##            kurtosis   se
-## dep_var       -1.21 0.27
-## dep_var_z     -1.21 0.13
-## confound      -1.18 0.33
-## confound_z    -1.18 0.14
+## dep_var       -1.31 0.29
+## dep_var_z     -1.31 0.13
+## confound      -1.23 0.36
+## confound_z    -1.23 0.15
 ## -------------------------------------------------------- 
 ## condition: manipulation
-##            vars  n mean   sd median trimmed  mad   min   max range  skew
-## dep_var       1 50 4.72 2.08   5.00    4.88 2.97  1.00  7.00  6.00 -0.39
-## dep_var_z     2 50 0.08 1.05   0.22    0.15 1.50 -1.80  1.23  3.03 -0.39
-## confound      3 50 6.44 2.33   6.00    6.47 2.97  2.00 10.00  8.00  0.03
-## confound_z    4 50 0.04 1.00  -0.15    0.06 1.27 -1.86  1.57  3.42  0.03
+##            vars  n  mean   sd median trimmed  mad   min   max range  skew
+## dep_var       1 50  4.68 2.24   6.00    4.85 1.48  1.00  7.00  6.00 -0.44
+## dep_var_z     2 50  0.20 1.03   0.81    0.28 0.68 -1.50  1.27  2.77 -0.44
+## confound      3 50  5.90 2.24   6.00    5.92 2.97  2.00 10.00  8.00 -0.05
+## confound_z    4 50 -0.05 0.94  -0.01   -0.04 1.24 -1.68  1.67  3.35 -0.05
 ##            kurtosis   se
-## dep_var       -1.28 0.29
-## dep_var_z     -1.28 0.15
-## confound      -0.98 0.33
-## confound_z    -0.98 0.14
+## dep_var       -1.39 0.32
+## dep_var_z     -1.39 0.15
+## confound      -0.93 0.32
+## confound_z    -0.93 0.13
 ```
 
 # read in your own data
@@ -681,13 +691,13 @@ t.test(dep_var ~ condition, data = example_data)
 ## 	Welch Two Sample t-test
 ## 
 ## data:  dep_var by condition
-## t = -0.75555, df = 97.065, p-value = 0.4517
+## t = -2.0151, df = 97.078, p-value = 0.04666
 ## alternative hypothesis: true difference in means is not equal to 0
 ## 95 percent confidence interval:
-##  -1.0880487  0.4880487
+##  -1.70704503 -0.01295497
 ## sample estimates:
 ##      mean in group control mean in group manipulation 
-##                       4.42                       4.72
+##                       3.82                       4.68
 ```
 
 ## `pairs.panels()`
@@ -719,7 +729,7 @@ lm_fit
 ## 
 ## Coefficients:
 ##           (Intercept)  conditionmanipulation               confound  
-##                2.0241                 0.2232                 0.3840
+##                1.0840                 0.9669                 0.4456
 ```
 
 ## `summary()`
@@ -736,19 +746,19 @@ lm_fit %>% summary()
 ## 
 ## Residuals:
 ##     Min      1Q  Median      3Q     Max 
-## -4.0958 -1.4193  0.1721  1.2882  3.4401 
+## -4.6158 -1.4530  0.1336  1.3842  3.2424 
 ## 
 ## Coefficients:
 ##                       Estimate Std. Error t value Pr(>|t|)    
-## (Intercept)            2.02413    0.53991   3.749 0.000302 ***
-## conditionmanipulation  0.22321    0.35598   0.627 0.532117    
-## confound               0.38395    0.07656   5.015  2.4e-06 ***
+## (Intercept)             1.0840     0.5478   1.979   0.0507 .  
+## conditionmanipulation   0.9669     0.3719   2.600   0.0108 *  
+## confound                0.4456     0.0783   5.691 1.34e-07 ***
 ## ---
 ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 ## 
-## Residual standard error: 1.778 on 97 degrees of freedom
-## Multiple R-squared:  0.2105,	Adjusted R-squared:  0.1942 
-## F-statistic: 12.93 on 2 and 97 DF,  p-value: 1.052e-05
+## Residual standard error: 1.857 on 97 degrees of freedom
+## Multiple R-squared:  0.2801,	Adjusted R-squared:  0.2653 
+## F-statistic: 18.87 on 2 and 97 DF,  p-value: 1.195e-07
 ```
 
 ## `Anova()`
@@ -762,11 +772,11 @@ lm_fit %>% Anova(type = "III")
 ## Anova Table (Type III tests)
 ## 
 ## Response: dep_var
-##              Sum Sq Df F value    Pr(>F)    
-## (Intercept)  44.446  1 14.0553 0.0003018 ***
-## condition     1.243  1  0.3932 0.5321169    
-## confound     79.524  1 25.1483 2.396e-06 ***
-## Residuals   306.736 97                      
+##             Sum Sq Df F value    Pr(>F)    
+## (Intercept)  13.50  1  3.9151   0.05069 .  
+## condition    23.31  1  6.7596   0.01078 *  
+## confound    111.69  1 32.3834 1.344e-07 ***
+## Residuals   334.57 97                      
 ## ---
 ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 ```
