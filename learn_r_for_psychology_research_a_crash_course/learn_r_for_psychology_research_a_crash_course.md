@@ -1,17 +1,6 @@
----
-title: 'learn R for psychology research: a crash course'
-author: "Nicholas Michalak"
-date: "October 21, 2017"
-output:
-  html_document:
-    code_folding: show
-    fig_height: 9
-    fig_width: 12
-    keep_md: yes
-    theme: readable
-    toc: yes
-    toc_float: yes
----
+# learn R for psychology research: a crash course
+Nicholas Michalak  
+October 21, 2017  
 
 # introduction
 > I wrote this for psychologists who want to learn how to use R in their research **right now.** What does a psychologist need to know to use R to import, wrangle, plot, and model their data today? Here we go.
@@ -33,13 +22,12 @@ output:
 ## packages
 > "Packages are collections of R functions, data, and compiled code in a well-defined format. The directory where packages are stored is called the library. R comes with a standard set of packages. Others are available for download and installation. Once installed, they have to be loaded into the session to be used." **Source:** https://www.statmethods.net/interface/packages.html
 
-```{r, message = FALSE, warning = FALSE}
 
+```r
 library(tidyverse)
 library(haven)
 library(psych)
 library(car)
-
 ```
 
 ## objects
@@ -49,13 +37,16 @@ library(car)
 > "c" stands for combine. Use this to combine values into a vector. "A vector is a sequence of data 'elements' of the same basic type." **Source:** http://www.r-tutor.com/r-introduction/vector
 > Below, we create an object called five_numbers. We are naming it for what it is, but we could name it whatever we want: some_numbers, maple_tree, platypus. It doesn't matter. We'll use this in the examples in later chunks of code.
 
-```{r}
 
+```r
 five_numbers <- c(1, 2, 3, 4, 5)
 
 # print five_numbers by just excecuting/running the name of the object
 five_numbers
+```
 
+```
+## [1] 1 2 3 4 5
 ```
 
 ## R Help: `help()` and `?`
@@ -66,26 +57,44 @@ five_numbers
 
 ## compute z-scores for those five numbers, called five_numbers
 
-```{r}
 
+```r
 five_numbers %>% scale()
+```
 
+```
+##            [,1]
+## [1,] -1.2649111
+## [2,] -0.6324555
+## [3,]  0.0000000
+## [4,]  0.6324555
+## [5,]  1.2649111
+## attr(,"scaled:center")
+## [1] 3
+## attr(,"scaled:scale")
+## [1] 1.581139
 ```
 
 ## compute z-scores for five_numbers and then convert the result into only numbers
 
-```{r}
 
+```r
 five_numbers %>% scale() %>% parse_number()
+```
 
+```
+## [1] -1.2649111 -0.6324555  0.0000000  0.6324555  1.2649111
 ```
 
 ## compute z-scores for five_numbers and then convert the result into only numbers and then compute the mean
 
-```{r}
 
+```r
 five_numbers %>% scale() %>% parse_number() %>% mean()
+```
 
+```
+## [1] 0
 ```
 
 ## functions
@@ -93,150 +102,225 @@ five_numbers %>% scale() %>% parse_number() %>% mean()
 
 ## compute the num of five_numbers
 
-```{r}
 
+```r
 five_numbers %>% sum()
+```
 
+```
+## [1] 15
 ```
 
 ## compute the length of five_numbers
 
-```{r}
 
+```r
 five_numbers %>% length()
+```
 
+```
+## [1] 5
 ```
 
 ## compute the sum of five_numbers and divide by the length of five_numbers
 
-```{r}
 
+```r
 five_numbers %>% sum() / five_numbers %>% length()
+```
 
+```
+## [1] 3
 ```
 
 ## define a new function called compute_mean
 
-```{r}
 
+```r
 compute_mean <- function(some_numbers) {
   some_numbers %>% sum() / some_numbers %>% length()
 }
-
 ```
 
 ## compute the mean of five_numbers
 
-```{r}
 
+```r
 five_numbers %>% compute_mean()
+```
 
+```
+## [1] 3
 ```
 
 # create data for psychology-like examples
 
 ## subject numbers
 
-```{r}
 
+```r
 subj_num <- seq(from = 1, to = 100, by = 1)
 
 # print subj_num by just excecuting/running the name of the object
 subj_num
+```
 
+```
+##   [1]   1   2   3   4   5   6   7   8   9  10  11  12  13  14  15  16  17
+##  [18]  18  19  20  21  22  23  24  25  26  27  28  29  30  31  32  33  34
+##  [35]  35  36  37  38  39  40  41  42  43  44  45  46  47  48  49  50  51
+##  [52]  52  53  54  55  56  57  58  59  60  61  62  63  64  65  66  67  68
+##  [69]  69  70  71  72  73  74  75  76  77  78  79  80  81  82  83  84  85
+##  [86]  86  87  88  89  90  91  92  93  94  95  96  97  98  99 100
 ```
 
 ## condition assignments
 
-```{r}
 
+```r
 condition <- c("control", "manipulation") %>% rep(each = 50) %>% factor()
 
 # print condition by just excecuting/running the name of the object
 condition
+```
 
+```
+##   [1] control      control      control      control      control     
+##   [6] control      control      control      control      control     
+##  [11] control      control      control      control      control     
+##  [16] control      control      control      control      control     
+##  [21] control      control      control      control      control     
+##  [26] control      control      control      control      control     
+##  [31] control      control      control      control      control     
+##  [36] control      control      control      control      control     
+##  [41] control      control      control      control      control     
+##  [46] control      control      control      control      control     
+##  [51] manipulation manipulation manipulation manipulation manipulation
+##  [56] manipulation manipulation manipulation manipulation manipulation
+##  [61] manipulation manipulation manipulation manipulation manipulation
+##  [66] manipulation manipulation manipulation manipulation manipulation
+##  [71] manipulation manipulation manipulation manipulation manipulation
+##  [76] manipulation manipulation manipulation manipulation manipulation
+##  [81] manipulation manipulation manipulation manipulation manipulation
+##  [86] manipulation manipulation manipulation manipulation manipulation
+##  [91] manipulation manipulation manipulation manipulation manipulation
+##  [96] manipulation manipulation manipulation manipulation manipulation
+## Levels: control manipulation
 ```
 
 ## dependent measure
 
 ### create a vector of 7 values representing points on a 7-point scale
 
-```{r}
 
+```r
 scale_points <- seq(from = 1, to = 7, by = 1)
 
 # print scale_points by just excecuting/running the name of the object
 scale_points
+```
 
+```
+## [1] 1 2 3 4 5 6 7
 ```
 
 ### how likely is each value, from 1 to 7?
 > Below, I'm making a vector of 7 values for each condition that represent the "true" probablity of observing that value; I'll use this in a random sampling function in the next chunk of code.
 
-```{r}
 
+```r
 # all the 1s are divided by 7
 control_probs <- c(1, 1, 1, 1, 1, 1, 1) / 7
 
 # let's make bigger values more likely for the treatment condition
 treatment_probs <- c(0.1, 0.1, 0.1, 0.1, 0.1, 0.2, 0.3)
-
 ```
 
 
 ### randomly sample from those points using the probability values we made above
 
-```{r}
 
+```r
 control_values <- scale_points %>% sample(size = 50, replace = TRUE, prob = control_probs)
 
 treatment_values <- scale_points %>% sample(size = 50, replace = TRUE, prob = treatment_probs)
-
 ```
 
 ### combine those and save as our dependent variable
 
-```{r}
 
+```r
 dep_var <- c(control_values, treatment_values)
 
 # print dep_var by just excecuting/running the name of the object
 dep_var
+```
 
+```
+##   [1] 3 6 7 6 7 2 4 6 1 3 1 4 2 5 5 1 1 7 3 5 6 6 5 6 2 7 5 3 5 6 7 5 4 4 6
+##  [36] 6 5 2 4 7 3 1 6 4 3 5 4 7 4 4 7 1 1 3 3 2 6 7 7 1 7 2 7 1 6 6 7 2 7 1
+##  [71] 7 7 3 2 7 7 6 7 4 2 4 7 1 7 6 4 3 7 6 6 1 2 6 7 1 7 5 4 6 7
 ```
 
 ## create a potentially confounding variable or a control variable
 > read the code below like this: dep_var multiplied by 0.5 + the result of a random sample of 100 from scale_points, with replacement. Round this result to 0 digits.
 
-```{r}
 
+```r
 confound <- (dep_var * 0.5 + scale_points %>% sample(size = 100, replace = TRUE)) %>% round(digits = 0)
 
 # print confound by just excecuting/running the name of the object
 confound
+```
 
+```
+##   [1]  4 10 10  8  8  6  6  9  4  8  6  6  6  4  4  4  2 10  4  4  7  6  6
+##  [24] 10  6 10  4  2 10  9  6  6  4  7  4  6  6  4  5  6  6  8 10  8  6  8
+##  [47]  3 10  4  3  6  6  4  4  6  8  9  6  6  2  8  4  6  4  7  4 10  8  8
+##  [70]  2  4  6  8  6 10  8 10  6  5  8  4  4  6  6 10  4  6  6  7  4  4  7
+##  [93] 10  6  4  6  8  9  8  8
 ```
 
 ## subject gender
 
-```{r}
 
+```r
 gender <- c("Woman", "Man") %>% rep(times = 50) %>% factor()
 
 # print gender by just excecuting/running the name of the object
 gender
+```
 
+```
+##   [1] Woman Man   Woman Man   Woman Man   Woman Man   Woman Man   Woman
+##  [12] Man   Woman Man   Woman Man   Woman Man   Woman Man   Woman Man  
+##  [23] Woman Man   Woman Man   Woman Man   Woman Man   Woman Man   Woman
+##  [34] Man   Woman Man   Woman Man   Woman Man   Woman Man   Woman Man  
+##  [45] Woman Man   Woman Man   Woman Man   Woman Man   Woman Man   Woman
+##  [56] Man   Woman Man   Woman Man   Woman Man   Woman Man   Woman Man  
+##  [67] Woman Man   Woman Man   Woman Man   Woman Man   Woman Man   Woman
+##  [78] Man   Woman Man   Woman Man   Woman Man   Woman Man   Woman Man  
+##  [89] Woman Man   Woman Man   Woman Man   Woman Man   Woman Man   Woman
+## [100] Man  
+## Levels: Man Woman
 ```
 
 ## subject age
 
-```{r}
 
+```r
 age <- seq(from = 18, to = 25, by = 1) %>% sample(size = 100, replace = TRUE)
 
 # print gender by just excecuting/running the name of the object
 age
+```
 
+```
+##   [1] 19 19 21 24 25 23 25 18 19 22 24 25 21 19 21 24 23 22 20 19 24 22 20
+##  [24] 20 21 19 19 20 23 23 25 22 20 22 22 22 19 18 25 18 21 18 19 24 24 23
+##  [47] 22 23 23 23 19 19 24 21 24 18 24 18 25 24 23 23 21 22 18 24 20 24 21
+##  [70] 21 25 19 20 20 24 23 25 18 23 25 23 23 20 25 20 18 18 21 18 18 18 19
+##  [93] 21 18 18 21 21 24 21 24
 ```
 
 ## `data.frame()` and `tibble()`
@@ -246,13 +330,29 @@ age
 
 ## put all our variable we made into a tibble
 
-```{r}
 
+```r
 example_data <- tibble(subj_num, condition, dep_var, confound, gender, age)
 
 # print example_data by just excecuting/running the name of the object
 example_data
+```
 
+```
+## # A tibble: 100 x 6
+##    subj_num condition dep_var confound gender   age
+##       <dbl>    <fctr>   <dbl>    <dbl> <fctr> <dbl>
+##  1        1   control       3        4  Woman    19
+##  2        2   control       6       10    Man    19
+##  3        3   control       7       10  Woman    21
+##  4        4   control       6        8    Man    24
+##  5        5   control       7        8  Woman    25
+##  6        6   control       2        6    Man    23
+##  7        7   control       4        6  Woman    25
+##  8        8   control       6        9    Man    18
+##  9        9   control       1        4  Woman    19
+## 10       10   control       3        8    Man    22
+## # ... with 90 more rows
 ```
 
 # data wrangling examples
@@ -260,49 +360,107 @@ example_data
 ## create new variables in data.frame or tibble
 > * `mutate()` adds new variables to your tibble.
 
-```{r}
 
+```r
 example_data <- example_data %>%
   mutate(dep_var_z = dep_var %>% scale() %>% parse_number(),
          confound_z = confound %>% scale() %>% parse_number())
 
 # print below
 example_data
+```
 
+```
+## # A tibble: 100 x 8
+##    subj_num condition dep_var confound gender   age  dep_var_z confound_z
+##       <dbl>    <fctr>   <dbl>    <dbl> <fctr> <dbl>      <dbl>      <dbl>
+##  1        1   control       3        4  Woman    19 -0.7232568 -1.0350608
+##  2        2   control       6       10    Man    19  0.6856850  1.6768889
+##  3        3   control       7       10  Woman    21  1.1553323  1.6768889
+##  4        4   control       6        8    Man    24  0.6856850  0.7729057
+##  5        5   control       7        8  Woman    25  1.1553323  0.7729057
+##  6        6   control       2        6    Man    23 -1.1929041 -0.1310776
+##  7        7   control       4        6  Woman    25 -0.2536095 -0.1310776
+##  8        8   control       6        9    Man    18  0.6856850  1.2248973
+##  9        9   control       1        4  Woman    19 -1.6625514 -1.0350608
+## 10       10   control       3        8    Man    22 -0.7232568  0.7729057
+## # ... with 90 more rows
 ```
 
 ## select specific columns
 > * `select()` selects your tibble's variables by name.
 
-```{r}
 
+```r
 example_data %>% 
   select(subj_num, condition, dep_var)
+```
 
+```
+## # A tibble: 100 x 3
+##    subj_num condition dep_var
+##       <dbl>    <fctr>   <dbl>
+##  1        1   control       3
+##  2        2   control       6
+##  3        3   control       7
+##  4        4   control       6
+##  5        5   control       7
+##  6        6   control       2
+##  7        7   control       4
+##  8        8   control       6
+##  9        9   control       1
+## 10       10   control       3
+## # ... with 90 more rows
 ```
 
 # filter specific rows
 > * `filter()` returns rows that all meet some condition you give it.
 > * Note, `==` means "exactly equal to". See ?Comparison.
 
-```{r}
 
+```r
 example_data %>% 
   filter(condition == "control")
+```
 
+```
+## # A tibble: 50 x 8
+##    subj_num condition dep_var confound gender   age  dep_var_z confound_z
+##       <dbl>    <fctr>   <dbl>    <dbl> <fctr> <dbl>      <dbl>      <dbl>
+##  1        1   control       3        4  Woman    19 -0.7232568 -1.0350608
+##  2        2   control       6       10    Man    19  0.6856850  1.6768889
+##  3        3   control       7       10  Woman    21  1.1553323  1.6768889
+##  4        4   control       6        8    Man    24  0.6856850  0.7729057
+##  5        5   control       7        8  Woman    25  1.1553323  0.7729057
+##  6        6   control       2        6    Man    23 -1.1929041 -0.1310776
+##  7        7   control       4        6  Woman    25 -0.2536095 -0.1310776
+##  8        8   control       6        9    Man    18  0.6856850  1.2248973
+##  9        9   control       1        4  Woman    19 -1.6625514 -1.0350608
+## 10       10   control       3        8    Man    22 -0.7232568  0.7729057
+## # ... with 40 more rows
 ```
 
 # make your own table of summary data
 > * `summarize()` let's you apply functions to your data to reduce it to single values. Typically, you create new summary values based on groups (e.g., condition, gender, id); for this, use `group_by()` first.
 
-```{r}
 
+```r
 example_data %>% 
   group_by(gender, condition) %>% 
   summarize(Mean = mean(confound),
             SD = sd(confound),
             n = length(confound))
+```
 
+```
+## # A tibble: 4 x 5
+## # Groups:   gender [?]
+##   gender    condition  Mean       SD     n
+##   <fctr>       <fctr> <dbl>    <dbl> <int>
+## 1    Man      control  6.88 2.420744    25
+## 2    Man manipulation  5.68 1.908752    25
+## 3  Woman      control  5.64 2.118962    25
+## 4  Woman manipulation  6.96 2.130728    25
 ```
 
 
@@ -313,62 +471,66 @@ example_data %>%
 > * Aesthetic mappings describe how variables in the data are mapped to visual properties (aesthetics) of geoms. **Source:** http://ggplot2.tidyverse.org/reference/aes.html
 > * Below, we map condition on our plot's x-axis and dep_var on its y-axis 
 
-```{r}
 
+```r
 example_data %>%
   ggplot(mapping = aes(x = condition, y = dep_var))
-
 ```
+
+![](learn_r_for_psychology_research_a_crash_course_files/figure-html/unnamed-chunk-25-1.png)<!-- -->
 
 ## boxplot
 > * next, we add—yes, add, with a `+`—a geom, a geometric element: `geom_boxplot()`
 
-```{r}
 
+```r
 example_data %>%
   ggplot(mapping = aes(x = condition, y = dep_var)) +
   geom_boxplot()
-
 ```
+
+![](learn_r_for_psychology_research_a_crash_course_files/figure-html/unnamed-chunk-26-1.png)<!-- -->
 
 ## QQ-plots
 > * Below, we plot the sample quantiles of dep_var against the theoretical quantiles
 > * Useful for exploring the distriubtion of a variable (default theoretial quantiles are normal, see ?geom_qq)
 
-```{r}
 
+```r
 example_data %>%
   ggplot(mapping = aes(sample = dep_var)) +
   geom_qq()
-
 ```
+
+![](learn_r_for_psychology_research_a_crash_course_files/figure-html/unnamed-chunk-27-1.png)<!-- -->
 
 ## means and 95% confidence intervals
 > * add a new aesthetic, fill, which will fill the geoms with different colors, depending on the variable (e.g., levels of categorical variables are assigned their own fill color)
 > * stat_summary() does what its name suggests: it applies statistical summaries to your raw data to make the geoms (bars and error bars in our case below)
 > * the width argument sets the width of the error bars.
 
-```{r}
 
+```r
 example_data %>%
   ggplot(mapping = aes(x = condition, y = dep_var, fill = condition)) +
   stat_summary(geom = "bar", fun.data = mean_cl_normal) +
   stat_summary(geom = "errorbar", fun.data = mean_cl_normal, width = 0.1)
-  
-
 ```
+
+![](learn_r_for_psychology_research_a_crash_course_files/figure-html/unnamed-chunk-28-1.png)<!-- -->
 
 ## scatterplots
 > * we add `geom_point()` and `geom_smooth()` below to add points to the scatterplot and fit a linear regression line with 95% confidence ribbons/bands around that line
 
-```{r}
 
+```r
 example_data %>%
   ggplot(mapping = aes(x = confound, y = dep_var)) +
   geom_point() +
   geom_smooth(method = "lm")
-
 ```
+
+![](learn_r_for_psychology_research_a_crash_course_files/figure-html/unnamed-chunk-29-1.png)<!-- -->
 
 # descriptive statistics
 > * `describe()`
@@ -376,23 +538,62 @@ example_data %>%
 
 ## for whole sample
 
-```{r}
 
+```r
 example_data %>% 
   select(dep_var, dep_var_z, confound, confound_z) %>% 
   describe()
+```
 
+```
+##            vars   n mean   sd median trimmed  mad   min   max range  skew
+## dep_var       1 100 4.54 2.13   5.00    4.67 2.97  1.00  7.00  6.00 -0.36
+## dep_var_z     2 100 0.00 1.00   0.22    0.06 1.39 -1.66  1.16  2.82 -0.36
+## confound      3 100 6.29 2.21   6.00    6.24 2.97  2.00 10.00  8.00  0.13
+## confound_z    4 100 0.00 1.00  -0.13   -0.02 1.34 -1.94  1.68  3.62  0.13
+##            kurtosis   se
+## dep_var       -1.29 0.21
+## dep_var_z     -1.29 0.10
+## confound      -0.88 0.22
+## confound_z    -0.88 0.10
 ```
 
 ## by condition
 > The code below is a little confusing. First, we're piping our subsetted tibble with only our four variables—dep_var and confound and their z-scored versions—into the first argument for the `describeBy()` function. But we need to give data to the group argument, so then we just give it another subsetted tibble with only our grouping variable, condition.
 
-```{r}
 
+```r
 example_data %>% 
   select(dep_var, dep_var_z, confound, confound_z) %>% 
   describeBy(group = example_data %>% select(condition))
+```
 
+```
+## 
+##  Descriptive statistics by group 
+## condition: control
+##            vars  n  mean   sd median trimmed  mad   min   max range  skew
+## dep_var       1 50  4.42 1.86   5.00    4.53 1.48  1.00  7.00  6.00 -0.35
+## dep_var_z     2 50 -0.06 0.88   0.22   -0.01 0.70 -1.66  1.16  2.82 -0.35
+## confound      3 50  6.26 2.34   6.00    6.22 2.97  2.00 10.00  8.00  0.20
+## confound_z    4 50 -0.01 1.06  -0.13   -0.03 1.34 -1.94  1.68  3.62  0.20
+##            kurtosis   se
+## dep_var       -0.98 0.26
+## dep_var_z     -0.98 0.12
+## confound      -1.03 0.33
+## confound_z    -1.03 0.15
+## -------------------------------------------------------- 
+## condition: manipulation
+##            vars  n mean   sd median trimmed  mad   min   max range  skew
+## dep_var       1 50 4.66 2.38   6.00    4.83 1.48  1.00  7.00  6.00 -0.40
+## dep_var_z     2 50 0.06 1.12   0.69    0.13 0.70 -1.66  1.16  2.82 -0.40
+## confound      3 50 6.32 2.10   6.00    6.25 2.97  2.00 10.00  8.00  0.05
+## confound_z    4 50 0.01 0.95  -0.13   -0.02 1.34 -1.94  1.68  3.62  0.05
+##            kurtosis   se
+## dep_var       -1.54 0.34
+## dep_var_z     -1.54 0.16
+## confound      -0.81 0.30
+## confound_z    -0.81 0.13
 ```
 
 # read in your own data
@@ -402,70 +603,140 @@ example_data %>%
 
 ## SPSS
 
-```{r}
 
+```r
 # path to where file lives on your computer
 coffee_filepath <- "coffee.sav"
 
 coffee_data <- coffee_filepath %>% read_sav()
-
 ```
 
 ## CSV
 
-```{r}
 
+```r
 # path to where file lives on your computer
 coffee_filepath <- "coffee.csv"
 
 coffee_data <- coffee_filepath %>% read_csv()
+```
 
+```
+## Parsed with column specification:
+## cols(
+##   image = col_integer(),
+##   brand = col_integer(),
+##   freq = col_integer()
+## )
 ```
 
 ## TXT
 
-```{r}
 
+```r
 # path to where file lives on your computer
 coffee_filepath <- "coffee.txt"
 
 coffee_data <- coffee_filepath %>% read_delim(delim = " ")
+```
 
+```
+## Parsed with column specification:
+## cols(
+##   image = col_integer(),
+##   brand = col_integer(),
+##   freq = col_integer()
+## )
 ```
 
 ## `t.test()`
 
-```{r}
 
+```r
 t.test(dep_var ~ condition, data = example_data)
+```
 
+```
+## 
+## 	Welch Two Sample t-test
+## 
+## data:  dep_var by condition
+## t = -0.56162, df = 92.694, p-value = 0.5757
+## alternative hypothesis: true difference in means is not equal to 0
+## 95 percent confidence interval:
+##  -1.0886326  0.6086326
+## sample estimates:
+##      mean in group control mean in group manipulation 
+##                       4.42                       4.66
 ```
 
 ## `lm()`
 
-```{r}
 
+```r
 lm_fit <- lm(dep_var ~ condition + confound, data = example_data)
 
 # print lm_fit by just excecuting/running the name of the object
 lm_fit
+```
 
+```
+## 
+## Call:
+## lm(formula = dep_var ~ condition + confound, data = example_data)
+## 
+## Coefficients:
+##           (Intercept)  conditionmanipulation               confound  
+##                1.7328                 0.2142                 0.4293
 ```
 
 ## `summary()`
 
-```{r}
 
+```r
 lm_fit %>% summary()
+```
 
+```
+## 
+## Call:
+## lm(formula = dep_var ~ condition + confound, data = example_data)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -4.1669 -1.5398  0.3359  1.5501  3.3359 
+## 
+## Coefficients:
+##                       Estimate Std. Error t value Pr(>|t|)    
+## (Intercept)            1.73279    0.61029   2.839  0.00551 ** 
+## conditionmanipulation  0.21424    0.38433   0.557  0.57850    
+## confound               0.42927    0.08729   4.918 3.57e-06 ***
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 1.921 on 97 degrees of freedom
+## Multiple R-squared:  0.2021,	Adjusted R-squared:  0.1857 
+## F-statistic: 12.29 on 2 and 97 DF,  p-value: 1.754e-05
 ```
 
 ## `Anova()`
 
-```{r}
 
+```r
 lm_fit %>% Anova(type = "III")
+```
 
+```
+## Anova Table (Type III tests)
+## 
+## Response: dep_var
+##             Sum Sq Df F value    Pr(>F)    
+## (Intercept)  29.76  1  8.0615  0.005509 ** 
+## condition     1.15  1  0.3108  0.578501    
+## confound     89.28  1 24.1820 3.573e-06 ***
+## Residuals   358.12 97                      
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 ```
 
 ## more advanced data wrangling and analysis techniques by psychologists, for psychologists
