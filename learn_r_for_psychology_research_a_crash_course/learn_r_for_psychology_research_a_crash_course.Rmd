@@ -1,24 +1,33 @@
 ---
-title: "Learn R for Psychology Research: A Crash Course"
+title: "learn R for psychology research: a crash course"
 author: Nicholas Michalak
 date: October 21, 2017
-output: html_notebook
+output: 
+  html_notebook: 
+    code_folding: show
+    fig_height: 9
+    fig_width: 12
+    theme: readable
+    toc: yes
+    toc_float: true
 ---
 
-# Introduction
+# introduction
 > I wrote this for psychologists who want to learn how to use R in their research **right now.** What does a psychologist need to know to use R to import, wrangle, plot, and model their data today? Here we go.
 
-# Foundations: resources that inspired me.
+# foundations: resources that inspired me.
 > * Dan Robinson (July 05, 2017) convinced me that beginneRs should learn tidyverse first, not Base R. I wrote this tutorial with this in mind. All you need to know about the differnece is in his blog post. If you've learned some R before this, you might understand that difference as you go through this tutorial.
 > * If you want a more detailed introduction to R, start with R for Data Science (Wickham & Grolemund, 2017). The chapters are short, easy to read, and filled with simple coding examples that demonstrate big principles. And **it's free.**
 > * Hadley Wickham is a legend in the R community. He's responsible for the tidyverse, including ggplot2. Read his books and papers (e.g., Wickham, 2014). Watch his talks (e.g., ReadCollegePDX, October 19, 2015). He's profoundly changed how people think about structuring and visualizing data.
 
-## Recommended resources
+## recommended resources
 > * ReadCollegePDX (2015, October 19). Hadley Wickham "Data Science with R". Retrieved from https://youtu.be/K-ss_ag2k9E?list=PLNtpLD4WiWbw9Cgcg6IU75u-44TrrN3A4
 > * Robinson, D. (2017, July 05). Teach the tidyverse to beginners. Variance Explained. Retreived from http://varianceexplained.org/r/teach-tidyverse/
 > * Wickham, H. (2014). [Tidy data](http://vita.had.co.nz/papers/tidy-data.html). Journal of Statistical Software, 59(10), 1-23.
 > * [The tidyverse style guide](http://style.tidyverse.org/) by Hadley Wickham
 > * Wickham, H., & Grolemund, G. (2017). [R for Data Science: Import, Tidy, Transform, Visualize, and Model Data](http://r4ds.had.co.nz/). Sebastopol, CA: O'Reilly Media, Inc.
+
+# need-to-know basics
 
 ## packages
 > "Packages are collections of R functions, data, and compiled code in a well-defined format. The directory where packages are stored is called the library. R comes with a standard set of packages. Others are available for download and installation. Once installed, they have to be loaded into the session to be used." **Source:** https://www.statmethods.net/interface/packages.html
@@ -245,6 +254,8 @@ example_data
 
 ```
 
+# data wrangling examples
+
 ## create new variables in data.frame or tibble
 > * `mutate()` adds new variables to your tibble.
 
@@ -279,6 +290,20 @@ example_data %>%
   filter(condition == "control")
 
 ```
+
+# make your own table of summary data
+> * `summarize()` let's you apply functions to your data to reduce it to single values. Typically, you create new summary values based on groups (e.g., condition, gender, id); for this, use `group_by()` first.
+
+```{r}
+
+example_data %>% 
+  group_by(gender, condition) %>% 
+  summarize(Mean = mean(confound),
+            SD = sd(confound),
+            n = length(confound))
+
+```
+
 
 # ggplot2
 > "ggplot2 is a plotting system for R, based on the grammar of graphics, which tries to take the good parts of base and lattice graphics and none of the bad parts. It takes care of many of the fiddly details that make plotting a hassle (like drawing legends) as well as providing a powerful model of graphics that makes it easy to produce complex multi-layered graphics." **Source:**: http://ggplot2.org/
@@ -442,9 +467,15 @@ lm_fit %>% Anova(type = "III")
 
 ```
 
-# More advanced data wrangling and analysis techniques
+## more advanced data wrangling and analysis techniques by psychologists, for psychologists
 > * [R programming for research](https://github.com/nmmichalak/R_programming_for_research), a workshop instructed by Nick Michalak and Iris Wang at the University of Michigan
 
+## more information about tidyverse and the psych package
+> * [tidyverse: R packages for data science](https://www.tidyverse.org/)
+> * [Using R and psych for personality and psychological research](http://personality-project.org/r/psych/)
+
+## R Studio cheat sheets
+> * [RStudio Cheat Sheets](https://www.rstudio.com/resources/cheatsheets/)
 
 
 
