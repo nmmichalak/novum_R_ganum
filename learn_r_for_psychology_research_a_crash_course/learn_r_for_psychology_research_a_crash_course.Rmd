@@ -3,10 +3,11 @@ title: 'learn R for psychology research: a crash course'
 author: "Nicholas Michalak"
 date: "October 21, 2017"
 output:
-  html_notebook:
+  html_document:
     code_folding: show
     fig_height: 7.5
     fig_width: 10
+    keep_md: yes
     theme: readable
     toc: yes
     toc_float: yes
@@ -16,16 +17,9 @@ output:
 > I wrote this for psychologists who want to learn how to use R in their research **right now.** What does a psychologist need to know to use R to import, wrangle, plot, and model their data today? Here we go.
 
 # foundations: resources that inspired me.
-> * Dan Robinson (July 05, 2017) convinced me that beginneRs should learn tidyverse first, not Base R. I wrote this tutorial with this in mind. All you need to know about the differnece is in his blog post. If you've learned some R before this, you might understand that difference as you go through this tutorial.
-> * If you want a more detailed introduction to R, start with R for Data Science (Wickham & Grolemund, 2017). The chapters are short, easy to read, and filled with simple coding examples that demonstrate big principles. And **it's free.**
-> * Hadley Wickham is a legend in the R community. He's responsible for the tidyverse, including ggplot2. Read his books and papers (e.g., Wickham, 2014). Watch his talks (e.g., ReadCollegePDX, October 19, 2015). He's profoundly changed how people think about structuring and visualizing data.
-
-## recommended resources
-> * ReadCollegePDX (2015, October 19). Hadley Wickham "Data Science with R". Retrieved from https://youtu.be/K-ss_ag2k9E?list=PLNtpLD4WiWbw9Cgcg6IU75u-44TrrN3A4
-> * Robinson, D. (2017, July 05). Teach the tidyverse to beginners. Variance Explained. Retreived from http://varianceexplained.org/r/teach-tidyverse/
-> * Wickham, H. (2014). [Tidy data](http://vita.had.co.nz/papers/tidy-data.html). Journal of Statistical Software, 59(10), 1-23.
-> * [The tidyverse style guide](http://style.tidyverse.org/) by Hadley Wickham
-> * Wickham, H., & Grolemund, G. (2017). [R for Data Science: Import, Tidy, Transform, Visualize, and Model Data](http://r4ds.had.co.nz/). Sebastopol, CA: O'Reilly Media, Inc.
+> * [Dan Robinson (July 05, 2017)](http://varianceexplained.org/r/teach-tidyverse/) convinced me that beginneRs should learn tidyverse first, not Base R. I wrote this tutorial with this in mind. All you need to know about the differnece is in his blog post. If you've learned some R before this, you might understand that difference as you go through this tutorial.
+> * If you want a more detailed introduction to R, start with [R for Data Science (Wickham & Grolemund, 2017)](http://r4ds.had.co.nz/). The chapters are short, easy to read, and filled with simple coding examples that demonstrate big principles. And **it's free.**
+> * Hadley Wickham is a legend in the R community. He's responsible for the tidyverse, including ggplot2. Read his books and papers (e.g., [Wickham, 2014](http://vita.had.co.nz/papers/tidy-data.html)). Watch his talks (e.g., [ReadCollegePDX, October 19, 2015](https://youtu.be/K-ss_ag2k9E?list=PLNtpLD4WiWbw9Cgcg6IU75u-44TrrN3A4)). He's profoundly changed how people think about structuring and visualizing data.
 
 # need-to-know basics
 
@@ -36,7 +30,7 @@ output:
 > * [Installing R Studio](https://www.rstudio.com/products/rstudio/download/)
 > * [Uninstalling R Studio](https://support.rstudio.com/hc/en-us/articles/200554736-How-To-Uninstall-RStudio-Desktop)
 
-## what are all these panels in R Studio?
+## understand all the panels in R Studio
 ![Four panels in R Studio](r_studio_panels_tutorial.png)
 
 ## packages
@@ -44,7 +38,7 @@ output:
 
 ```{r, message = FALSE, warning = FALSE}
 
-# before you can load these libraries, use can need to install them first:
+# before you can load these libraries, use need to install them first:
 # install.packages(tidyverse)
 # install.packages(haven)
 # install.packages(psych)
@@ -103,14 +97,15 @@ five_numbers %>% scale() %>% parse_number() %>% mean()
 
 ```
 
-## tanget: most R introductions will teach you to code the example above like this
-> * I think this is counterintuitive. You're reading this sentence from left to right. That's how I think code should read like: how you read sentences. Forget this way of coding for now. You can learn the "read R code inside out" when you have time. I'm assuming you don't.
+## tanget: most R introductions will teach you to code the example above like this:
 
 ```{r}
 
 mean(parse_number(scale(five_numbers)))
 
 ```
+
+> * I think this is counterintuitive. You're reading the current sentence from left to right. That's how I think code should read like: how you read sentences. Forget this "read from the inside out" way of coding for now. You can learn the "read R code inside out" when you have time and feel more motivated to learn harder things. I'm assuming you don't right now.
 
 ## functions
 > "A function is a piece of code written to carry out a specified task; it can or can not accept arguments or parameters and it can or can not return one or more values." Functions **do** things for you. **Source:** https://www.datacamp.com/community/tutorials/functions-in-r-a-tutorial#what
@@ -504,6 +499,13 @@ lm_fit %>% summary()
 lm_fit %>% Anova(type = "III")
 
 ```
+
+## recommended resources
+> * ReadCollegePDX (2015, October 19). Hadley Wickham "Data Science with R". Retrieved from https://youtu.be/K-ss_ag2k9E?list=PLNtpLD4WiWbw9Cgcg6IU75u-44TrrN3A4
+> * Robinson, D. (2017, July 05). Teach the tidyverse to beginners. Variance Explained. Retreived from http://varianceexplained.org/r/teach-tidyverse/
+> * Wickham, H. (2014). [Tidy data](http://vita.had.co.nz/papers/tidy-data.html). Journal of Statistical Software, 59(10), 1-23.
+> * [The tidyverse style guide](http://style.tidyverse.org/) by Hadley Wickham
+> * Wickham, H., & Grolemund, G. (2017). [R for Data Science: Import, Tidy, Transform, Visualize, and Model Data](http://r4ds.had.co.nz/). Sebastopol, CA: O'Reilly Media, Inc.
 
 ## more advanced data wrangling and analysis techniques by psychologists, for psychologists
 > * [R programming for research](https://github.com/nmmichalak/R_programming_for_research), a workshop instructed by Nick Michalak and Iris Wang at the University of Michigan

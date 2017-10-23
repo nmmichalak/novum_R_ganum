@@ -6,16 +6,9 @@ October 21, 2017
 > I wrote this for psychologists who want to learn how to use R in their research **right now.** What does a psychologist need to know to use R to import, wrangle, plot, and model their data today? Here we go.
 
 # foundations: resources that inspired me.
-> * Dan Robinson (July 05, 2017) convinced me that beginneRs should learn tidyverse first, not Base R. I wrote this tutorial with this in mind. All you need to know about the differnece is in his blog post. If you've learned some R before this, you might understand that difference as you go through this tutorial.
-> * If you want a more detailed introduction to R, start with R for Data Science (Wickham & Grolemund, 2017). The chapters are short, easy to read, and filled with simple coding examples that demonstrate big principles. And **it's free.**
-> * Hadley Wickham is a legend in the R community. He's responsible for the tidyverse, including ggplot2. Read his books and papers (e.g., Wickham, 2014). Watch his talks (e.g., ReadCollegePDX, October 19, 2015). He's profoundly changed how people think about structuring and visualizing data.
-
-## recommended resources
-> * ReadCollegePDX (2015, October 19). Hadley Wickham "Data Science with R". Retrieved from https://youtu.be/K-ss_ag2k9E?list=PLNtpLD4WiWbw9Cgcg6IU75u-44TrrN3A4
-> * Robinson, D. (2017, July 05). Teach the tidyverse to beginners. Variance Explained. Retreived from http://varianceexplained.org/r/teach-tidyverse/
-> * Wickham, H. (2014). [Tidy data](http://vita.had.co.nz/papers/tidy-data.html). Journal of Statistical Software, 59(10), 1-23.
-> * [The tidyverse style guide](http://style.tidyverse.org/) by Hadley Wickham
-> * Wickham, H., & Grolemund, G. (2017). [R for Data Science: Import, Tidy, Transform, Visualize, and Model Data](http://r4ds.had.co.nz/). Sebastopol, CA: O'Reilly Media, Inc.
+> * [Dan Robinson (July 05, 2017)](http://varianceexplained.org/r/teach-tidyverse/) convinced me that beginneRs should learn tidyverse first, not Base R. I wrote this tutorial with this in mind. All you need to know about the differnece is in his blog post. If you've learned some R before this, you might understand that difference as you go through this tutorial.
+> * If you want a more detailed introduction to R, start with [R for Data Science (Wickham & Grolemund, 2017)](http://r4ds.had.co.nz/). The chapters are short, easy to read, and filled with simple coding examples that demonstrate big principles. And **it's free.**
+> * Hadley Wickham is a legend in the R community. He's responsible for the tidyverse, including ggplot2. Read his books and papers (e.g., [Wickham, 2014](http://vita.had.co.nz/papers/tidy-data.html)). Watch his talks (e.g., [ReadCollegePDX, October 19, 2015](https://youtu.be/K-ss_ag2k9E?list=PLNtpLD4WiWbw9Cgcg6IU75u-44TrrN3A4)). He's profoundly changed how people think about structuring and visualizing data.
 
 # need-to-know basics
 
@@ -26,7 +19,7 @@ October 21, 2017
 > * [Installing R Studio](https://www.rstudio.com/products/rstudio/download/)
 > * [Uninstalling R Studio](https://support.rstudio.com/hc/en-us/articles/200554736-How-To-Uninstall-RStudio-Desktop)
 
-## what are all these panels in R Studio?
+## understand all the panels in R Studio
 ![Four panels in R Studio](r_studio_panels_tutorial.png)
 
 ## packages
@@ -34,7 +27,7 @@ October 21, 2017
 
 
 ```r
-# before you can load these libraries, use can need to install them first:
+# before you can load these libraries, use need to install them first:
 # install.packages(tidyverse)
 # install.packages(haven)
 # install.packages(psych)
@@ -113,8 +106,7 @@ five_numbers %>% scale() %>% parse_number() %>% mean()
 ## [1] 0
 ```
 
-## tanget: most R introductions will teach you to code the example above like this
-> * I think this is counterintuitive. You're reading this sentence from left to right. That's how I think code should read like: how you read sentences. Forget this way of coding for now. You can learn the "read R code inside out" when you have time. I'm assuming you don't.
+## tanget: most R introductions will teach you to code the example above like this:
 
 
 ```r
@@ -124,6 +116,8 @@ mean(parse_number(scale(five_numbers)))
 ```
 ## [1] 0
 ```
+
+> * I think this is counterintuitive. You're reading the current sentence from left to right. That's how I think code should read like: how you read sentences. Forget this "read from the inside out" way of coding for now. You can learn the "read R code inside out" when you have time and feel more motivated to learn harder things. I'm assuming you don't right now.
 
 ## functions
 > "A function is a piece of code written to carry out a specified task; it can or can not accept arguments or parameters and it can or can not return one or more values." Functions **do** things for you. **Source:** https://www.datacamp.com/community/tutorials/functions-in-r-a-tutorial#what
@@ -285,9 +279,9 @@ dep_var
 ```
 
 ```
-##   [1] 2 6 4 4 6 5 4 5 5 3 3 3 7 4 2 7 3 6 1 2 1 1 2 7 6 2 1 7 3 3 6 4 1 6 4
-##  [36] 2 7 5 6 7 1 3 3 2 2 3 2 4 7 1 6 7 3 4 2 5 4 7 7 6 7 7 5 3 6 6 6 2 3 7
-##  [71] 7 1 3 6 5 1 6 7 6 7 7 6 4 6 3 7 7 3 2 1 1 7 1 7 1 1 7 6 2 3
+##   [1] 3 4 6 1 2 1 7 7 4 6 1 6 1 5 5 1 5 3 2 1 2 1 6 2 2 3 4 3 4 3 4 3 1 5 6
+##  [36] 1 1 6 5 2 1 3 4 7 3 4 6 6 1 1 7 2 3 6 4 7 3 7 7 7 2 5 4 7 7 7 6 7 6 7
+##  [71] 7 7 5 5 7 2 5 7 5 4 7 6 7 7 1 7 5 6 7 6 7 6 3 1 5 6 7 6 3 7
 ```
 
 ## create a potentially confounding variable or a control variable
@@ -302,11 +296,11 @@ confound
 ```
 
 ```
-##   [1]  8  9  5  9  5  8  4 10  8  2  2  6  6  8  7 10  8  4  2  3  4  2  4
-##  [24]  8  8  7  8  8  4  6  7  4  4 10  3  6  8 10  7  6  8  8  6  3  7  4
-##  [47]  2  9 10  2  4 10  4  9  6  8  7  6  6  6  6  8  4  2  7  4  5  4  8
-##  [70]  8 10  4  6  9  4  2  6  8  4  8  6  8  5  8  2  6 10  6  8  6  4  4
-##  [93]  2  6  8  2  8  6  3  4
+##   [1]  2  5  8  6  8  4  6  6  3  4  2  9  6  4  8  6  4  2  2  2  2  6  6
+##  [24]  5  8  6  7  2  5  2  9  4  8  6  8  6  2  5  8  4  2  8  5  8  8  7
+##  [47]  9  4  8  2  6  3  4  9  4  6  8  6  4  8  5 10  4  4  8  6  7 10  8
+##  [70]  6  4  8  8  8  6  4  8  6  6  4 10  8  6  6  2 10  6 10 10  7  8  9
+##  [93]  8  4  4  9 10  5  8  6
 ```
 
 ## subject gender
@@ -344,11 +338,11 @@ age
 ```
 
 ```
-##   [1] 24 18 21 23 24 23 19 24 24 19 24 21 23 22 18 22 23 24 18 19 23 19 23
-##  [24] 23 21 21 20 21 21 23 18 19 19 22 23 22 21 18 25 18 20 21 20 24 21 22
-##  [47] 24 23 18 24 19 23 24 18 25 21 19 18 20 23 23 22 20 18 19 20 24 22 21
-##  [70] 18 25 23 19 25 20 22 18 20 25 20 23 21 22 21 23 20 23 18 25 25 25 25
-##  [93] 25 21 20 20 23 23 24 22
+##   [1] 21 24 21 21 18 19 21 24 21 18 18 22 22 21 20 23 20 25 19 25 25 19 18
+##  [24] 20 24 18 23 19 18 23 19 18 22 19 19 20 23 21 24 22 24 24 22 21 21 21
+##  [47] 23 22 18 18 19 25 22 21 23 19 24 19 22 19 20 25 25 21 23 18 22 22 22
+##  [70] 24 19 23 22 20 23 19 18 22 19 20 23 22 24 18 18 22 19 20 25 19 24 18
+##  [93] 24 25 20 18 21 25 20 25
 ```
 
 ## `data.frame()` and `tibble()`
@@ -370,16 +364,16 @@ example_data
 ## # A tibble: 100 x 6
 ##    subj_num condition dep_var confound gender   age
 ##       <dbl>    <fctr>   <dbl>    <dbl> <fctr> <dbl>
-##  1        1   control       2        8  Woman    24
-##  2        2   control       6        9    Man    18
-##  3        3   control       4        5  Woman    21
-##  4        4   control       4        9    Man    23
-##  5        5   control       6        5  Woman    24
-##  6        6   control       5        8    Man    23
-##  7        7   control       4        4  Woman    19
-##  8        8   control       5       10    Man    24
-##  9        9   control       5        8  Woman    24
-## 10       10   control       3        2    Man    19
+##  1        1   control       3        2  Woman    21
+##  2        2   control       4        5    Man    24
+##  3        3   control       6        8  Woman    21
+##  4        4   control       1        6    Man    21
+##  5        5   control       2        8  Woman    18
+##  6        6   control       1        4    Man    19
+##  7        7   control       7        6  Woman    21
+##  8        8   control       7        6    Man    24
+##  9        9   control       4        3  Woman    21
+## 10       10   control       6        4    Man    18
 ## # ... with 90 more rows
 ```
 
@@ -400,19 +394,19 @@ example_data
 
 ```
 ## # A tibble: 100 x 8
-##    subj_num condition dep_var confound gender   age  dep_var_z confound_z
-##       <dbl>    <fctr>   <dbl>    <dbl> <fctr> <dbl>      <dbl>      <dbl>
-##  1        1   control       2        8  Woman    24 -1.0384615  0.8295807
-##  2        2   control       6        9    Man    18  0.8076923  1.2485608
-##  3        3   control       4        5  Woman    21 -0.1153846 -0.4273598
-##  4        4   control       4        9    Man    23 -0.1153846  1.2485608
-##  5        5   control       6        5  Woman    24  0.8076923 -0.4273598
-##  6        6   control       5        8    Man    23  0.3461538  0.8295807
-##  7        7   control       4        4  Woman    19 -0.1153846 -0.8463399
-##  8        8   control       5       10    Man    24  0.3461538  1.6675410
-##  9        9   control       5        8  Woman    24  0.3461538  0.8295807
-## 10       10   control       3        2    Man    19 -0.5769231 -1.6843002
-## # ... with 90 more rows
+##    subj_num condition dep_var confound gender   age  dep_var_z
+##       <dbl>    <fctr>   <dbl>    <dbl> <fctr> <dbl>      <dbl>
+##  1        1   control       3        2  Woman    21 -0.6723361
+##  2        2   control       4        5    Man    24 -0.2118319
+##  3        3   control       6        8  Woman    21  0.7091764
+##  4        4   control       1        6    Man    21 -1.5933444
+##  5        5   control       2        8  Woman    18 -1.1328403
+##  6        6   control       1        4    Man    19 -1.5933444
+##  7        7   control       7        6  Woman    21  1.1696806
+##  8        8   control       7        6    Man    24  1.1696806
+##  9        9   control       4        3  Woman    21 -0.2118319
+## 10       10   control       6        4    Man    18  0.7091764
+## # ... with 90 more rows, and 1 more variables: confound_z <dbl>
 ```
 
 ## select specific columns
@@ -428,16 +422,16 @@ example_data %>%
 ## # A tibble: 100 x 3
 ##    subj_num condition dep_var
 ##       <dbl>    <fctr>   <dbl>
-##  1        1   control       2
-##  2        2   control       6
-##  3        3   control       4
-##  4        4   control       4
-##  5        5   control       6
-##  6        6   control       5
-##  7        7   control       4
-##  8        8   control       5
-##  9        9   control       5
-## 10       10   control       3
+##  1        1   control       3
+##  2        2   control       4
+##  3        3   control       6
+##  4        4   control       1
+##  5        5   control       2
+##  6        6   control       1
+##  7        7   control       7
+##  8        8   control       7
+##  9        9   control       4
+## 10       10   control       6
 ## # ... with 90 more rows
 ```
 
@@ -453,19 +447,19 @@ example_data %>%
 
 ```
 ## # A tibble: 50 x 8
-##    subj_num condition dep_var confound gender   age  dep_var_z confound_z
-##       <dbl>    <fctr>   <dbl>    <dbl> <fctr> <dbl>      <dbl>      <dbl>
-##  1        1   control       2        8  Woman    24 -1.0384615  0.8295807
-##  2        2   control       6        9    Man    18  0.8076923  1.2485608
-##  3        3   control       4        5  Woman    21 -0.1153846 -0.4273598
-##  4        4   control       4        9    Man    23 -0.1153846  1.2485608
-##  5        5   control       6        5  Woman    24  0.8076923 -0.4273598
-##  6        6   control       5        8    Man    23  0.3461538  0.8295807
-##  7        7   control       4        4  Woman    19 -0.1153846 -0.8463399
-##  8        8   control       5       10    Man    24  0.3461538  1.6675410
-##  9        9   control       5        8  Woman    24  0.3461538  0.8295807
-## 10       10   control       3        2    Man    19 -0.5769231 -1.6843002
-## # ... with 40 more rows
+##    subj_num condition dep_var confound gender   age  dep_var_z
+##       <dbl>    <fctr>   <dbl>    <dbl> <fctr> <dbl>      <dbl>
+##  1        1   control       3        2  Woman    21 -0.6723361
+##  2        2   control       4        5    Man    24 -0.2118319
+##  3        3   control       6        8  Woman    21  0.7091764
+##  4        4   control       1        6    Man    21 -1.5933444
+##  5        5   control       2        8  Woman    18 -1.1328403
+##  6        6   control       1        4    Man    19 -1.5933444
+##  7        7   control       7        6  Woman    21  1.1696806
+##  8        8   control       7        6    Man    24  1.1696806
+##  9        9   control       4        3  Woman    21 -0.2118319
+## 10       10   control       6        4    Man    18  0.7091764
+## # ... with 40 more rows, and 1 more variables: confound_z <dbl>
 ```
 
 ## make your own table of summary data
@@ -485,10 +479,10 @@ example_data %>%
 ## # Groups:   gender [?]
 ##   gender    condition  Mean       SD     n
 ##   <fctr>       <fctr> <dbl>    <dbl> <int>
-## 1    Man      control  6.48 2.770680    25
-## 2    Man manipulation  6.08 2.325941    25
-## 3  Woman      control  5.80 2.291288    25
-## 4  Woman manipulation  5.72 2.189368    25
+## 1    Man      control  4.92 1.998333    25
+## 2    Man manipulation  6.88 2.185559    25
+## 3  Woman      control  5.76 2.618524    25
+## 4  Woman manipulation  6.48 2.200757    25
 ```
 
 
@@ -575,15 +569,15 @@ example_data %>%
 
 ```
 ##            vars   n mean   sd median trimmed  mad   min   max range  skew
-## dep_var       1 100 4.25 2.17   4.00    4.31 2.97  1.00  7.00  6.00 -0.10
-## dep_var_z     2 100 0.00 1.00  -0.12    0.03 1.37 -1.50  1.27  2.77 -0.10
-## confound      3 100 6.02 2.39   6.00    6.05 2.97  2.00 10.00  8.00 -0.12
-## confound_z    4 100 0.00 1.00  -0.01    0.01 1.24 -1.68  1.67  3.35 -0.12
+## dep_var       1 100 4.46 2.17   5.00    4.58 2.97  1.00  7.00  6.00 -0.31
+## dep_var_z     2 100 0.00 1.00   0.25    0.05 1.37 -1.59  1.17  2.76 -0.31
+## confound      3 100 6.01 2.35   6.00    6.05 2.97  2.00 10.00  8.00 -0.14
+## confound_z    4 100 0.00 1.00   0.00    0.02 1.26 -1.71  1.70  3.40 -0.14
 ##            kurtosis   se
-## dep_var       -1.47 0.22
-## dep_var_z     -1.47 0.10
-## confound      -1.06 0.24
-## confound_z    -1.06 0.10
+## dep_var       -1.35 0.22
+## dep_var_z     -1.35 0.10
+## confound      -0.98 0.24
+## confound_z    -0.98 0.10
 ```
 
 ## by condition
@@ -600,28 +594,28 @@ example_data %>%
 ## 
 ##  Descriptive statistics by group 
 ## condition: control
-##            vars  n  mean   sd median trimmed  mad   min   max range  skew
-## dep_var       1 50  3.82 2.03   3.50    3.77 2.22  1.00  7.00  6.00  0.21
-## dep_var_z     2 50 -0.20 0.94  -0.35   -0.22 1.03 -1.50  1.27  2.77  0.21
-## confound      3 50  6.14 2.54   6.50    6.17 2.97  2.00 10.00  8.00 -0.20
-## confound_z    4 50  0.05 1.06   0.20    0.06 1.24 -1.68  1.67  3.35 -0.20
+##            vars  n  mean   sd median trimmed  mad   min  max range  skew
+## dep_var       1 50  3.42 2.00   3.00    3.33 2.97  1.00 7.00  6.00  0.23
+## dep_var_z     2 50 -0.48 0.92  -0.67   -0.52 1.37 -1.59 1.17  2.76  0.23
+## confound      3 50  5.34 2.34   6.00    5.35 2.97  2.00 9.00  7.00 -0.11
+## confound_z    4 50 -0.29 1.00   0.00   -0.28 1.26 -1.71 1.27  2.98 -0.11
 ##            kurtosis   se
-## dep_var       -1.31 0.29
-## dep_var_z     -1.31 0.13
-## confound      -1.23 0.36
-## confound_z    -1.23 0.15
+## dep_var       -1.32 0.28
+## dep_var_z     -1.32 0.13
+## confound      -1.33 0.33
+## confound_z    -1.33 0.14
 ## -------------------------------------------------------- 
 ## condition: manipulation
-##            vars  n  mean   sd median trimmed  mad   min   max range  skew
-## dep_var       1 50  4.68 2.24   6.00    4.85 1.48  1.00  7.00  6.00 -0.44
-## dep_var_z     2 50  0.20 1.03   0.81    0.28 0.68 -1.50  1.27  2.77 -0.44
-## confound      3 50  5.90 2.24   6.00    5.92 2.97  2.00 10.00  8.00 -0.05
-## confound_z    4 50 -0.05 0.94  -0.01   -0.04 1.24 -1.68  1.67  3.35 -0.05
+##            vars  n mean   sd median trimmed  mad   min   max range  skew
+## dep_var       1 50 5.50 1.82   6.00    5.80 1.48  1.00  7.00  6.00 -1.02
+## dep_var_z     2 50 0.48 0.84   0.71    0.62 0.68 -1.59  1.17  2.76 -1.02
+## confound      3 50 6.68 2.18   6.00    6.67 2.97  2.00 10.00  8.00 -0.07
+## confound_z    4 50 0.29 0.93   0.00    0.28 1.26 -1.71  1.70  3.40 -0.07
 ##            kurtosis   se
-## dep_var       -1.39 0.32
-## dep_var_z     -1.39 0.15
-## confound      -0.93 0.32
-## confound_z    -0.93 0.13
+## dep_var       -0.17 0.26
+## dep_var_z     -0.17 0.12
+## confound      -1.08 0.31
+## confound_z    -1.08 0.13
 ```
 
 # read in your own data
@@ -691,13 +685,13 @@ t.test(dep_var ~ condition, data = example_data)
 ## 	Welch Two Sample t-test
 ## 
 ## data:  dep_var by condition
-## t = -2.0151, df = 97.078, p-value = 0.04666
+## t = -5.4362, df = 97.143, p-value = 4.048e-07
 ## alternative hypothesis: true difference in means is not equal to 0
 ## 95 percent confidence interval:
-##  -1.70704503 -0.01295497
+##  -2.839386 -1.320614
 ## sample estimates:
 ##      mean in group control mean in group manipulation 
-##                       3.82                       4.68
+##                       3.42                       5.50
 ```
 
 ## `pairs.panels()`
@@ -729,7 +723,7 @@ lm_fit
 ## 
 ## Coefficients:
 ##           (Intercept)  conditionmanipulation               confound  
-##                1.0840                 0.9669                 0.4456
+##                1.6773                 1.6427                 0.3263
 ```
 
 ## `summary()`
@@ -746,19 +740,19 @@ lm_fit %>% summary()
 ## 
 ## Residuals:
 ##     Min      1Q  Median      3Q     Max 
-## -4.6158 -1.4530  0.1336  1.3842  3.2424 
+## -3.6254 -1.3143  0.2219  1.3856  3.3646 
 ## 
 ## Coefficients:
 ##                       Estimate Std. Error t value Pr(>|t|)    
-## (Intercept)             1.0840     0.5478   1.979   0.0507 .  
-## conditionmanipulation   0.9669     0.3719   2.600   0.0108 *  
-## confound                0.4456     0.0783   5.691 1.34e-07 ***
+## (Intercept)            1.67729    0.49155   3.412 0.000941 ***
+## conditionmanipulation  1.64269    0.37028   4.436 2.42e-05 ***
+## confound               0.32635    0.07916   4.123 7.90e-05 ***
 ## ---
 ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 ## 
-## Residual standard error: 1.857 on 97 degrees of freedom
-## Multiple R-squared:  0.2801,	Adjusted R-squared:  0.2653 
-## F-statistic: 18.87 on 2 and 97 DF,  p-value: 1.195e-07
+## Residual standard error: 1.774 on 97 degrees of freedom
+## Multiple R-squared:  0.3462,	Adjusted R-squared:  0.3328 
+## F-statistic: 25.69 on 2 and 97 DF,  p-value: 1.117e-09
 ```
 
 ## `Anova()`
@@ -772,14 +766,21 @@ lm_fit %>% Anova(type = "III")
 ## Anova Table (Type III tests)
 ## 
 ## Response: dep_var
-##             Sum Sq Df F value    Pr(>F)    
-## (Intercept)  13.50  1  3.9151   0.05069 .  
-## condition    23.31  1  6.7596   0.01078 *  
-## confound    111.69  1 32.3834 1.344e-07 ***
-## Residuals   334.57 97                      
+##              Sum Sq Df F value    Pr(>F)    
+## (Intercept)  36.635  1  11.643 0.0009411 ***
+## condition    61.925  1  19.681 2.418e-05 ***
+## confound     53.476  1  16.996 7.904e-05 ***
+## Residuals   305.204 97                      
 ## ---
 ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 ```
+
+## recommended resources
+> * ReadCollegePDX (2015, October 19). Hadley Wickham "Data Science with R". Retrieved from https://youtu.be/K-ss_ag2k9E?list=PLNtpLD4WiWbw9Cgcg6IU75u-44TrrN3A4
+> * Robinson, D. (2017, July 05). Teach the tidyverse to beginners. Variance Explained. Retreived from http://varianceexplained.org/r/teach-tidyverse/
+> * Wickham, H. (2014). [Tidy data](http://vita.had.co.nz/papers/tidy-data.html). Journal of Statistical Software, 59(10), 1-23.
+> * [The tidyverse style guide](http://style.tidyverse.org/) by Hadley Wickham
+> * Wickham, H., & Grolemund, G. (2017). [R for Data Science: Import, Tidy, Transform, Visualize, and Model Data](http://r4ds.had.co.nz/). Sebastopol, CA: O'Reilly Media, Inc.
 
 ## more advanced data wrangling and analysis techniques by psychologists, for psychologists
 > * [R programming for research](https://github.com/nmmichalak/R_programming_for_research), a workshop instructed by Nick Michalak and Iris Wang at the University of Michigan
