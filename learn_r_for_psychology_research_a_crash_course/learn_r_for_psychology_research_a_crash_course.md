@@ -5,15 +5,14 @@ October 23, 2017
 # introduction
 > I wrote this for psychologists who want to learn how to use R in their research **right now.** What does a psychologist need to know to use R to import, wrangle, plot, and model their data today? Here we go.
 
-# foundations: resources that inspired me.
-> * [Dan Robinson (July 05, 2017)](http://varianceexplained.org/r/teach-tidyverse/) convinced me that beginneRs should learn tidyverse first, not Base R. I wrote this tutorial with this in mind. All you need to know about the differnece is in his blog post. If you've learned some R before this, you might understand that difference as you go through this tutorial.
+# foundations: people and their resources that inspired me.
+> * [Dan Robinson (July 05, 2017)](http://varianceexplained.org/r/teach-tidyverse/) convinced me that beginneRs should learn tidyverse first, not Base R. This tutorial uses tidyverse. All you need to know about the differnece is in his blog post. If you've learned some R before this, you might understand that difference as you go through this tutorial.
 > * If you want a more detailed introduction to R, start with [R for Data Science (Wickham & Grolemund, 2017)](http://r4ds.had.co.nz/). The chapters are short, easy to read, and filled with simple coding examples that demonstrate big principles. And **it's free.**
 > * Hadley Wickham is a legend in the R community. He's responsible for the tidyverse, including ggplot2. Read his books and papers (e.g., [Wickham, 2014](http://vita.had.co.nz/papers/tidy-data.html)). Watch his talks (e.g., [ReadCollegePDX, October 19, 2015](https://youtu.be/K-ss_ag2k9E?list=PLNtpLD4WiWbw9Cgcg6IU75u-44TrrN3A4)). He's profoundly changed how people think about structuring and visualizing data.
 
 # need-to-know basics
 
 ## Install R and R Studio (you need both in that order)
-> * Installing (and uninstalling) R and R Studio
 > * Installing R ( [Macintosh](https://stats.idre.ucla.edu/r/icu/installing-r-for-macintosh/) / [Windows](https://stats.idre.ucla.edu/r/icu/installing-r-for-windows/))
 > * Uninstalling R ( [Macintosh](https://cran.r-project.org/doc/manuals/r-release/R-admin.html#Uninstalling-under-macOS) / [Windows](https://cran.r-project.org/doc/manuals/r-release/R-admin.html#Uninstallation))
 > * [Installing R Studio](https://www.rstudio.com/products/rstudio/download/)
@@ -27,7 +26,7 @@ October 23, 2017
 
 
 ```r
-# before you can load these libraries, use need to install them first:
+# before you can load these libraries, you need to install them first (remove the # part first):
 # install.packages(tidyverse)
 # install.packages(haven)
 # install.packages(psych)
@@ -42,12 +41,13 @@ library(car)
 ## objects: they save stuff for you
 > "`object <- fuction(x)`, which means 'object is created from function(x)'. An object is anything created in R. It could be a variable, a collection of variables, a statistical model, etc. Objects can be single values (such as the mean of a set of scores) or collections of information; for example, when you run an analysis, you create an object that contains the output of that analysis, which means that this object contains many different values and variables. Functions are the things that you do in R to create your objects." **Source:** Field, A., Miles., J., & Field, Z. (2012). Discovering statistics using R. London: SAGE Publications.
 
-## `c()` function: combine things like thing1, thing2, ...
+## `c()` function: combine things like thing1, thing2, thing3, ...
 > "c" stands for combine. Use this to combine values into a vector. "A vector is a sequence of data 'elements' of the same basic type." **Source:** http://www.r-tutor.com/r-introduction/vector
 > Below, we create an object called five_numbers. We are naming it for what it is, but we could name it whatever we want: some_numbers, maple_tree, platypus. It doesn't matter. We'll use this in the examples in later chunks of code.
 
 
 ```r
+# read: combine 1, 2, 3, 4, 5 and "save to", <-, five_numbers
 five_numbers <- c(1, 2, 3, 4, 5)
 
 # print five_numbers by just excecuting/running the name of the object
@@ -65,6 +65,7 @@ five_numbers
 > The `%>%` operator allows you to "pipe" a value forward into an expression or function; something along the lines of x `%>%` f, rather than f(x). See http://magrittr.tidyverse.org/articles/magrittr.html for more details, but check out these examples below.
 
 ## compute z-scores for those five numbers, called five_numbers
+> * see help(scale) for details
 
 
 ```r
@@ -85,6 +86,7 @@ five_numbers %>% scale()
 ```
 
 ## compute z-scores for five_numbers and then convert the result into only numbers
+> * see help(parse_number) for details
 
 
 ```r
@@ -96,6 +98,7 @@ five_numbers %>% scale() %>% parse_number()
 ```
 
 ## compute z-scores for five_numbers and then convert the result into only numbers and then compute the mean
+> * see help(mean) for details
 
 
 ```r
@@ -123,6 +126,7 @@ mean(parse_number(scale(five_numbers)))
 > "A function is a piece of code written to carry out a specified task; it can or can not accept arguments or parameters and it can or can not return one or more values." Functions **do** things for you. **Source:** https://www.datacamp.com/community/tutorials/functions-in-r-a-tutorial#what
 
 ## compute the num of five_numbers
+> * see help(sum) for details
 
 
 ```r
@@ -134,6 +138,7 @@ five_numbers %>% sum()
 ```
 
 ## compute the length of five_numbers
+> * see help(length) for details
 
 
 ```r
@@ -145,6 +150,7 @@ five_numbers %>% length()
 ```
 
 ## compute the sum of five_numbers and divide by the length of five_numbers
+> * see help(Arithmetic) for details
 
 
 ```r
@@ -175,11 +181,39 @@ five_numbers %>% compute_mean()
 ## [1] 3
 ```
 
+## tangent: functions make assumptions; know what they are
+
+### what is the mean of 5 numbers and a unknown number, NA?
+> * see help(NA) for details
+
+
+```r
+c(1, 2, 3, 4, 5, NA) %>% mean()
+```
+
+```
+## [1] NA
+```
+
+> Is this what you expected? Turns out, this isn’t a quirky feature of R. R was designed by statisticians and mathematicians. `NA` represents a value that is unknown. Ask yourself, what is the sum of an unknown value and 17? If you don’t know the value, then you don’t know the value of adding it to 17 either. The `mean()` function gives `NA` for this reason: the mean of 5 values and an unknwon value is `NA`; it’s unknown; it’s not available; it's missing. When you use functions in your own research, think about what the functions “assume” or “know”; ask, "What do I want the function to do? What do I expect it to do? Can the function do what I want with the information I gave it?"
+
+### tell the `mean()` function what to remove missing values
+
+
+```r
+c(1, 2, 3, 4, 5, NA) %>% mean(na.rm = TRUE)
+```
+
+```
+## [1] 3
+```
+
 # create data for psychology-like examples
 > This is the hardest section of the tutorial. Keep this is mind: we're making variables that you might see in a simple psychology dataset, and then we're going to combine them into a dataset. Don't worry about specifcs too much. If you want to understand how a function works, use ?name_of_function or help(name_of_function).
 
 ## subject numbers
 > * read like this: generate a sequence of values from 1 to 100 by 1
+> * see help(seq) for details
 
 
 ```r
@@ -201,6 +235,7 @@ subj_num
 ## condition assignments
 > * read like this: replicate each element of c("control", "manipulation") 50 times, and then turn the result into a factor
 > * side: in R, factors are nominal variables (i.e., integers) with value labels (i.e., names for each integer).
+> * see help(rep) and help(factor) for details
 
 
 ```r
@@ -249,6 +284,7 @@ manip_sd <- 1
 
 ### introduce a neat function in R: `rnorm()`
 > rnorm stands for random normal. Tell it sample size, true mean, and the true sd, and it'll draw from that normal population at random and spit out numbers.
+> * see help(rnorm) for details
 
 
 ```r
@@ -257,8 +293,8 @@ rnorm(n = 10, mean = 0, sd = 1)
 ```
 
 ```
-##  [1]  0.08125601 -0.41051741  0.26605981  0.08191790  0.70647809
-##  [6] -0.22536287  0.74332971  2.11368267 -0.42594279  1.46729458
+##  [1]  0.437150067  0.071491365  1.457522985 -0.909936064 -1.884442504
+##  [6] -0.068774343  0.087519807  0.460072969  1.417730996 -0.006800831
 ```
 
 ### randomly sample from our populations we made up above
@@ -281,21 +317,21 @@ dep_var
 ```
 
 ```
-##   [1] 2.5435830 4.3236220 0.7451496 3.0580718 2.8854941 2.2942833 2.1753255
-##   [8] 3.3899372 2.8832051 1.1432373 1.7081195 2.4233512 2.7096071 0.9788851
-##  [15] 2.6601666 2.2670739 0.8324747 1.2472355 2.9624482 2.7350331 4.5603073
-##  [22] 1.3881786 3.4966163 2.3100509 1.8429701 1.9399995 2.6893665 2.8231387
-##  [29] 3.7517674 2.9231535 2.5872710 3.8347687 2.5131383 1.6323884 3.7907848
-##  [36] 3.4196156 4.3911399 3.3296572 4.1328964 1.9112610 4.2293971 2.7292229
-##  [43] 1.8884676 3.0504422 2.1882514 2.1335971 2.5885613 4.1854058 4.0461194
-##  [50] 1.9281495 4.8709470 5.2113948 6.0862119 5.4777233 5.0309601 4.9954286
-##  [57] 4.9208950 7.1638691 6.8163850 5.6146743 5.1604645 4.4506921 6.0234478
-##  [64] 6.9177280 6.4030250 5.0158720 3.9712019 6.1342765 4.0277931 6.1661882
-##  [71] 6.3251615 5.6675125 2.8871886 6.7152070 5.2122606 8.5822249 6.1276699
-##  [78] 5.5380928 5.5592400 5.8081098 6.1968275 6.4674784 5.7453644 5.9454379
-##  [85] 4.7747758 3.9599458 5.1814286 5.6581842 5.5181680 3.7009358 5.6726327
-##  [92] 7.1131697 4.8326095 7.5638185 5.6739203 5.3667772 4.8108268 7.0192369
-##  [99] 5.0916368 5.5246319
+##   [1] 2.3174113 3.5820479 1.3443665 3.9779939 3.8116994 2.2550409 2.8467768
+##   [8] 2.0012736 2.1963218 3.0307585 2.9218282 1.2326101 2.0952458 3.3006334
+##  [15] 1.5051202 1.6954110 2.2274597 2.7532054 1.3994024 2.1781482 0.9432016
+##  [22] 2.8168835 1.3057774 2.0398285 1.9698414 1.5619784 2.6253277 3.4882788
+##  [29] 2.6479404 2.6682887 2.8382163 3.9667653 1.8339493 1.4080646 1.6121322
+##  [36] 1.8535472 2.1712754 3.0897106 1.7320254 2.7315979 2.4035797 3.4628780
+##  [43] 0.8833265 3.2662168 3.3634631 2.6796974 1.7200519 2.1236379 2.0731863
+##  [50] 1.3563454 5.2260420 7.3076242 7.0939788 4.2046104 6.9163442 4.6393026
+##  [57] 4.8072236 4.5580154 5.7793287 5.3365776 5.3230569 4.9018075 4.2749552
+##  [64] 6.2578294 6.9392679 5.9085303 5.2999263 5.3682482 3.9775799 4.8442672
+##  [71] 6.1956117 3.8745477 6.4009560 6.8047556 4.9454989 5.9316567 4.2450071
+##  [78] 4.3023164 5.2148717 5.5869706 7.0574742 5.3813023 7.1054672 6.4908955
+##  [85] 5.5459350 6.6615862 7.2151105 6.6525751 4.0055953 6.2136965 4.7693686
+##  [92] 6.2982812 4.8312595 3.5186524 4.5672760 6.5389126 6.5227056 5.3199918
+##  [99] 6.6077966 5.8435028
 ```
 
 ## create a potentially confounding variable or a control variable
@@ -310,26 +346,26 @@ confound
 ```
 
 ```
-##   [1]  1.73009986  4.35895583  1.90824778  2.44175832  1.82859340
-##   [6]  1.81374299  0.59161106  0.80141435  1.80680586  0.73611647
-##  [11]  3.27006008  1.71094332  1.11664495 -0.20096132  0.70691604
-##  [16] -0.11084319  0.39317643 -0.97864472  2.95781705 -0.37641110
-##  [21]  3.53074293  0.95115515  0.30122394 -0.97882940  0.99980313
-##  [26]  0.82327051  1.35193001  2.26692770 -0.09094577  1.07012604
-##  [31]  2.18594198  2.42104024 -0.91851100  1.64804570  0.94315919
-##  [36]  1.25675680  0.90232793 -1.46317961  3.31037840  1.11473100
-##  [41]  1.58291366  2.80638339  1.58343683  1.05701150  0.73544605
-##  [46]  0.45244054  0.40915437  3.18273652  2.44407516  1.21883173
-##  [51]  2.18341508  2.75574288  2.80075580  2.79027905  1.11698827
-##  [56]  1.73955888  1.95374328  5.22792164  2.38951510  3.09463446
-##  [61]  2.24973107  0.98198341  0.85459318  2.06622957  3.70044614
-##  [66]  2.94693074  2.70668941  3.99778513  0.99272672  5.93504717
-##  [71]  3.46539370  3.20844852  1.20329233  4.34143401  2.96285835
-##  [76]  4.47916451  3.74115287  4.44293433  4.18997621  3.75736837
-##  [81]  3.65291479  2.94687073  0.97516826  4.25221376  3.06883978
-##  [86]  1.74573326  2.65518197  1.90671429  3.04210774  2.38727488
-##  [91]  2.00341057  2.40983568  3.65229577  4.74592641  3.26372360
-##  [96]  1.84892020  1.98383434  1.95025462  3.23760436  2.76014769
+##   [1]  0.907984608  1.452615157  0.605914599  1.836370315  3.325948397
+##   [6]  1.720329691  0.736468737 -0.065462897  0.862061577  0.319690853
+##  [11]  1.112061079  0.823229169  1.658909748 -0.008849845  0.898877950
+##  [16]  2.327232750  0.749701604  0.945424837  1.644416440  0.723196468
+##  [21] -0.574158871  2.716781116 -0.905502495 -1.754488215  0.412869253
+##  [26]  0.930990295 -1.123153279  0.761449710  1.330286510  1.489849989
+##  [31]  2.784831452  1.286676133 -0.864778371  1.081144695  0.711249674
+##  [36]  0.586139726 -0.196473083  3.425341541  1.400914260  0.780589189
+##  [41]  1.685377841  1.232315234  2.200432654  1.341693546  2.381232042
+##  [46]  0.161915395  1.620789428  2.377717930  0.343104258  1.367519668
+##  [51] -0.018947903  4.134700965  3.241614462  1.046843014  5.387413715
+##  [56]  3.495308707  2.938884785  3.891132860  2.941546893  1.215507153
+##  [61]  2.570170216  3.572755639  2.998418262  1.725013719  1.201901255
+##  [66]  4.676395754  2.620345201  2.409438887  0.728783322  2.041584552
+##  [71]  2.888345475  1.287503939  3.449704507  4.343144856  2.556024225
+##  [76]  3.000744514  2.219147006  1.249633884  1.985913282  2.215853081
+##  [81]  0.994671690  0.380917144  2.356062443  2.614925746  3.186275604
+##  [86]  3.918950665  4.004401731  3.971263695  2.108383490  2.242934793
+##  [91]  3.900958209  1.297371469  2.030562365  1.578065123  2.957813948
+##  [96]  5.891129267  1.702167496  2.549811334  3.817110322  1.836225914
 ```
 
 ## subject gender
@@ -359,6 +395,7 @@ gender
 
 ## subject age
 > * read like this: generate a sequence of values from 18 to 25 by 1, and take a random sample of 100 values from that sequence (with replacement)
+> * see help(sample) for details
 
 
 ```r
@@ -369,11 +406,11 @@ age
 ```
 
 ```
-##   [1] 24 25 25 19 24 23 24 22 20 21 23 23 20 24 23 21 22 18 18 24 20 20 19
-##  [24] 20 19 23 18 25 20 20 23 18 22 20 24 23 21 19 22 21 25 22 20 20 21 25
-##  [47] 23 21 25 18 18 22 24 18 22 22 20 20 20 23 21 19 25 20 22 21 23 21 20
-##  [70] 21 22 18 19 23 19 20 21 24 19 20 24 18 19 24 18 21 22 19 25 24 19 19
-##  [93] 19 21 20 22 22 25 22 21
+##   [1] 25 21 22 24 21 21 19 25 21 19 19 21 21 18 25 23 24 18 18 18 22 20 23
+##  [24] 21 24 21 18 19 18 20 24 18 25 24 22 19 19 20 24 21 24 19 20 23 25 19
+##  [47] 24 24 24 25 21 18 22 23 22 22 19 23 24 24 25 24 20 19 19 19 21 24 22
+##  [70] 20 21 19 23 23 21 22 25 22 20 22 23 22 24 22 20 24 20 19 22 20 18 18
+##  [93] 19 21 21 20 24 24 23 23
 ```
 
 ## `data.frame()` and `tibble()`
@@ -383,6 +420,7 @@ age
 
 ## put all our variable we made into a tibble
 > * every variable we made above is seperated by a comma -- these will become columns in our dataset
+> * see help(data.frame) and help(tibble) for details
 
 
 ```r
@@ -394,18 +432,18 @@ example_data
 
 ```
 ## # A tibble: 100 x 6
-##    subj_num condition   dep_var  confound gender   age
-##       <dbl>    <fctr>     <dbl>     <dbl> <fctr> <dbl>
-##  1        1   control 2.5435830 1.7300999  Woman    24
-##  2        2   control 4.3236220 4.3589558    Man    25
-##  3        3   control 0.7451496 1.9082478  Woman    25
-##  4        4   control 3.0580718 2.4417583    Man    19
-##  5        5   control 2.8854941 1.8285934  Woman    24
-##  6        6   control 2.2942833 1.8137430    Man    23
-##  7        7   control 2.1753255 0.5916111  Woman    24
-##  8        8   control 3.3899372 0.8014143    Man    22
-##  9        9   control 2.8832051 1.8068059  Woman    20
-## 10       10   control 1.1432373 0.7361165    Man    21
+##    subj_num condition  dep_var   confound gender   age
+##       <dbl>    <fctr>    <dbl>      <dbl> <fctr> <dbl>
+##  1        1   control 2.317411  0.9079846  Woman    25
+##  2        2   control 3.582048  1.4526152    Man    21
+##  3        3   control 1.344366  0.6059146  Woman    22
+##  4        4   control 3.977994  1.8363703    Man    24
+##  5        5   control 3.811699  3.3259484  Woman    21
+##  6        6   control 2.255041  1.7203297    Man    21
+##  7        7   control 2.846777  0.7364687  Woman    19
+##  8        8   control 2.001274 -0.0654629    Man    25
+##  9        9   control 2.196322  0.8620616  Woman    21
+## 10       10   control 3.030758  0.3196909    Man    19
 ## # ... with 90 more rows
 ```
 
@@ -414,6 +452,7 @@ example_data
 ## create new variables in data.frame or tibble
 > * `mutate()` adds new variables to your tibble.
 > * we're adding new columns to our dataset, and we're saving this new dataset as the same name as our old one (i.e., like changing an Excel file and saving with the same name)
+> * see help(mutate) for details
 
 
 ```r
@@ -427,23 +466,24 @@ example_data
 
 ```
 ## # A tibble: 100 x 8
-##    subj_num condition   dep_var  confound gender   age   dep_var_z
-##       <dbl>    <fctr>     <dbl>     <dbl> <fctr> <dbl>       <dbl>
-##  1        1   control 2.5435830 1.7300999  Woman    24 -0.90122863
-##  2        2   control 4.3236220 4.3589558    Man    25  0.09801439
-##  3        3   control 0.7451496 1.9082478  Woman    25 -1.91079751
-##  4        4   control 3.0580718 2.4417583    Man    19 -0.61241508
-##  5        5   control 2.8854941 1.8285934  Woman    24 -0.70929332
-##  6        6   control 2.2942833 1.8137430    Man    23 -1.04117556
-##  7        7   control 2.1753255 0.5916111  Woman    24 -1.10795372
-##  8        8   control 3.3899372 0.8014143    Man    22 -0.42611908
-##  9        9   control 2.8832051 1.8068059  Woman    20 -0.71057831
-## 10       10   control 1.1432373 0.7361165    Man    21 -1.68732694
+##    subj_num condition  dep_var   confound gender   age    dep_var_z
+##       <dbl>    <fctr>    <dbl>      <dbl> <fctr> <dbl>        <dbl>
+##  1        1   control 2.317411  0.9079846  Woman    25 -0.881955020
+##  2        2   control 3.582048  1.4526152    Man    21 -0.206731560
+##  3        3   control 1.344366  0.6059146  Woman    22 -1.401489828
+##  4        4   control 3.977994  1.8363703    Man    24  0.004674697
+##  5        5   control 3.811699  3.3259484  Woman    21 -0.084114446
+##  6        6   control 2.255041  1.7203297    Man    21 -0.915256261
+##  7        7   control 2.846777  0.7364687  Woman    19 -0.599312528
+##  8        8   control 2.001274 -0.0654629    Man    25 -1.050749446
+##  9        9   control 2.196322  0.8620616  Woman    21 -0.946607970
+## 10       10   control 3.030758  0.3196909    Man    19 -0.501079790
 ## # ... with 90 more rows, and 1 more variables: confound_z <dbl>
 ```
 
 ## select specific columns
 > * `select()` selects your tibble's variables by name and in the exact order you specify.
+> * see help(select) for details
 
 
 ```r
@@ -453,24 +493,25 @@ example_data %>%
 
 ```
 ## # A tibble: 100 x 3
-##    subj_num condition   dep_var
-##       <dbl>    <fctr>     <dbl>
-##  1        1   control 2.5435830
-##  2        2   control 4.3236220
-##  3        3   control 0.7451496
-##  4        4   control 3.0580718
-##  5        5   control 2.8854941
-##  6        6   control 2.2942833
-##  7        7   control 2.1753255
-##  8        8   control 3.3899372
-##  9        9   control 2.8832051
-## 10       10   control 1.1432373
+##    subj_num condition  dep_var
+##       <dbl>    <fctr>    <dbl>
+##  1        1   control 2.317411
+##  2        2   control 3.582048
+##  3        3   control 1.344366
+##  4        4   control 3.977994
+##  5        5   control 3.811699
+##  6        6   control 2.255041
+##  7        7   control 2.846777
+##  8        8   control 2.001274
+##  9        9   control 2.196322
+## 10       10   control 3.030758
 ## # ... with 90 more rows
 ```
 
 ## filter specific rows
 > * `filter()` returns rows that all meet some condition you give it.
 > * Note, `==` means "exactly equal to". See ?Comparison.
+> * see help(filter) for details
 
 
 ```r
@@ -480,23 +521,24 @@ example_data %>%
 
 ```
 ## # A tibble: 50 x 8
-##    subj_num condition   dep_var  confound gender   age   dep_var_z
-##       <dbl>    <fctr>     <dbl>     <dbl> <fctr> <dbl>       <dbl>
-##  1        1   control 2.5435830 1.7300999  Woman    24 -0.90122863
-##  2        2   control 4.3236220 4.3589558    Man    25  0.09801439
-##  3        3   control 0.7451496 1.9082478  Woman    25 -1.91079751
-##  4        4   control 3.0580718 2.4417583    Man    19 -0.61241508
-##  5        5   control 2.8854941 1.8285934  Woman    24 -0.70929332
-##  6        6   control 2.2942833 1.8137430    Man    23 -1.04117556
-##  7        7   control 2.1753255 0.5916111  Woman    24 -1.10795372
-##  8        8   control 3.3899372 0.8014143    Man    22 -0.42611908
-##  9        9   control 2.8832051 1.8068059  Woman    20 -0.71057831
-## 10       10   control 1.1432373 0.7361165    Man    21 -1.68732694
+##    subj_num condition  dep_var   confound gender   age    dep_var_z
+##       <dbl>    <fctr>    <dbl>      <dbl> <fctr> <dbl>        <dbl>
+##  1        1   control 2.317411  0.9079846  Woman    25 -0.881955020
+##  2        2   control 3.582048  1.4526152    Man    21 -0.206731560
+##  3        3   control 1.344366  0.6059146  Woman    22 -1.401489828
+##  4        4   control 3.977994  1.8363703    Man    24  0.004674697
+##  5        5   control 3.811699  3.3259484  Woman    21 -0.084114446
+##  6        6   control 2.255041  1.7203297    Man    21 -0.915256261
+##  7        7   control 2.846777  0.7364687  Woman    19 -0.599312528
+##  8        8   control 2.001274 -0.0654629    Man    25 -1.050749446
+##  9        9   control 2.196322  0.8620616  Woman    21 -0.946607970
+## 10       10   control 3.030758  0.3196909    Man    19 -0.501079790
 ## # ... with 40 more rows, and 1 more variables: confound_z <dbl>
 ```
 
 ## make your own table of summary data
 > * `summarize()` let's you apply functions to your data to reduce it to single values. Typically, you create new summary values based on groups (e.g., condition, gender, id); for this, use `group_by()` first.
+> * see help(summarize) and help(group_by) for details
 
 
 ```r
@@ -510,12 +552,12 @@ example_data %>%
 ```
 ## # A tibble: 4 x 5
 ## # Groups:   gender [?]
-##   gender    condition     Mean       SD     n
-##   <fctr>       <fctr>    <dbl>    <dbl> <int>
-## 1    Man      control 1.120941 1.373582    25
-## 2    Man manipulation 3.148774 1.257496    25
-## 3  Woman      control 1.423242 1.111816    25
-## 4  Woman manipulation 2.561854 0.985989    25
+##   gender    condition      Mean       SD     n
+##   <fctr>       <fctr>     <dbl>    <dbl> <int>
+## 1    Man      control 1.1143765 1.031127    25
+## 2    Man manipulation 2.6634863 1.371544    25
+## 3  Woman      control 0.9483746 1.128701    25
+## 4  Woman manipulation 2.5907069 1.151838    25
 ```
 
 
@@ -525,6 +567,7 @@ example_data %>%
 ## make ggplots in layers
 > * Aesthetic mappings describe how variables in the data are mapped to visual properties (aesthetics) of geoms. **Source:** http://ggplot2.tidyverse.org/reference/aes.html
 > * Below, we map condition on our plot's x-axis and dep_var on its y-axis
+> * see help(ggplot) for details
 
 
 ```r
@@ -532,12 +575,13 @@ example_data %>%
   ggplot(mapping = aes(x = condition, y = dep_var))
 ```
 
-![](learn_r_for_psychology_research_a_crash_course_files/figure-html/unnamed-chunk-26-1.png)<!-- -->
+![](learn_r_for_psychology_research_a_crash_course_files/figure-html/unnamed-chunk-28-1.png)<!-- -->
 
 > * Think of this like a blank canvas that we're going to add pictures to or like a map of the ocean we're going to add land mass to
 
 ## boxplot
 > * next, we add—yes, add, with a `+`—a geom, a geometric element: `geom_boxplot()`
+> * see help(geom_boxplot) for details
 
 
 ```r
@@ -546,13 +590,14 @@ example_data %>%
   geom_boxplot()
 ```
 
-![](learn_r_for_psychology_research_a_crash_course_files/figure-html/unnamed-chunk-27-1.png)<!-- -->
+![](learn_r_for_psychology_research_a_crash_course_files/figure-html/unnamed-chunk-29-1.png)<!-- -->
 
 > * Here's emphasis: we started with a blank canvas, and we added a boxplot. All ggplots work this way: start with a base and add layers.
 
 ## QQ-plots
 > * Below, we plot the sample quantiles of dep_var against the theoretical quantiles
-> * Useful for exploring the distriubtion of a variable (default theoretial quantiles are normal, see ?geom_qq)
+> * Useful for exploring the distribution of a variable
+> * see help(geom_qq) for details
 
 
 ```r
@@ -561,12 +606,13 @@ example_data %>%
   geom_qq()
 ```
 
-![](learn_r_for_psychology_research_a_crash_course_files/figure-html/unnamed-chunk-28-1.png)<!-- -->
+![](learn_r_for_psychology_research_a_crash_course_files/figure-html/unnamed-chunk-30-1.png)<!-- -->
 
 ## means and 95% confidence intervals
 > * add a new aesthetic, fill, which will fill the geoms with different colors, depending on the variable (e.g., levels of categorical variables are assigned their own fill color)
 > * `stat_summary()` does what its name suggests: it applies statistical summaries to your raw data to make the geoms (bars and error bars in our case below)
 > * the width argument sets the width of the error bars.
+> * see help(stat_summary) for details
 
 
 ```r
@@ -576,10 +622,11 @@ example_data %>%
   stat_summary(geom = "errorbar", fun.data = mean_cl_normal, width = 0.1)
 ```
 
-![](learn_r_for_psychology_research_a_crash_course_files/figure-html/unnamed-chunk-29-1.png)<!-- -->
+![](learn_r_for_psychology_research_a_crash_course_files/figure-html/unnamed-chunk-31-1.png)<!-- -->
 
 ## scatterplots
 > * we add `geom_point()` and `geom_smooth()` below to add points to the scatterplot and fit a linear regression line with 95% confidence ribbons/bands around that line
+> * see help(geom_point) and help(geom_smooth)for details
 
 
 ```r
@@ -589,11 +636,11 @@ example_data %>%
   geom_smooth(method = "lm", se = TRUE)
 ```
 
-![](learn_r_for_psychology_research_a_crash_course_files/figure-html/unnamed-chunk-30-1.png)<!-- -->
+![](learn_r_for_psychology_research_a_crash_course_files/figure-html/unnamed-chunk-32-1.png)<!-- -->
 
 # descriptive statistics
-> * `describe()`
-> * `describeBy()`
+> * `describe()`, help(describe)
+> * `describeBy()`, help(describeBy)
 
 ## for whole sample
 
@@ -606,15 +653,15 @@ example_data %>%
 
 ```
 ##            vars   n mean   sd median trimmed  mad   min  max range skew
-## dep_var       1 100 4.15 1.78   4.16    4.13 2.17  0.75 8.58  7.84 0.06
-## dep_var_z     2 100 0.00 1.00   0.01   -0.01 1.22 -1.91 2.49  4.40 0.06
-## confound      3 100 2.06 1.44   1.97    2.06 1.47 -1.46 5.94  7.40 0.03
-## confound_z    4 100 0.00 1.00  -0.07    0.00 1.02 -2.45 2.69  5.15 0.03
+## dep_var       1 100 3.97 1.87   3.92    3.93 2.47  0.88 7.31  6.42 0.16
+## dep_var_z     2 100 0.00 1.00  -0.03   -0.02 1.32 -1.65 1.78  3.43 0.16
+## confound      3 100 1.83 1.41   1.67    1.80 1.34 -1.75 5.89  7.65 0.24
+## confound_z    4 100 0.00 1.00  -0.11   -0.02 0.95 -2.54 2.88  5.42 0.24
 ##            kurtosis   se
-## dep_var       -0.94 0.18
-## dep_var_z     -0.94 0.10
-## confound      -0.19 0.14
-## confound_z    -0.19 0.10
+## dep_var       -1.29 0.19
+## dep_var_z     -1.29 0.10
+## confound       0.08 0.14
+## confound_z     0.08 0.10
 ```
 
 ## by condition
@@ -631,28 +678,28 @@ example_data %>%
 ## 
 ##  Descriptive statistics by group 
 ## condition: control
-##            vars  n  mean   sd median trimmed  mad   min  max range skew
-## dep_var       1 50  2.68 0.98   2.67    2.69 1.07  0.75 4.56  3.82 0.04
-## dep_var_z     2 50 -0.82 0.55  -0.83   -0.82 0.60 -1.91 0.23  2.14 0.04
-## confound      3 50  1.27 1.25   1.12    1.27 1.04 -1.46 4.36  5.82 0.10
-## confound_z    4 50 -0.55 0.87  -0.66   -0.55 0.72 -2.45 1.60  4.05 0.10
+##            vars  n  mean   sd median trimmed  mad   min  max range  skew
+## dep_var       1 50  2.35 0.80   2.21    2.32 0.89  0.88 3.98  3.09  0.23
+## dep_var_z     2 50 -0.87 0.43  -0.94   -0.88 0.48 -1.65 0.00  1.65  0.23
+## confound      3 50  1.03 1.07   0.94    1.05 0.85 -1.75 3.43  5.18 -0.15
+## confound_z    4 50 -0.57 0.76  -0.63   -0.55 0.60 -2.54 1.13  3.67 -0.15
 ##            kurtosis   se
-## dep_var       -0.72 0.14
-## dep_var_z     -0.72 0.08
-## confound      -0.20 0.18
-## confound_z    -0.20 0.12
+## dep_var       -0.86 0.11
+## dep_var_z     -0.86 0.06
+## confound       0.20 0.15
+## confound_z     0.20 0.11
 ## -------------------------------------------------------- 
 ## condition: manipulation
-##            vars  n mean   sd median trimmed  mad   min  max range skew
-## dep_var       1 50 5.61 1.04   5.59    5.62 0.85  2.89 8.58  5.70 0.10
-## dep_var_z     2 50 0.82 0.58   0.81    0.82 0.48 -0.71 2.49  3.20 0.10
-## confound      3 50 2.86 1.16   2.80    2.83 1.25  0.85 5.94  5.08 0.32
-## confound_z    4 50 0.55 0.81   0.51    0.53 0.87 -0.84 2.69  3.54 0.32
+##            vars  n mean   sd median trimmed  mad   min  max range  skew
+## dep_var       1 50 5.59 1.03   5.46    5.61 1.28  3.52 7.31  3.79 -0.07
+## dep_var_z     2 50 0.87 0.55   0.80    0.87 0.69 -0.24 1.78  2.02 -0.07
+## confound      3 50 2.63 1.25   2.56    2.59 1.30 -0.02 5.89  5.91  0.27
+## confound_z    4 50 0.57 0.89   0.52    0.54 0.92 -1.31 2.88  4.19  0.27
 ##            kurtosis   se
-## dep_var         0.6 0.15
-## dep_var_z       0.6 0.08
-## confound       -0.3 0.16
-## confound_z     -0.3 0.11
+## dep_var       -1.18 0.15
+## dep_var_z     -1.18 0.08
+## confound      -0.21 0.18
+## confound_z    -0.21 0.13
 ```
 
 # read in your own data
@@ -661,6 +708,7 @@ example_data %>%
 > * SPSS .sav file: `read_sav()`
 
 ## SPSS
+> * see help(read_sav) for details
 
 
 ```r
@@ -691,6 +739,7 @@ coffee_data
 ```
 
 ## CSV
+> * see help(read_csv) for details
 
 
 ```r
@@ -710,6 +759,7 @@ coffee_data <- coffee_filepath %>% read_csv()
 ```
 
 ## TXT
+> * see help(read_delim) for details
 
 
 ```r
@@ -730,7 +780,7 @@ coffee_data <- coffee_filepath %>% read_delim(delim = " ")
 
 # modeling your data
 
-## `t.test()`
+## `t.test()`, help(t.test)
 
 
 ```r
@@ -742,16 +792,16 @@ t.test(dep_var ~ condition, data = example_data)
 ## 	Welch Two Sample t-test
 ## 
 ## data:  dep_var by condition
-## t = -14.535, df = 97.647, p-value < 2.2e-16
+## t = -17.547, df = 92.266, p-value < 2.2e-16
 ## alternative hypothesis: true difference in means is not equal to 0
 ## 95 percent confidence interval:
-##  -3.329976 -2.529915
+##  -3.613488 -2.878685
 ## sample estimates:
 ##      mean in group control mean in group manipulation 
-##                   2.684048                   5.613993
+##                   2.346195                   5.592282
 ```
 
-## `pairs.panels()`
+## `pairs.panels()`, help(pairs.panels)
 > shows a scatter plot of matrices (SPLOM), with bivariate scatter plots below the diagonal, histograms on the diagonal, and the Pearson correlation above the diagonal (see ?pairs.panels).
 
 
@@ -761,9 +811,9 @@ example_data %>%
   pairs.panels()
 ```
 
-![](learn_r_for_psychology_research_a_crash_course_files/figure-html/unnamed-chunk-37-1.png)<!-- -->
+![](learn_r_for_psychology_research_a_crash_course_files/figure-html/unnamed-chunk-39-1.png)<!-- -->
 
-## `lm()`
+## `lm()`, help(lm)
 
 
 ```r
@@ -780,10 +830,10 @@ lm_fit
 ## 
 ## Coefficients:
 ##           (Intercept)  conditionmanipulation               confound  
-##                2.2176                 2.3494                 0.3667
+##                2.0690                 2.8172                 0.2688
 ```
 
-## `summary()`
+## `summary()`, help(summary)
 
 
 ```r
@@ -797,22 +847,22 @@ lm_fit %>% summary()
 ## 
 ## Residuals:
 ##      Min       1Q   Median       3Q      Max 
-## -2.17219 -0.55245 -0.08153  0.57528  2.37274 
+## -1.79167 -0.72443  0.00089  0.66476  1.90395 
 ## 
 ## Coefficients:
 ##                       Estimate Std. Error t value Pr(>|t|)    
-## (Intercept)            2.21755    0.16148  13.733  < 2e-16 ***
-## conditionmanipulation  2.34935    0.21880  10.737  < 2e-16 ***
-## confound               0.36672    0.07653   4.792 5.95e-06 ***
+## (Intercept)             2.0690     0.1463  14.145  < 2e-16 ***
+## conditionmanipulation   2.8172     0.2126  13.252  < 2e-16 ***
+## confound                0.2688     0.0757   3.551 0.000595 ***
 ## ---
 ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 ## 
-## Residual standard error: 0.9109 on 97 degrees of freedom
-## Multiple R-squared:  0.7438,	Adjusted R-squared:  0.7385 
-## F-statistic: 140.8 on 2 and 97 DF,  p-value: < 2.2e-16
+## Residual standard error: 0.8746 on 97 degrees of freedom
+## Multiple R-squared:  0.7863,	Adjusted R-squared:  0.7819 
+## F-statistic: 178.5 on 2 and 97 DF,  p-value: < 2.2e-16
 ```
 
-## `Anova()`
+## `Anova()`, help(Anova)
 
 
 ```r
@@ -824,10 +874,10 @@ lm_fit %>% Anova(type = "III")
 ## 
 ## Response: dep_var
 ##              Sum Sq Df F value    Pr(>F)    
-## (Intercept) 156.501  1 188.596 < 2.2e-16 ***
-## condition    95.671  1 115.291 < 2.2e-16 ***
-## confound     19.053  1  22.961 5.951e-06 ***
-## Residuals    80.493 97                      
+## (Intercept) 153.054  1 200.076 < 2.2e-16 ***
+## condition   134.348  1 175.623 < 2.2e-16 ***
+## confound      9.644  1  12.607 0.0005949 ***
+## Residuals    74.203 97                      
 ## ---
 ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 ```

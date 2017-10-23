@@ -16,15 +16,14 @@ output:
 # introduction
 > I wrote this for psychologists who want to learn how to use R in their research **right now.** What does a psychologist need to know to use R to import, wrangle, plot, and model their data today? Here we go.
 
-# foundations: resources that inspired me.
-> * [Dan Robinson (July 05, 2017)](http://varianceexplained.org/r/teach-tidyverse/) convinced me that beginneRs should learn tidyverse first, not Base R. I wrote this tutorial with this in mind. All you need to know about the differnece is in his blog post. If you've learned some R before this, you might understand that difference as you go through this tutorial.
+# foundations: people and their resources that inspired me.
+> * [Dan Robinson (July 05, 2017)](http://varianceexplained.org/r/teach-tidyverse/) convinced me that beginneRs should learn tidyverse first, not Base R. This tutorial uses tidyverse. All you need to know about the differnece is in his blog post. If you've learned some R before this, you might understand that difference as you go through this tutorial.
 > * If you want a more detailed introduction to R, start with [R for Data Science (Wickham & Grolemund, 2017)](http://r4ds.had.co.nz/). The chapters are short, easy to read, and filled with simple coding examples that demonstrate big principles. And **it's free.**
 > * Hadley Wickham is a legend in the R community. He's responsible for the tidyverse, including ggplot2. Read his books and papers (e.g., [Wickham, 2014](http://vita.had.co.nz/papers/tidy-data.html)). Watch his talks (e.g., [ReadCollegePDX, October 19, 2015](https://youtu.be/K-ss_ag2k9E?list=PLNtpLD4WiWbw9Cgcg6IU75u-44TrrN3A4)). He's profoundly changed how people think about structuring and visualizing data.
 
 # need-to-know basics
 
 ## Install R and R Studio (you need both in that order)
-> * Installing (and uninstalling) R and R Studio
 > * Installing R ( [Macintosh](https://stats.idre.ucla.edu/r/icu/installing-r-for-macintosh/) / [Windows](https://stats.idre.ucla.edu/r/icu/installing-r-for-windows/))
 > * Uninstalling R ( [Macintosh](https://cran.r-project.org/doc/manuals/r-release/R-admin.html#Uninstalling-under-macOS) / [Windows](https://cran.r-project.org/doc/manuals/r-release/R-admin.html#Uninstallation))
 > * [Installing R Studio](https://www.rstudio.com/products/rstudio/download/)
@@ -38,7 +37,7 @@ output:
 
 ```{r, message = FALSE, warning = FALSE}
 
-# before you can load these libraries, use need to install them first:
+# before you can load these libraries, you need to install them first (remove the # part first):
 # install.packages(tidyverse)
 # install.packages(haven)
 # install.packages(psych)
@@ -54,12 +53,13 @@ library(car)
 ## objects: they save stuff for you
 > "`object <- fuction(x)`, which means 'object is created from function(x)'. An object is anything created in R. It could be a variable, a collection of variables, a statistical model, etc. Objects can be single values (such as the mean of a set of scores) or collections of information; for example, when you run an analysis, you create an object that contains the output of that analysis, which means that this object contains many different values and variables. Functions are the things that you do in R to create your objects." **Source:** Field, A., Miles., J., & Field, Z. (2012). Discovering statistics using R. London: SAGE Publications.
 
-## `c()` function: combine things like thing1, thing2, ...
+## `c()` function: combine things like thing1, thing2, thing3, ...
 > "c" stands for combine. Use this to combine values into a vector. "A vector is a sequence of data 'elements' of the same basic type." **Source:** http://www.r-tutor.com/r-introduction/vector
 > Below, we create an object called five_numbers. We are naming it for what it is, but we could name it whatever we want: some_numbers, maple_tree, platypus. It doesn't matter. We'll use this in the examples in later chunks of code.
 
 ```{r}
 
+# read: combine 1, 2, 3, 4, 5 and "save to", <-, five_numbers
 five_numbers <- c(1, 2, 3, 4, 5)
 
 # print five_numbers by just excecuting/running the name of the object
@@ -74,6 +74,7 @@ five_numbers
 > The `%>%` operator allows you to "pipe" a value forward into an expression or function; something along the lines of x `%>%` f, rather than f(x). See http://magrittr.tidyverse.org/articles/magrittr.html for more details, but check out these examples below.
 
 ## compute z-scores for those five numbers, called five_numbers
+> * see help(scale) for details
 
 ```{r}
 
@@ -82,6 +83,7 @@ five_numbers %>% scale()
 ```
 
 ## compute z-scores for five_numbers and then convert the result into only numbers
+> * see help(parse_number) for details
 
 ```{r}
 
@@ -90,6 +92,7 @@ five_numbers %>% scale() %>% parse_number()
 ```
 
 ## compute z-scores for five_numbers and then convert the result into only numbers and then compute the mean
+> * see help(mean) for details
 
 ```{r}
 
@@ -111,6 +114,7 @@ mean(parse_number(scale(five_numbers)))
 > "A function is a piece of code written to carry out a specified task; it can or can not accept arguments or parameters and it can or can not return one or more values." Functions **do** things for you. **Source:** https://www.datacamp.com/community/tutorials/functions-in-r-a-tutorial#what
 
 ## compute the num of five_numbers
+> * see help(sum) for details
 
 ```{r}
 
@@ -119,6 +123,7 @@ five_numbers %>% sum()
 ```
 
 ## compute the length of five_numbers
+> * see help(length) for details
 
 ```{r}
 
@@ -127,6 +132,7 @@ five_numbers %>% length()
 ```
 
 ## compute the sum of five_numbers and divide by the length of five_numbers
+> * see help(Arithmetic) for details
 
 ```{r}
 
@@ -152,11 +158,33 @@ five_numbers %>% compute_mean()
 
 ```
 
+## tangent: functions make assumptions; know what they are
+
+### what is the mean of 5 numbers and a unknown number, NA?
+> * see help(NA) for details
+
+```{r}
+
+c(1, 2, 3, 4, 5, NA) %>% mean()
+
+```
+
+> Is this what you expected? Turns out, this isn’t a quirky feature of R. R was designed by statisticians and mathematicians. `NA` represents a value that is unknown. Ask yourself, what is the sum of an unknown value and 17? If you don’t know the value, then you don’t know the value of adding it to 17 either. The `mean()` function gives `NA` for this reason: the mean of 5 values and an unknwon value is `NA`; it’s unknown; it’s not available; it's missing. When you use functions in your own research, think about what the functions “assume” or “know”; ask, "What do I want the function to do? What do I expect it to do? Can the function do what I want with the information I gave it?"
+
+### tell the `mean()` function what to remove missing values
+
+```{r}
+
+c(1, 2, 3, 4, 5, NA) %>% mean(na.rm = TRUE)
+
+```
+
 # create data for psychology-like examples
 > This is the hardest section of the tutorial. Keep this is mind: we're making variables that you might see in a simple psychology dataset, and then we're going to combine them into a dataset. Don't worry about specifcs too much. If you want to understand how a function works, use ?name_of_function or help(name_of_function).
 
 ## subject numbers
 > * read like this: generate a sequence of values from 1 to 100 by 1
+> * see help(seq) for details
 
 ```{r}
 
@@ -170,6 +198,7 @@ subj_num
 ## condition assignments
 > * read like this: replicate each element of c("control", "manipulation") 50 times, and then turn the result into a factor
 > * side: in R, factors are nominal variables (i.e., integers) with value labels (i.e., names for each integer).
+> * see help(rep) and help(factor) for details
 
 ```{r}
 
@@ -196,6 +225,7 @@ manip_sd <- 1
 
 ### introduce a neat function in R: `rnorm()`
 > rnorm stands for random normal. Tell it sample size, true mean, and the true sd, and it'll draw from that normal population at random and spit out numbers.
+> * see help(rnorm) for details
 
 ```{r}
 
@@ -251,6 +281,7 @@ gender
 
 ## subject age
 > * read like this: generate a sequence of values from 18 to 25 by 1, and take a random sample of 100 values from that sequence (with replacement)
+> * see help(sample) for details
 
 ```{r}
 
@@ -268,6 +299,7 @@ age
 
 ## put all our variable we made into a tibble
 > * every variable we made above is seperated by a comma -- these will become columns in our dataset
+> * see help(data.frame) and help(tibble) for details
 
 ```{r}
 
@@ -283,6 +315,7 @@ example_data
 ## create new variables in data.frame or tibble
 > * `mutate()` adds new variables to your tibble.
 > * we're adding new columns to our dataset, and we're saving this new dataset as the same name as our old one (i.e., like changing an Excel file and saving with the same name)
+> * see help(mutate) for details
 
 ```{r}
 
@@ -297,6 +330,7 @@ example_data
 
 ## select specific columns
 > * `select()` selects your tibble's variables by name and in the exact order you specify.
+> * see help(select) for details
 
 ```{r}
 
@@ -308,6 +342,7 @@ example_data %>%
 ## filter specific rows
 > * `filter()` returns rows that all meet some condition you give it.
 > * Note, `==` means "exactly equal to". See ?Comparison.
+> * see help(filter) for details
 
 ```{r}
 
@@ -318,6 +353,7 @@ example_data %>%
 
 ## make your own table of summary data
 > * `summarize()` let's you apply functions to your data to reduce it to single values. Typically, you create new summary values based on groups (e.g., condition, gender, id); for this, use `group_by()` first.
+> * see help(summarize) and help(group_by) for details
 
 ```{r}
 
@@ -336,6 +372,7 @@ example_data %>%
 ## make ggplots in layers
 > * Aesthetic mappings describe how variables in the data are mapped to visual properties (aesthetics) of geoms. **Source:** http://ggplot2.tidyverse.org/reference/aes.html
 > * Below, we map condition on our plot's x-axis and dep_var on its y-axis
+> * see help(ggplot) for details
 
 ```{r}
 
@@ -348,6 +385,7 @@ example_data %>%
 
 ## boxplot
 > * next, we add—yes, add, with a `+`—a geom, a geometric element: `geom_boxplot()`
+> * see help(geom_boxplot) for details
 
 ```{r}
 
@@ -361,7 +399,8 @@ example_data %>%
 
 ## QQ-plots
 > * Below, we plot the sample quantiles of dep_var against the theoretical quantiles
-> * Useful for exploring the distriubtion of a variable (default theoretial quantiles are normal, see ?geom_qq)
+> * Useful for exploring the distribution of a variable
+> * see help(geom_qq) for details
 
 ```{r}
 
@@ -375,6 +414,7 @@ example_data %>%
 > * add a new aesthetic, fill, which will fill the geoms with different colors, depending on the variable (e.g., levels of categorical variables are assigned their own fill color)
 > * `stat_summary()` does what its name suggests: it applies statistical summaries to your raw data to make the geoms (bars and error bars in our case below)
 > * the width argument sets the width of the error bars.
+> * see help(stat_summary) for details
 
 ```{r}
 
@@ -388,6 +428,7 @@ example_data %>%
 
 ## scatterplots
 > * we add `geom_point()` and `geom_smooth()` below to add points to the scatterplot and fit a linear regression line with 95% confidence ribbons/bands around that line
+> * see help(geom_point) and help(geom_smooth)for details
 
 ```{r}
 
@@ -399,8 +440,8 @@ example_data %>%
 ```
 
 # descriptive statistics
-> * `describe()`
-> * `describeBy()`
+> * `describe()`, help(describe)
+> * `describeBy()`, help(describeBy)
 
 ## for whole sample
 
@@ -429,6 +470,7 @@ example_data %>%
 > * SPSS .sav file: `read_sav()`
 
 ## SPSS
+> * see help(read_sav) for details
 
 ```{r}
 
@@ -443,6 +485,7 @@ coffee_data
 ```
 
 ## CSV
+> * see help(read_csv) for details
 
 ```{r}
 
@@ -454,6 +497,7 @@ coffee_data <- coffee_filepath %>% read_csv()
 ```
 
 ## TXT
+> * see help(read_delim) for details
 
 ```{r}
 
@@ -466,7 +510,7 @@ coffee_data <- coffee_filepath %>% read_delim(delim = " ")
 
 # modeling your data
 
-## `t.test()`
+## `t.test()`, help(t.test)
 
 ```{r}
 
@@ -474,7 +518,7 @@ t.test(dep_var ~ condition, data = example_data)
 
 ```
 
-## `pairs.panels()`
+## `pairs.panels()`, help(pairs.panels)
 > shows a scatter plot of matrices (SPLOM), with bivariate scatter plots below the diagonal, histograms on the diagonal, and the Pearson correlation above the diagonal (see ?pairs.panels).
 
 ```{r}
@@ -485,7 +529,7 @@ example_data %>%
 
 ```
 
-## `lm()`
+## `lm()`, help(lm)
 
 ```{r}
 
@@ -496,7 +540,7 @@ lm_fit
 
 ```
 
-## `summary()`
+## `summary()`, help(summary)
 
 ```{r}
 
@@ -504,7 +548,7 @@ lm_fit %>% summary()
 
 ```
 
-## `Anova()`
+## `Anova()`, help(Anova)
 
 ```{r}
 
