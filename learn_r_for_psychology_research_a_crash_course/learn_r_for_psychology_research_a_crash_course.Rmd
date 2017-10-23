@@ -70,7 +70,7 @@ five_numbers
 ## R Help: `help()` and `?`
 > "The help() function and ? help operator in R provide access to the documentation pages for R functions, data sets, and other objects, both for packages in the standard R distribution and for contributed packages. To access documentation for the standard lm (linear model) function, for example, enter the command help(lm) or help("lm"), or ?lm or ?"lm" (i.e., the quotes are optional)." **Source:** https://www.r-project.org/help.html
 
-## piping, `%>%`
+## piping, `%>%`: write code kinda like you write sentences
 > The `%>%` operator allows you to "pipe" a value forward into an expression or function; something along the lines of x `%>%` f, rather than f(x). See http://magrittr.tidyverse.org/articles/magrittr.html for more details, but check out these examples below.
 
 ## compute z-scores for those five numbers, called five_numbers
@@ -194,6 +194,8 @@ subj_num <- seq(from = 1, to = 100, by = 1)
 subj_num
 
 ```
+
+> See those numbers on the left hand side of the output above? Those help you keep track of a sequence (i.e., line) of elements as the output moves to each new line. This is obvious in the example above because numbers correspond exactly to their position. But if these were letters or random numbers, that index or position (e.g., [14] "N") tells you the position of that element in the line.
 
 ## condition assignments
 > * read like this: replicate each element of c("control", "manipulation") 50 times, and then turn the result into a factor
