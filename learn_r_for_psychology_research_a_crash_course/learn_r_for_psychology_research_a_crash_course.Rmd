@@ -7,8 +7,8 @@ output:
     code_folding: show
     fig_height: 7.5
     fig_width: 10
-    keep_md: yes
     theme: readable
+    keep_md: true
     toc: yes
     toc_float: yes
 ---
@@ -153,6 +153,7 @@ five_numbers %>% compute_mean()
 ```
 
 # create data for psychology-like examples
+> This is the hardest part of the tutorial.
 
 ## subject numbers
 
@@ -178,38 +179,35 @@ condition
 
 ## dependent measure
 
-### create a vector of 7 values representing points on a 7-point scale
+### save 5 values that represent the sample sizes and the true means and standard deviations of our pretend conditions
 
 ```{r}
 
-scale_points <- seq(from = 1, to = 7, by = 1)
-
-# print scale_points by just excecuting/running the name of the object
-scale_points
+sample_size <- 50
+control_mean <- 2.5
+control_sd <- 1
+manip_mean <- 5.5
+manip_sd <- 1
 
 ```
 
-### how likely is each value, from 1 to 7?
-> Below, I'm making a vector of 7 values for each condition that represent the "true" probablity of observing that value; I'll use this in a random sampling function in the next chunk of code.
+### introduce a neat function in R: `rnorm()`
+> rnorm stands for random normal. Tell it sample size, true mean, and the true sd, and it'll draw from that normal population at random and spit out numbers.
 
 ```{r}
 
-# all the 1s are divided by 7
-control_probs <- c(1, 1, 1, 1, 1, 1, 1) / 7
-
-# let's make bigger values more likely for the manipulation condition
-manipulation_probs <- c(0.1, 0.1, 0.1, 0.1, 0.1, 0.2, 0.3)
+# for example
+rnorm(n = 10, mean = 0, sd = 1)
 
 ```
 
-
-### randomly sample from those points using the probability values we made above
+### randomly sample from our populations we made up above
 
 ```{r}
 
-control_values <- scale_points %>% sample(size = 50, replace = TRUE, prob = control_probs)
+control_values <- rnorm(n = sample_size, mean = control_mean, sd = control_sd)
 
-manipulation_values <- scale_points %>% sample(size = 50, replace = TRUE, prob = manipulation_probs)
+manipulation_values <- rnorm(n = sample_size, mean = manip_mean, sd = manip_sd)
 
 ```
 
@@ -225,11 +223,11 @@ dep_var
 ```
 
 ## create a potentially confounding variable or a control variable
-> read the code below like this: dep_var multiplied by 0.5 + the result of a random sample of 100 from scale_points, with replacement. Round this result to 0 digits.
+> in the code below, we multiply every value in dep_var by 0.5 and then we "add noise": 100 random normal values whose true population has a mean = 0 and sd = 1.
 
 ```{r}
 
-confound <- (dep_var * 0.5 + scale_points %>% sample(size = 100, replace = TRUE)) %>% round(digits = 0)
+confound <- dep_var * 0.5 + rnorm(n = 100, mean = 0, sd = 1)
 
 # print confound by just excecuting/running the name of the object
 confound
@@ -240,7 +238,7 @@ confound
 
 ```{r}
 
-gender <- c("Woman", "Man") %>% rep(times = 50) %>% factor()
+gender <- c("Woman", "Man") %>% rep(times = sample_size) %>% factor()
 
 # print gender by just excecuting/running the name of the object
 gender
@@ -285,7 +283,7 @@ example_data <- example_data %>%
   mutate(dep_var_z = dep_var %>% scale() %>% parse_number(),
          confound_z = confound %>% scale() %>% parse_number())
 
-# print below
+# print example_data by just excecuting/running the name of the object
 example_data
 
 ```
@@ -428,6 +426,9 @@ coffee_filepath <- "coffee.sav"
 
 coffee_data <- coffee_filepath %>% read_sav()
 
+# print coffee_data by just excecuting/running the name of the object
+coffee_data
+
 ```
 
 ## CSV
@@ -468,7 +469,7 @@ t.test(dep_var ~ condition, data = example_data)
 ```{r}
 
 example_data %>% 
-  select(dep_var, confound) %>% 
+  select(dep_var, confound, age) %>% 
   pairs.panels()
 
 ```

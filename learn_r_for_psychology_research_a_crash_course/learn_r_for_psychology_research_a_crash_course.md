@@ -176,6 +176,7 @@ five_numbers %>% compute_mean()
 ```
 
 # create data for psychology-like examples
+> This is the hardest part of the tutorial.
 
 ## subject numbers
 
@@ -232,40 +233,38 @@ condition
 
 ## dependent measure
 
-### create a vector of 7 values representing points on a 7-point scale
+### save 5 values that represent the sample sizes and the true means and standard deviations of our pretend conditions
 
 
 ```r
-scale_points <- seq(from = 1, to = 7, by = 1)
-
-# print scale_points by just excecuting/running the name of the object
-scale_points
+sample_size <- 50
+control_mean <- 2.5
+control_sd <- 1
+manip_mean <- 5.5
+manip_sd <- 1
 ```
 
-```
-## [1] 1 2 3 4 5 6 7
-```
-
-### how likely is each value, from 1 to 7?
-> Below, I'm making a vector of 7 values for each condition that represent the "true" probablity of observing that value; I'll use this in a random sampling function in the next chunk of code.
+### introduce a neat function in R: `rnorm()`
+> rnorm stands for random normal. Tell it sample size, true mean, and the true sd, and it'll draw from that normal population at random and spit out numbers.
 
 
 ```r
-# all the 1s are divided by 7
-control_probs <- c(1, 1, 1, 1, 1, 1, 1) / 7
-
-# let's make bigger values more likely for the manipulation condition
-manipulation_probs <- c(0.1, 0.1, 0.1, 0.1, 0.1, 0.2, 0.3)
+# for example
+rnorm(n = 10, mean = 0, sd = 1)
 ```
 
+```
+##  [1] -0.90958015 -2.83969170 -0.56747034  0.12375479  0.03588964
+##  [6]  1.83686488 -1.24858855 -1.83152841 -3.05360029  0.57755650
+```
 
-### randomly sample from those points using the probability values we made above
+### randomly sample from our populations we made up above
 
 
 ```r
-control_values <- scale_points %>% sample(size = 50, replace = TRUE, prob = control_probs)
+control_values <- rnorm(n = sample_size, mean = control_mean, sd = control_sd)
 
-manipulation_values <- scale_points %>% sample(size = 50, replace = TRUE, prob = manipulation_probs)
+manipulation_values <- rnorm(n = sample_size, mean = manip_mean, sd = manip_sd)
 ```
 
 ### combine those and save as our dependent variable
@@ -279,35 +278,62 @@ dep_var
 ```
 
 ```
-##   [1] 4 1 2 1 1 5 4 1 7 4 5 5 3 2 4 6 1 7 4 1 2 4 3 1 4 5 3 2 5 6 5 4 7 7 5
-##  [36] 2 6 2 1 2 3 7 7 6 3 2 6 2 6 6 3 6 7 5 7 1 2 2 5 7 6 7 4 6 5 6 4 6 2 4
-##  [71] 7 6 3 7 2 2 3 7 4 5 6 7 4 5 6 7 4 7 1 2 7 7 1 6 4 1 3 4 7 1
+##   [1] 3.8961988 2.6461046 4.1539669 1.1631392 2.2008941 3.4340587 1.9553243
+##   [8] 0.2393393 2.2226448 2.9746707 1.3610645 2.2422547 1.2742615 2.6651955
+##  [15] 3.4298095 3.4829668 1.6458373 3.4261839 0.7872355 1.3565655 1.8291144
+##  [22] 2.5803463 1.9327863 1.1596651 2.8079523 2.6193329 3.0548744 2.6865889
+##  [29] 4.7669574 3.7058385 4.2167978 1.2804495 1.1842289 2.4108545 4.5358370
+##  [36] 3.7353002 2.7315491 3.2160985 3.0447519 2.4733701 2.0224306 2.5978175
+##  [43] 2.8002092 3.0130467 0.1874866 1.9110856 3.2808640 3.9735284 2.5533736
+##  [50] 0.8972748 4.2410178 5.7786193 5.4887057 5.0996417 5.7141196 3.9183321
+##  [57] 5.5031240 4.5767172 5.1417021 5.4251553 5.9130512 4.9488139 5.0922448
+##  [64] 6.3769618 5.0249764 5.1926323 5.7997824 4.3842804 6.6046809 6.5088456
+##  [71] 7.0890641 5.3911888 5.7998923 5.9862331 3.9695878 5.6079268 5.1391242
+##  [78] 5.3903258 4.4938278 7.4809635 5.9385035 5.3743162 4.7278303 5.0933592
+##  [85] 6.0168544 5.6386184 5.1610177 6.9309519 5.1174751 4.2599692 5.4438956
+##  [92] 4.9843279 5.6473757 5.8969115 5.0583082 5.5785377 6.0044899 5.9533927
+##  [99] 7.0513535 5.1362541
 ```
 
 ## create a potentially confounding variable or a control variable
-> read the code below like this: dep_var multiplied by 0.5 + the result of a random sample of 100 from scale_points, with replacement. Round this result to 0 digits.
+> in the code below, we multiply every value in dep_var by 0.5 and then we "add noise": 100 random normal values whose true population has a mean = 0 and sd = 1.
 
 
 ```r
-confound <- (dep_var * 0.5 + scale_points %>% sample(size = 100, replace = TRUE)) %>% round(digits = 0)
+confound <- dep_var * 0.5 + rnorm(n = 100, mean = 0, sd = 1)
 
 # print confound by just excecuting/running the name of the object
 confound
 ```
 
 ```
-##   [1]  7  2  5  6  4  4  9  4 10  6  4  6  8  2  8  4  6 10  9  8  4  6  8
-##  [24]  6  5  4  2  4  4  7  6  5  6  4  6  5  6  5  4  4  6  6  4 10  2  6
-##  [47]  4  5  5  8  2  5  4  8 10  4  3  4  4  4  4  6  7  4  8  7  7  5  2
-##  [70]  7  6  9  4  6  6  5  4  8  6 10 10  4  7  4 10  8  8  8  4  3  4 10
-##  [93]  4  9  4  4  6  5  8  4
+##   [1]  3.68982168 -0.64933653  3.34561381  1.57420536  2.87222567
+##   [6]  1.10837829 -0.10606791  2.34409569  1.36113013  0.70625160
+##  [11]  1.50868802  0.69690404  0.86158926  0.57933731  3.49968616
+##  [16]  2.24460628  1.48874639 -0.17255960  0.89204645  2.61235921
+##  [21]  0.23631574  0.24421024  1.26551443  1.60837825  2.18447802
+##  [26]  1.18632543  0.83635839  2.42090442  2.41430054  0.27208707
+##  [31]  1.23523715  1.26094847  1.80707758  0.30926416  1.35877459
+##  [36]  1.79016026  2.31943654  0.70421872 -0.91039051  0.47494713
+##  [41]  0.73209702  0.08420201  0.41944524  1.17433342  0.28766219
+##  [46]  1.07075390  0.55073137  1.19151489  0.62516843  0.12917209
+##  [51]  2.21459850  2.36283222  2.04306121  3.18768885  5.60313416
+##  [56]  0.72390809  3.70840995  1.56301570  1.91939581  2.79165458
+##  [61]  3.58793853  3.91048098  3.11332089  4.23661769  1.63950360
+##  [66]  2.79186165  2.63487260  1.99091002  3.23382379  2.40399138
+##  [71]  3.28888897  3.85145196  1.83961211  1.32385405  1.44680366
+##  [76]  4.87354812  2.93526596  3.11275741  3.51815580  3.01962153
+##  [81]  4.47852458  0.82881949  1.55427673  3.20208071  2.62017185
+##  [86]  1.54473548  1.46381081  2.87498799  2.48067075  1.54676178
+##  [91]  2.87053648  2.72928634  4.16956398  2.69505812  1.87925062
+##  [96]  2.48955029  0.28005923  2.05392561  3.62747060  3.25869759
 ```
 
 ## subject gender
 
 
 ```r
-gender <- c("Woman", "Man") %>% rep(times = 50) %>% factor()
+gender <- c("Woman", "Man") %>% rep(times = sample_size) %>% factor()
 
 # print gender by just excecuting/running the name of the object
 gender
@@ -338,11 +364,11 @@ age
 ```
 
 ```
-##   [1] 20 23 20 21 19 19 19 18 20 18 21 25 20 20 20 21 18 24 19 23 23 21 24
-##  [24] 22 18 19 23 22 20 20 21 23 21 18 18 20 25 22 23 22 22 24 23 22 22 21
-##  [47] 23 19 18 19 22 21 22 21 24 19 24 24 22 19 19 18 24 21 23 20 21 18 24
-##  [70] 21 25 19 22 24 20 23 22 21 25 19 21 22 19 22 23 18 24 20 20 18 19 21
-##  [93] 20 24 22 24 24 21 19 19
+##   [1] 22 18 21 21 21 19 25 24 25 22 19 24 18 23 25 23 25 22 20 23 22 23 18
+##  [24] 25 24 24 23 20 18 19 24 23 23 24 23 20 24 20 25 25 25 18 22 23 25 23
+##  [47] 24 21 23 25 19 18 21 25 18 20 25 22 23 22 19 19 25 23 22 19 24 23 22
+##  [70] 22 18 22 18 18 19 24 20 23 19 24 23 25 18 24 21 18 25 19 19 20 20 24
+##  [93] 20 25 19 21 18 24 23 22
 ```
 
 ## `data.frame()` and `tibble()`
@@ -362,18 +388,18 @@ example_data
 
 ```
 ## # A tibble: 100 x 6
-##    subj_num condition dep_var confound gender   age
-##       <dbl>    <fctr>   <dbl>    <dbl> <fctr> <dbl>
-##  1        1   control       4        7  Woman    20
-##  2        2   control       1        2    Man    23
-##  3        3   control       2        5  Woman    20
-##  4        4   control       1        6    Man    21
-##  5        5   control       1        4  Woman    19
-##  6        6   control       5        4    Man    19
-##  7        7   control       4        9  Woman    19
-##  8        8   control       1        4    Man    18
-##  9        9   control       7       10  Woman    20
-## 10       10   control       4        6    Man    18
+##    subj_num condition   dep_var   confound gender   age
+##       <dbl>    <fctr>     <dbl>      <dbl> <fctr> <dbl>
+##  1        1   control 3.8961988  3.6898217  Woman    22
+##  2        2   control 2.6461046 -0.6493365    Man    18
+##  3        3   control 4.1539669  3.3456138  Woman    21
+##  4        4   control 1.1631392  1.5742054    Man    21
+##  5        5   control 2.2008941  2.8722257  Woman    21
+##  6        6   control 3.4340587  1.1083783    Man    19
+##  7        7   control 1.9553243 -0.1060679  Woman    25
+##  8        8   control 0.2393393  2.3440957    Man    24
+##  9        9   control 2.2226448  1.3611301  Woman    25
+## 10       10   control 2.9746707  0.7062516    Man    22
 ## # ... with 90 more rows
 ```
 
@@ -388,25 +414,25 @@ example_data <- example_data %>%
   mutate(dep_var_z = dep_var %>% scale() %>% parse_number(),
          confound_z = confound %>% scale() %>% parse_number())
 
-# print below
+# print example_data by just excecuting/running the name of the object
 example_data
 ```
 
 ```
 ## # A tibble: 100 x 8
-##    subj_num condition dep_var confound gender   age  dep_var_z confound_z
-##       <dbl>    <fctr>   <dbl>    <dbl> <fctr> <dbl>      <dbl>      <dbl>
-##  1        1   control       4        7  Woman    20 -0.1106549  0.5937083
-##  2        2   control       1        2    Man    23 -1.5539800 -1.7254648
-##  3        3   control       2        5  Woman    20 -1.0728716 -0.3339609
-##  4        4   control       1        6    Man    21 -1.5539800  0.1298737
-##  5        5   control       1        4  Woman    19 -1.5539800 -0.7977956
-##  6        6   control       5        4    Man    19  0.3704534 -0.7977956
-##  7        7   control       4        9  Woman    19 -0.1106549  1.5213776
-##  8        8   control       1        4    Man    18 -1.5539800 -0.7977956
-##  9        9   control       7       10  Woman    20  1.3326701  1.9852122
-## 10       10   control       4        6    Man    18 -0.1106549  0.1298737
-## # ... with 90 more rows
+##    subj_num condition   dep_var   confound gender   age   dep_var_z
+##       <dbl>    <fctr>     <dbl>      <dbl> <fctr> <dbl>       <dbl>
+##  1        1   control 3.8961988  3.6898217  Woman    22 -0.05813106
+##  2        2   control 2.6461046 -0.6493365    Man    18 -0.76758963
+##  3        3   control 4.1539669  3.3456138  Woman    21  0.08815852
+##  4        4   control 1.1631392  1.5742054    Man    21 -1.60920816
+##  5        5   control 2.2008941  2.8722257  Woman    21 -1.02025726
+##  6        6   control 3.4340587  1.1083783    Man    19 -0.32040670
+##  7        7   control 1.9553243 -0.1060679  Woman    25 -1.15962401
+##  8        8   control 0.2393393  2.3440957    Man    24 -2.13348682
+##  9        9   control 2.2226448  1.3611301  Woman    25 -1.00791325
+## 10       10   control 2.9746707  0.7062516    Man    22 -0.58112047
+## # ... with 90 more rows, and 1 more variables: confound_z <dbl>
 ```
 
 ## select specific columns
@@ -420,18 +446,18 @@ example_data %>%
 
 ```
 ## # A tibble: 100 x 3
-##    subj_num condition dep_var
-##       <dbl>    <fctr>   <dbl>
-##  1        1   control       4
-##  2        2   control       1
-##  3        3   control       2
-##  4        4   control       1
-##  5        5   control       1
-##  6        6   control       5
-##  7        7   control       4
-##  8        8   control       1
-##  9        9   control       7
-## 10       10   control       4
+##    subj_num condition   dep_var
+##       <dbl>    <fctr>     <dbl>
+##  1        1   control 3.8961988
+##  2        2   control 2.6461046
+##  3        3   control 4.1539669
+##  4        4   control 1.1631392
+##  5        5   control 2.2008941
+##  6        6   control 3.4340587
+##  7        7   control 1.9553243
+##  8        8   control 0.2393393
+##  9        9   control 2.2226448
+## 10       10   control 2.9746707
 ## # ... with 90 more rows
 ```
 
@@ -447,19 +473,19 @@ example_data %>%
 
 ```
 ## # A tibble: 50 x 8
-##    subj_num condition dep_var confound gender   age  dep_var_z confound_z
-##       <dbl>    <fctr>   <dbl>    <dbl> <fctr> <dbl>      <dbl>      <dbl>
-##  1        1   control       4        7  Woman    20 -0.1106549  0.5937083
-##  2        2   control       1        2    Man    23 -1.5539800 -1.7254648
-##  3        3   control       2        5  Woman    20 -1.0728716 -0.3339609
-##  4        4   control       1        6    Man    21 -1.5539800  0.1298737
-##  5        5   control       1        4  Woman    19 -1.5539800 -0.7977956
-##  6        6   control       5        4    Man    19  0.3704534 -0.7977956
-##  7        7   control       4        9  Woman    19 -0.1106549  1.5213776
-##  8        8   control       1        4    Man    18 -1.5539800 -0.7977956
-##  9        9   control       7       10  Woman    20  1.3326701  1.9852122
-## 10       10   control       4        6    Man    18 -0.1106549  0.1298737
-## # ... with 40 more rows
+##    subj_num condition   dep_var   confound gender   age   dep_var_z
+##       <dbl>    <fctr>     <dbl>      <dbl> <fctr> <dbl>       <dbl>
+##  1        1   control 3.8961988  3.6898217  Woman    22 -0.05813106
+##  2        2   control 2.6461046 -0.6493365    Man    18 -0.76758963
+##  3        3   control 4.1539669  3.3456138  Woman    21  0.08815852
+##  4        4   control 1.1631392  1.5742054    Man    21 -1.60920816
+##  5        5   control 2.2008941  2.8722257  Woman    21 -1.02025726
+##  6        6   control 3.4340587  1.1083783    Man    19 -0.32040670
+##  7        7   control 1.9553243 -0.1060679  Woman    25 -1.15962401
+##  8        8   control 0.2393393  2.3440957    Man    24 -2.13348682
+##  9        9   control 2.2226448  1.3611301  Woman    25 -1.00791325
+## 10       10   control 2.9746707  0.7062516    Man    22 -0.58112047
+## # ... with 40 more rows, and 1 more variables: confound_z <dbl>
 ```
 
 ## make your own table of summary data
@@ -477,12 +503,12 @@ example_data %>%
 ```
 ## # A tibble: 4 x 5
 ## # Groups:   gender [?]
-##   gender    condition  Mean       SD     n
-##   <fctr>       <fctr> <dbl>    <dbl> <int>
-## 1    Man      control  5.48 2.023199    25
-## 2    Man manipulation  6.04 2.169485    25
-## 3  Woman      control  5.68 2.115813    25
-## 4  Woman manipulation  5.68 2.393045    25
+##   gender    condition      Mean        SD     n
+##   <fctr>       <fctr>     <dbl>     <dbl> <int>
+## 1    Man      control 0.9986265 0.8532729    25
+## 2    Man manipulation 2.6147239 1.0255267    25
+## 3  Woman      control 1.3910275 1.1568390    25
+## 4  Woman manipulation 2.7260448 1.1564526    25
 ```
 
 
@@ -568,16 +594,16 @@ example_data %>%
 ```
 
 ```
-##            vars   n mean   sd median trimmed  mad   min   max range  skew
-## dep_var       1 100 4.23 2.08   4.00    4.29 2.97  1.00  7.00  6.00 -0.14
-## dep_var_z     2 100 0.00 1.00  -0.11    0.03 1.43 -1.55  1.33  2.89 -0.14
-## confound      3 100 5.72 2.16   5.50    5.60 2.22  2.00 10.00  8.00  0.41
-## confound_z    4 100 0.00 1.00  -0.10   -0.06 1.03 -1.73  1.99  3.71  0.41
+##            vars   n mean   sd median trimmed  mad   min  max range  skew
+## dep_var       1 100 4.00 1.76   4.23    4.05 2.10  0.19 7.48  7.29 -0.23
+## dep_var_z     2 100 0.00 1.00   0.13    0.03 1.19 -2.16 1.98  4.14 -0.23
+## confound      3 100 1.93 1.28   1.82    1.90 1.45 -0.91 5.60  6.51  0.25
+## confound_z    4 100 0.00 1.00  -0.09   -0.03 1.13 -2.21 2.86  5.07  0.25
 ##            kurtosis   se
-## dep_var       -1.35 0.21
-## dep_var_z     -1.35 0.10
-## confound      -0.67 0.22
-## confound_z    -0.67 0.10
+## dep_var       -0.98 0.18
+## dep_var_z     -0.98 0.10
+## confound      -0.39 0.13
+## confound_z    -0.39 0.10
 ```
 
 ## by condition
@@ -594,28 +620,28 @@ example_data %>%
 ## 
 ##  Descriptive statistics by group 
 ## condition: control
-##            vars  n  mean   sd median trimmed  mad   min   max range skew
-## dep_var       1 50  3.84 2.02   4.00    3.80 2.97  1.00  7.00  6.00 0.07
-## dep_var_z     2 50 -0.19 0.97  -0.11   -0.21 1.43 -1.55  1.33  2.89 0.07
-## confound      3 50  5.58 2.05   5.50    5.47 2.22  2.00 10.00  8.00 0.41
-## confound_z    4 50 -0.06 0.95  -0.10   -0.11 1.03 -1.73  1.99  3.71 0.41
+##            vars  n  mean   sd median trimmed  mad   min  max range  skew
+## dep_var       1 50  2.52 1.08   2.61    2.52 1.09  0.19 4.77  4.58 -0.11
+## dep_var_z     2 50 -0.84 0.62  -0.79   -0.84 0.62 -2.16 0.44  2.60 -0.11
+## confound      3 50  1.19 1.03   1.14    1.14 0.97 -0.91 3.69  4.60  0.48
+## confound_z    4 50 -0.57 0.80  -0.62   -0.62 0.76 -2.21 1.37  3.58  0.48
 ##            kurtosis   se
-## dep_var       -1.34 0.29
-## dep_var_z     -1.34 0.14
-## confound      -0.35 0.29
-## confound_z    -0.35 0.13
+## dep_var       -0.61 0.15
+## dep_var_z     -0.61 0.09
+## confound      -0.18 0.15
+## confound_z    -0.18 0.11
 ## -------------------------------------------------------- 
 ## condition: manipulation
-##            vars  n mean   sd median trimmed  mad   min   max range  skew
-## dep_var       1 50 4.62 2.08   5.00    4.78 2.97  1.00  7.00  6.00 -0.37
-## dep_var_z     2 50 0.19 1.00   0.37    0.26 1.43 -1.55  1.33  2.89 -0.37
-## confound      3 50 5.86 2.27   5.50    5.72 2.22  2.00 10.00  8.00  0.38
-## confound_z    4 50 0.06 1.05  -0.10    0.00 1.03 -1.73  1.99  3.71  0.38
+##            vars  n mean   sd median trimmed  mad   min  max range skew
+## dep_var       1 50 5.48 0.78   5.43    5.45 0.58  3.92 7.48  3.56 0.33
+## dep_var_z     2 50 0.84 0.44   0.81    0.83 0.33 -0.05 1.98  2.02 0.33
+## confound      3 50 2.67 1.08   2.71    2.64 1.12  0.28 5.60  5.32 0.23
+## confound_z    4 50 0.57 0.84   0.61    0.55 0.87 -1.29 2.86  4.14 0.23
 ##            kurtosis   se
-## dep_var       -1.27 0.29
-## dep_var_z     -1.27 0.14
-## confound      -1.03 0.32
-## confound_z    -1.03 0.15
+## dep_var        0.07 0.11
+## dep_var_z      0.07 0.06
+## confound      -0.05 0.15
+## confound_z    -0.05 0.12
 ```
 
 # read in your own data
@@ -631,6 +657,26 @@ example_data %>%
 coffee_filepath <- "coffee.sav"
 
 coffee_data <- coffee_filepath %>% read_sav()
+
+# print coffee_data by just excecuting/running the name of the object
+coffee_data
+```
+
+```
+## # A tibble: 138 x 3
+##    image brand  freq
+##    <dbl> <dbl> <dbl>
+##  1     1     1    82
+##  2     2     1    96
+##  3     3     1    72
+##  4     4     1   101
+##  5     5     1    66
+##  6     6     1     6
+##  7     7     1    47
+##  8     8     1     1
+##  9     9     1    16
+## 10    10     1    60
+## # ... with 128 more rows
 ```
 
 ## CSV
@@ -685,13 +731,13 @@ t.test(dep_var ~ condition, data = example_data)
 ## 	Welch Two Sample t-test
 ## 
 ## data:  dep_var by condition
-## t = -1.9009, df = 97.93, p-value = 0.06025
+## t = -15.71, df = 88.882, p-value < 2.2e-16
 ## alternative hypothesis: true difference in means is not equal to 0
 ## 95 percent confidence interval:
-##  -1.59428572  0.03428572
+##  -3.34177 -2.59134
 ## sample estimates:
 ##      mean in group control mean in group manipulation 
-##                       3.84                       4.62
+##                   2.515351                   5.481906
 ```
 
 ## `pairs.panels()`
@@ -700,7 +746,7 @@ t.test(dep_var ~ condition, data = example_data)
 
 ```r
 example_data %>% 
-  select(dep_var, confound) %>% 
+  select(dep_var, confound, age) %>% 
   pairs.panels()
 ```
 
@@ -723,7 +769,7 @@ lm_fit
 ## 
 ## Coefficients:
 ##           (Intercept)  conditionmanipulation               confound  
-##                1.7091                 0.6731                 0.3819
+##                2.2756                 2.6705                 0.2006
 ```
 
 ## `summary()`
@@ -739,20 +785,20 @@ lm_fit %>% summary()
 ## lm(formula = dep_var ~ condition + confound, data = example_data)
 ## 
 ## Residuals:
-##     Min      1Q  Median      3Q     Max 
-## -3.7642 -1.4866 -0.1735  1.5628  3.7634 
+##      Min       1Q   Median       3Q      Max 
+## -2.50659 -0.49876 -0.04209  0.56321  2.00695 
 ## 
 ## Coefficients:
 ##                       Estimate Std. Error t value Pr(>|t|)    
-## (Intercept)            1.70908    0.55986   3.053  0.00293 ** 
-## conditionmanipulation  0.67307    0.37836   1.779  0.07839 .  
-## confound               0.38189    0.08819   4.330 3.63e-05 ***
+## (Intercept)            2.27564    0.16826  13.525   <2e-16 ***
+## conditionmanipulation  2.67052    0.22650  11.790   <2e-16 ***
+## confound               0.20063    0.08858   2.265   0.0257 *  
 ## ---
 ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 ## 
-## Residual standard error: 1.888 on 97 degrees of freedom
-## Multiple R-squared:  0.1918,	Adjusted R-squared:  0.1751 
-## F-statistic: 11.51 on 2 and 97 DF,  p-value: 3.272e-05
+## Residual standard error: 0.9249 on 97 degrees of freedom
+## Multiple R-squared:  0.7301,	Adjusted R-squared:  0.7245 
+## F-statistic: 131.2 on 2 and 97 DF,  p-value: < 2.2e-16
 ```
 
 ## `Anova()`
@@ -766,11 +812,11 @@ lm_fit %>% Anova(type = "III")
 ## Anova Table (Type III tests)
 ## 
 ## Response: dep_var
-##             Sum Sq Df F value    Pr(>F)    
-## (Intercept)  33.21  1  9.3190  0.002927 ** 
-## condition    11.28  1  3.1645  0.078386 .  
-## confound     66.82  1 18.7509 3.629e-05 ***
-## Residuals   345.68 97                      
+##              Sum Sq Df  F value  Pr(>F)    
+## (Intercept) 156.469  1 182.9173 < 2e-16 ***
+## condition   118.915  1 139.0148 < 2e-16 ***
+## confound      4.388  1   5.1295 0.02575 *  
+## Residuals    82.975 97                     
 ## ---
 ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 ```
