@@ -54,7 +54,7 @@ library(car)
 ## objects: they save stuff for you
 > "`object <- fuction(x)`, which means 'object is created from function(x)'. An object is anything created in R. It could be a variable, a collection of variables, a statistical model, etc. Objects can be single values (such as the mean of a set of scores) or collections of information; for example, when you run an analysis, you create an object that contains the output of that analysis, which means that this object contains many different values and variables. Functions are the things that you do in R to create your objects." **Source:** Field, A., Miles., J., & Field, Z. (2012). Discovering statistics using R. London: SAGE Publications.
 
-## `c()` function
+## `c()` function: combine things like thing1, thing2, ...
 > "c" stands for combine. Use this to combine values into a vector. "A vector is a sequence of data 'elements' of the same basic type." **Source:** http://www.r-tutor.com/r-introduction/vector
 > Below, we create an object called five_numbers. We are naming it for what it is, but we could name it whatever we want: some_numbers, maple_tree, platypus. It doesn't matter. We'll use this in the examples in later chunks of code.
 
@@ -97,7 +97,7 @@ five_numbers %>% scale() %>% parse_number() %>% mean()
 
 ```
 
-## tanget: most R introductions will teach you to code the example above like this:
+## tangent: most R introductions will teach you to code the example above like this:
 
 ```{r}
 
