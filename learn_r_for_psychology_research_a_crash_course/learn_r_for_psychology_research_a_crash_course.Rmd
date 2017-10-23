@@ -153,7 +153,7 @@ five_numbers %>% compute_mean()
 ```
 
 # create data for psychology-like examples
-> This is the hardest part of the tutorial.
+> This is the hardest section of the tutorial. Keep this is mind: we're making variables that you might see in a simple psychology dataset, and then we're going to combine them into a dataset. Don't worry about specifcs too much. If you want to understand how a function works, use ?name_of_function or help(name_of_function).
 
 ## subject numbers
 
