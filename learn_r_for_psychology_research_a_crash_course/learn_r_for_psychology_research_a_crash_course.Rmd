@@ -1,15 +1,16 @@
 ---
 title: 'learn R for psychology research: a crash course'
 author: "Nicholas Michalak"
-date: "October 21, 2017"
+date: "October 23, 2017"
 output:
-  html_notebook:
+  html_document:
     code_folding: show
     fig_height: 7.5
     fig_width: 10
     theme: readable
     toc: yes
     toc_float: yes
+    keep_md: true
 ---
 
 # introduction
