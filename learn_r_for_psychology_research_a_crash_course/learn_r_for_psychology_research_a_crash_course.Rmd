@@ -3,12 +3,11 @@ title: 'learn R for psychology research: a crash course'
 author: "Nicholas Michalak"
 date: "October 21, 2017"
 output:
-  html_document:
+  html_notebook:
     code_folding: show
     fig_height: 7.5
     fig_width: 10
     theme: readable
-    keep_md: true
     toc: yes
     toc_float: yes
 ---
@@ -33,7 +32,7 @@ output:
 ## understand all the panels in R Studio
 ![Four panels in R Studio](r_studio_panels_tutorial.png)
 
-## packages
+## packages: they're like apps you download for R
 > "Packages are collections of R functions, data, and compiled code in a well-defined format. The directory where packages are stored is called the library. R comes with a standard set of packages. Others are available for download and installation. Once installed, they have to be loaded into the session to be used." **Source:** https://www.statmethods.net/interface/packages.html
 
 ```{r, message = FALSE, warning = FALSE}
@@ -51,7 +50,7 @@ library(car)
 
 ```
 
-## objects
+## objects: they save stuff for you
 > "`object <- fuction(x)`, which means 'object is created from function(x)'. An object is anything created in R. It could be a variable, a collection of variables, a statistical model, etc. Objects can be single values (such as the mean of a set of scores) or collections of information; for example, when you run an analysis, you create an object that contains the output of that analysis, which means that this object contains many different values and variables. Functions are the things that you do in R to create your objects." **Source:** Field, A., Miles., J., & Field, Z. (2012). Discovering statistics using R. London: SAGE Publications.
 
 ## `c()` function
@@ -105,9 +104,9 @@ mean(parse_number(scale(five_numbers)))
 
 ```
 
-> * I think this is counterintuitive. You're reading the current sentence from left to right. That's how I think code should read like: how you read sentences. Forget this "read from the inside out" way of coding for now. You can learn the "read R code inside out" way when you have time and feel motivated to learn harder things. I'm assuming you don't right now.
+> * I think this code is counterintuitive. You're reading the current sentence from left to right. That's how I think code should read like: how you read sentences. Forget this "read from the inside out" way of coding for now. You can learn the "read R code inside out" way when you have time and feel motivated to learn harder things. I'm assuming you don't right now.
 
-## functions
+## functions: they do things for you
 > "A function is a piece of code written to carry out a specified task; it can or can not accept arguments or parameters and it can or can not return one or more values." Functions **do** things for you. **Source:** https://www.datacamp.com/community/tutorials/functions-in-r-a-tutorial#what
 
 ## compute the num of five_numbers
@@ -156,6 +155,7 @@ five_numbers %>% compute_mean()
 > This is the hardest section of the tutorial. Keep this is mind: we're making variables that you might see in a simple psychology dataset, and then we're going to combine them into a dataset. Don't worry about specifcs too much. If you want to understand how a function works, use ?name_of_function or help(name_of_function).
 
 ## subject numbers
+> * read like this: generate a sequence of values from 1 to 100 by 1
 
 ```{r}
 
@@ -167,6 +167,8 @@ subj_num
 ```
 
 ## condition assignments
+> * read like this: replicate each element of c("control", "manipulation") 50 times, and then turn the result into a factor
+> * side: in R, factors are nominal variables (i.e., integers) with value labels (i.e., names for each integer).
 
 ```{r}
 
@@ -223,7 +225,7 @@ dep_var
 ```
 
 ## create a potentially confounding variable or a control variable
-> in the code below, we multiply every value in dep_var by 0.5 and then we "add noise": 100 random normal values whose true population has a mean = 0 and sd = 1.
+> in the code below, we multiply every value in dep_var by 0.5 and then we "add noise": 100 random normal values whose true population has a mean = 0 and sd = 1. Every value in dep_var * 0.5 gets a random value added to it.
 
 ```{r}
 
@@ -235,6 +237,7 @@ confound
 ```
 
 ## subject gender
+> * read like this: replicate each element of c("Woman", "Man") sample_size = 50 times, and then turn the result into a factor
 
 ```{r}
 
@@ -246,6 +249,7 @@ gender
 ```
 
 ## subject age
+> * read like this: generate a sequence of values from 18 to 25 by 1, and take a random sample of 100 values from that sequence (with replacement)
 
 ```{r}
 
@@ -262,6 +266,7 @@ age
 > "**Tibbles** are a modern take on data frames. They keep the features that have stood the test of time, and drop the features that used to be convenient but are now frustrating (i.e. converting character vectors to factors)." **Source:** https://cran.r-project.org/web/packages/tibble/vignettes/tibble.html
 
 ## put all our variable we made into a tibble
+> * every variable we made above is seperated by a comma -- these will become columns in our dataset
 
 ```{r}
 
@@ -276,6 +281,7 @@ example_data
 
 ## create new variables in data.frame or tibble
 > * `mutate()` adds new variables to your tibble.
+> * we're adding new columns to our dataset, and we're saving this new dataset as the same name as our old one (i.e., like changing an Excel file and saving with the same name)
 
 ```{r}
 
@@ -289,7 +295,7 @@ example_data
 ```
 
 ## select specific columns
-> * `select()` selects your tibble's variables by name.
+> * `select()` selects your tibble's variables by name and in the exact order you specify.
 
 ```{r}
 
@@ -323,12 +329,12 @@ example_data %>%
 ```
 
 
-# plotting your data ggplot2
+# plotting your data with ggplot2
 > "ggplot2 is a plotting system for R, based on the grammar of graphics, which tries to take the good parts of base and lattice graphics and none of the bad parts. It takes care of many of the fiddly details that make plotting a hassle (like drawing legends) as well as providing a powerful model of graphics that makes it easy to produce complex multi-layered graphics." **Source:**: http://ggplot2.org/
 
 ## make ggplots in layers
 > * Aesthetic mappings describe how variables in the data are mapped to visual properties (aesthetics) of geoms. **Source:** http://ggplot2.tidyverse.org/reference/aes.html
-> * Below, we map condition on our plot's x-axis and dep_var on its y-axis 
+> * Below, we map condition on our plot's x-axis and dep_var on its y-axis
 
 ```{r}
 
@@ -336,6 +342,8 @@ example_data %>%
   ggplot(mapping = aes(x = condition, y = dep_var))
 
 ```
+
+> * Think of this like a blank canvas that we're going to add pictures to or like a map of the ocean we're going to add land mass to
 
 ## boxplot
 > * next, we add—yes, add, with a `+`—a geom, a geometric element: `geom_boxplot()`
@@ -347,6 +355,8 @@ example_data %>%
   geom_boxplot()
 
 ```
+
+> * Here's emphasis: we started with a blank canvas, and we added a boxplot. All ggplots work this way: start with a base and add layers.
 
 ## QQ-plots
 > * Below, we plot the sample quantiles of dep_var against the theoretical quantiles
@@ -362,7 +372,7 @@ example_data %>%
 
 ## means and 95% confidence intervals
 > * add a new aesthetic, fill, which will fill the geoms with different colors, depending on the variable (e.g., levels of categorical variables are assigned their own fill color)
-> * stat_summary() does what its name suggests: it applies statistical summaries to your raw data to make the geoms (bars and error bars in our case below)
+> * `stat_summary()` does what its name suggests: it applies statistical summaries to your raw data to make the geoms (bars and error bars in our case below)
 > * the width argument sets the width of the error bars.
 
 ```{r}
@@ -383,7 +393,7 @@ example_data %>%
 example_data %>%
   ggplot(mapping = aes(x = confound, y = dep_var)) +
   geom_point() +
-  geom_smooth(method = "lm")
+  geom_smooth(method = "lm", se = TRUE)
 
 ```
 
