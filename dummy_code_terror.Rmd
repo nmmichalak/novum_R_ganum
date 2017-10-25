@@ -1,0 +1,227 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+# packages
+
+```{r}
+
+library(tidyverse)
+
+```
+
+# data
+
+## race
+
+```{r}
+
+race <- c("no race", "white", "black") %>% rep(each = 5, times = 2) %>% factor()
+
+```
+
+## ecology
+
+```{r}
+
+ecology <- c("hopeful", "desperate") %>% rep(each = 15) %>% factor()
+
+```
+
+## group
+
+```{r}
+
+group <- interaction(race, ecology, sep = " and ")
+
+```
+
+## stereotype dv
+
+```{r}
+
+# set random seed so values reproduce
+set.seed(1234)
+
+stereotype <- c(rnorm(n = 5, mean = 1, sd = 1),
+                rnorm(n = 5, mean = 0, sd = 1),
+                rnorm(n = 5, mean = -1, sd = 1),
+                rnorm(n = 5, mean = -1, sd = 1),
+                rnorm(n = 5, mean = 0, sd = 1),
+                rnorm(n = 5, mean = 1, sd = 1))
+
+```
+
+# plot means
+
+```{r}
+
+tibble(race, ecology, stereotype) %>% 
+  ggplot(mapping = aes(x = ecology, y = stereotype, fill = race)) +
+  stat_summary(geom = "bar", fun.data = mean_cl_normal, position = position_dodge(width = 0.9))
+
+```
+
+# dummy codes
+
+## dummy code matrix
+
+```{r}
+
+tibble(race = c("black", "no race", "white"),
+       race_d1 = c(0, 1, 0),
+       race_d2 = c(0, 0, 1))
+       
+```
+
+## race
+
+```{r}
+
+race_d1 <- ifelse(race == "black", 0,
+           ifelse(race == "no race", 1,
+           ifelse(race == "white", 0, NA)))
+
+race_d2 <- ifelse(race == "black", 0,
+           ifelse(race == "no race", 0,
+           ifelse(race == "white", 1, NA)))
+
+```
+
+## ecology
+
+```{r}
+
+ecology_d1 <- ifelse(ecology == "desperate", 0,
+              ifelse(ecology == "hopeful", 1, NA))
+
+```
+
+## interaction 1: race_d1 x ecology_d1
+
+```{r}
+
+rd1_ed1 <- race_d1 * ecology_d1
+
+```
+
+## interaction 2: race_d2 x ecology_d1
+
+```{r}
+
+rd2_ed1 <- race_d2 * ecology_d1
+
+```
+
+# dummy code model
+
+## fit
+
+```{r}
+
+dummy_lm <- lm(stereotype ~ race_d1 + race_d2 + ecology_d1 + rd1_ed1 + rd2_ed1)
+
+```
+
+## summary
+
+```{r}
+
+dummy_lm %>% summary()
+
+```
+
+# effect codes
+> center the dummy codes
+> recompute interactions
+
+```{r}
+
+race_e1 <- race_d1 - mean(race_d1)
+race_e2 <- race_d2 - mean(race_d2)
+ecology_e1 <- ecology_d1 - mean(ecology_d1)
+re1_ee1 <- race_e1 * ecology_e1
+re2_ee1 <- race_e2 * ecology_e1
+
+```
+
+# effect code model
+
+## fit
+
+```{r}
+
+effect_lm <- lm(stereotype ~ race_e1 + race_e2 + ecology_e1 + re1_ee1 + re2_ee1)
+
+```
+
+## summary
+
+```{r}
+
+effect_lm %>% summary()
+
+```
+
+# contrast codes
+
+## race
+
+```{r}
+
+race_c1 <- ifelse(race == "black", -1,
+           ifelse(race == "no race", 1,
+           ifelse(race == "white", 0, NA)))
+
+race_c2 <- ifelse(race == "black", -1,
+           ifelse(race == "no race", 0,
+           ifelse(race == "white", 1, NA)))
+
+```
+
+## ecology
+
+```{r}
+
+ecology_c1 <- ifelse(ecology == "desperate", -1,
+              ifelse(ecology == "hopeful", 1, NA))
+
+```
+
+## interaction 1: race_c1 x ecology_c1
+
+```{r}
+
+rc1_ec1 <- race_c1 * ecology_c1
+
+```
+
+## interaction 2: race_c2 x ecology_c1
+
+```{r}
+
+rc2_ec1 <- race_c2 * ecology_c1
+
+```
+
+# contrast code model
+
+## fit
+
+```{r}
+
+contrast_lm <- lm(stereotype ~ race_c1 + race_c2 + ecology_c1 + rc1_ec1 + rc2_ec1)
+
+```
+
+## summary
+
+```{r}
+
+contrast_lm %>% summary()
+
+```
+
+
+

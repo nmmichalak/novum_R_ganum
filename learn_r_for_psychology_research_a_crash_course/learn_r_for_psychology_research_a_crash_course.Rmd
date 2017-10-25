@@ -38,10 +38,10 @@ output:
 ```{r, message = FALSE, warning = FALSE}
 
 # before you can load these libraries, you need to install them first (remove the # part first):
-# install.packages(tidyverse)
-# install.packages(haven)
-# install.packages(psych)
-# install.packages(car)
+# install.packages("tidyverse")
+# install.packages("haven")
+# install.packages("psych")
+# install.packages("car")
 
 library(tidyverse)
 library(haven)
