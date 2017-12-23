@@ -30,7 +30,7 @@ The tests and the effect size estimation technique for *p*-curve are quite popul
 
 Specifically, McShane, Böckenholt, and Hansen (2016) ([.html](http://www.blakemcshane.com/Papers/pps_selectionmethods.pdf)) argue that when nonsignificant (i.e., *p* > .05) results make up part of some research literature, and these effects vary in size (i.e., standard devation > 0), then *p*-curve estimates upwardly biased effect sizes (i.e., bigger than the average true effect). In their paper, they report simulation results which convincingly make their point (see the top row of Figure 3 in their paper).
 
-![](/Users/nicholasmichalak/Desktop/novum_R_ganum/pcurve_bias_representative_sig_effects/mcshane_et_al_F3.png) 
+![](https://raw.githubusercontent.com/nmmichalak/novum_R_ganum/master/pcurve_bias_representative_sig_effects/mcshane_et_al_F3.png) 
 
 They conclude, 
 
@@ -42,12 +42,12 @@ To be sure, Simonsohn, Nelson, and Simons (2014) aknowledge that *p*-curve ignor
 
 In fact, between the main text and their supplement, they reported 4 simulations under which *p*-curve recovered accurate average effect sizes even when the true average effect size varied: see Figure 2, panel B in their effect size paper
 
-![](/Users/nicholasmichalak/Desktop/novum_R_ganum/pcurve_bias_representative_sig_effects/simonsohn_et_al_F2.png) 
+![](https://raw.githubusercontent.com/nmmichalak/novum_R_ganum/master/pcurve_bias_representative_sig_effects/simonsohn_et_al_F2.png) 
 
 and Figure S2 from their Supplement, [.html](http://p-curve.com/Supplement/Supplement_pcurve2.pdf)).   
 
 
-![](/Users/nicholasmichalak/Desktop/novum_R_ganum/pcurve_bias_representative_sig_effects/simonsohn_et_al_S2.png)   
+![](https://raw.githubusercontent.com/nmmichalak/novum_R_ganum/master/pcurve_bias_representative_sig_effects/simonsohn_et_al_S2.png)   
   
 At first glance, it seems like both research teams simulated practically the same conditions—similar true average effect sizes and standard deviations—but one team (McShane et al.) reported upwardly biased estimates and the other (Simonsohn et al.) reported accurate ones. Are the sumulation conditions actually different?
 
