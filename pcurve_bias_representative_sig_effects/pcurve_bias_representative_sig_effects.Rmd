@@ -20,7 +20,7 @@ body{ /* Normal  */
 
 # *P*-curve and heterogeneity: a brief introduction
 
-For readers who aren't familair with *p*-curve, it was developed by Simonsohn, Nelson, and Simons (2014, [.html](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=2256237)) who define it as,
+For readers who aren't familair with *p*-curve, it was developed by Simonsohn, Nelson, and Simons (2014) ([.html](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=2256237)) who define it as,
 
 > "the distribution of statistically significant *p*-values from a set of independent findings (p. 535)."
 
@@ -28,13 +28,13 @@ In their paper, they demonstrated how researchers can test whether a set of only
 
 The tests and the effect size estimation technique for *p*-curve are quite popular (see [www.p-curve.com](www.p-curve.com)), at least popular enough to attract some pretty harsh criticisms. In this post, I focus on one:
 
-> *p*-curve gives biased estimates when significant *p*-values stem from a heterogeneous distribution of average true effect sizes. In other words, *p*-curve's estimates are too big when effect sizes vary around some true average effect.
+> *p*-curve gives biased estimates when significant *p*-values stem from a heterogeneous distribution of average true effect sizes. In other words, *p*-curve's estimates are too big when effect sizes vary around some average true effect.
 
 Specifically, McShane, Böckenholt, and Hansen (2016) ([.html](http://www.blakemcshane.com/Papers/pps_selectionmethods.pdf)) argue that when nonsignificant (i.e., *p* > .05) results make up part of some research literature, and these effects vary in size (i.e., standard devation > 0), then *p*-curve estimates upwardly biased effect sizes (i.e., bigger than the average true effect). In their paper, they report simulation results which convincingly make their point. See the top row of their Figure 3 below.
 
 ![](https://raw.githubusercontent.com/nmmichalak/novum_R_ganum/master/pcurve_bias_representative_sig_effects/mcshane_et_al_F3.png) 
 
-*P*-curve (the red line) gives more biased estimates (i.e., above the 0 line) when heterogeneity is present and the average true effect is relatively small (i.e., bias decreases as average true effect increases).
+*P*-curve (the red line) gives more biased estimates (i.e., above the 0 line) when heterogeneity is present and the average true effect is relatively small (i.e., bias decreases as the average true effect increases).
 
 They conclude, 
 
@@ -554,7 +554,7 @@ tibble(d_nosig = di[pi > 0.025]) %>%
 
 What are these? In simulation land, these are just a subset of random variables drawn from a hypothetical normal distribution with a known mean and standard deviaiton. But in the "real world", these represent average true effects for idiosyncratic study designs and any factors that might influence their results. These represent a relatively small galaxy of effect sizes that are waiting for their *p* < .05 if only luck (or statistical power) will have it. Simonsohn et al. made sure estimates of these effects received equal *p*-value representation. But that's not likely to happen in practice.
 
-McShane et al. and even Simonsohn et al. point this out as a limitation of *p*-curve: it doesn't use information from nonsignificant effects. McShane et al. recommend that you use the information in those nonsignificant effects. For example, you could use `weightfunct()` from the weightr package ([.html](https://cran.r-project.org/web/packages/weightr/index.html)) to estimate the Iyengar and Greenhouse (1984) model. See below.
+McShane et al. and even Simonsohn et al. point this out as a limitation of *p*-curve: it doesn't use information from nonsignificant effects. McShane et al. recommend that you use the information in those nonsignificant effects. For example, you could use `weightfunct()` from the weightr package ([.html](https://cran.r-project.org/web/packages/weightr/index.html)) to estimate the three-parameter version of the Hedges (1984) model ([.html](http://journals.sagepub.com/doi/pdf/10.3102/10769986009001061)). See below.
 
 # Example 5
 > use weight function model (a.k.a., three-parameter selection method). the three parameters are (1) effect size, (2) heterogeneity, and (3) weight function for significant and nonsignificant results (e.g., weight *p* < .05 more than *p* > .05). In other words, use information from *p*-value cutoffs and effect size variability.
@@ -574,7 +574,7 @@ vi <- es_data$var.d
 
 ```
 
-## fit Iyengar and Greenhouse (1984) model
+## fit three-paramater version of Hedges (1984) model
 > by the way, the line for .025 < *p* < 1 gives the estimate for how likely it is that *p* > .025 and < 1 are to be published, relative to *p* < .025 which get a weight = 1. I gave it *all* the effects, so that estimate is pretty close to 1 (i.e., 0.99 or 1 times as likely as *p* < .025 to be published)
 
 ```{r}
