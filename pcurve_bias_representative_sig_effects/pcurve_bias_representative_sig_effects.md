@@ -28,7 +28,7 @@ The tests and the effect size estimation technique for *p*-curve are quite popul
 
 > *p*-curve gives biased estimates when significant *p*-values stem from a heterogeneous distribution of true effect sizes. In other words, *p*-curve's estimates are too big when effect sizes vary around some true average effect.
 
-Specifically, McShane, Böckenholt, and Hansen (2016) ([.html](http://www.blakemcshane.com/Papers/pps_selectionmethods.pdf)) argue that when nonsignificant (i.e., *p* > .05) results make up part of some research literature, and these effects vary in size (i.e., standard devation > 0), then *p*-curve estimates upwardly biased effect sizes (i.e., bigger than the average true effect). In their paper, they report simulation results which convincingly make their point (see the top row of Figure 3 in their paper).
+Specifically, McShane, Böckenholt, and Hansen (2016) ([.html](http://www.blakemcshane.com/Papers/pps_selectionmethods.pdf)) argue that when nonsignificant (i.e., *p* > .05) results make up part of some research literature, and these effects vary in size (i.e., standard devation > 0), then *p*-curve estimates upwardly biased effect sizes (i.e., bigger than the average true effect). In their paper, they report simulation results which convincingly make their point. See the top row of their Figure 3 below.
 
 ![](https://raw.githubusercontent.com/nmmichalak/novum_R_ganum/master/pcurve_bias_representative_sig_effects/mcshane_et_al_F3.png) 
 
@@ -40,16 +40,15 @@ To be sure, Simonsohn, Nelson, and Simons (2014) aknowledge that *p*-curve ignor
 
 > "Note that although excluding nonsignificant results makes *p*-curve noisier (less efficient), it does not make *p*-curve biased (p. 675)."
 
-In fact, between the main text and their supplement, they reported 4 simulations under which *p*-curve recovered accurate average effect sizes even when the true average effect size varied: see Figure 2, panel B in their effect size paper
+In fact, between the main text and their supplement, they reported 4 simulations under which *p*-curve recovered accurate average effect sizes even when the true average effect size varied: see Figure 2, Panel C in their effect size paper below
 
 ![](https://raw.githubusercontent.com/nmmichalak/novum_R_ganum/master/pcurve_bias_representative_sig_effects/simonsohn_et_al_F2.png) 
 
-and Figure S2 from their Supplement, [.html](http://p-curve.com/Supplement/Supplement_pcurve2.pdf)).   
-
+and Figure S2 from their Supplement, [.html](http://p-curve.com/Supplement/Supplement_pcurve2.pdf)) below.   
 
 ![](https://raw.githubusercontent.com/nmmichalak/novum_R_ganum/master/pcurve_bias_representative_sig_effects/simonsohn_et_al_S2.png)   
   
-At first glance, it seems like both research teams simulated practically the same conditions—similar true average effect sizes and standard deviations—but one team (McShane et al.) reported upwardly biased estimates and the other (Simonsohn et al.) reported accurate ones. Are the sumulation conditions actually different?
+At first glance, it seems like both research teams simulated practically the same conditions—similar true average effect sizes and standard deviations—but one team (McShane et al.) reported upwardly biased estimates and the other (Simonsohn et al.) reported accurate ones. Are the simulation conditions actually different?
 
 Yes. But even when I show you the difference, you might be surprised about how difficult it is determine whether or how much heterogeneity matters when you're interpreting *p*-curve results. But first, I need to show you a few examples.
 
@@ -63,6 +62,9 @@ library(tidyverse)
 library(compute.es)
 library(weightr)
 ```
+
+# Example 1
+> equal cell sizes
 
 ## start by saving two different effect sizes, *d*
 
@@ -96,7 +98,7 @@ tcrit03 <- qt(1 - 0.05 / 2, df03)
 tcrit05 <- qt(1 - 0.05 / 2, df05)
 ```
   
-## noncentrality parameters, ncp
+## calculate noncentrality parameters, ncp
 > noncentrality parameter is a fancy word for the distribution of a test statistic (e.g., *t*, *F*, *chi^2^*) when there is an effect. as you might guess, a centrality parameter represents the distribution when there is no effect.
 
 
@@ -128,14 +130,6 @@ rp05 <- runif(n = 5000, min = 1 - pwr05, max = 1)
 ```r
 t03 <- qt(p = rp03, df = df03, ncp = ncp03)
 t05 <- qt(p = rp05, df = df05, ncp = ncp05)
-```
-
-```
-## Warning in qt(p = rp05, df = df05, ncp = ncp05): full precision may not
-## have been achieved in 'pnt{final}'
-
-## Warning in qt(p = rp05, df = df05, ncp = ncp05): full precision may not
-## have been achieved in 'pnt{final}'
 ```
 
 ## `loss()` function from Simonsohn, Nelson, and Simons (2014) ([.html](http://www.p-curve.com/Supplement/Rcode_paper2/9%20-%20Loss%20Function%20and%20Estimation.R))
@@ -175,7 +169,7 @@ options(warn = -1)
 ```
 
 ```
-## [1] 0.2996595
+## [1] 0.2976262
 ```
 
 ```r
@@ -183,7 +177,7 @@ options(warn = -1)
 ```
 
 ```
-## [1] 0.499995
+## [1] 0.5089931
 ```
 
 ## combine them and estimate the average effect size
@@ -197,7 +191,7 @@ options(warn = -1)
 ```
 
 ```
-## [1] 0.4054234
+## [1] 0.4048464
 ```
 
 ## plot all 3 estimates
@@ -232,7 +226,8 @@ tibble(dhat03, dhat05, dhat_avg) %>%
 
 > the average effect size is just as they said—the simple average of the true effects, more or less
 
-## what happens when we triple the cell sizes used to study one of the effects?
+# Example 2
+> triple the cell size used to study the larger effect size
 
 
 ```r
@@ -295,7 +290,7 @@ options(warn = -1)
 ```
 
 ```
-## [1] 0.3314667
+## [1] 0.2867967
 ```
 
 ```r
@@ -303,7 +298,7 @@ options(warn = -1)
 ```
 
 ```
-## [1] 0.4961167
+## [1] 0.5000007
 ```
 
 ## combine them for the average effect size
@@ -317,7 +312,7 @@ options(warn = -1)
 ```
 
 ```
-## [1] 0.4572628
+## [1] 0.4524729
 ```
 
 ## plot all 3 estimates
@@ -389,8 +384,10 @@ sim_d <- function(d_mean, d_sd, n0, n1) {
 }
 ```
 
-## with `sim_d()`, replicate 10000 studies
+# Example 3
 > like Figure 2, Panel C in Simonsohn et al., mean *d* = 0.40, *d* standard deviation *d* = 0.20, and cell sizes range from *n* = 10 to *n* = 70
+
+## with `sim_d()`, replicate 10000 studies
 
 
 ```r
@@ -428,7 +425,7 @@ mean(di)
 ```
 
 ```
-## [1] 0.4051349
+## [1] 0.397307
 ```
 
 ```r
@@ -437,7 +434,7 @@ sd(di)
 ```
 
 ```
-## [1] 0.1997528
+## [1] 0.2017264
 ```
 
 ## estimate the  effect size
@@ -451,15 +448,17 @@ options(warn = -1)
 ```
 
 ```
-## [1] 0.4464914
+## [1] 0.4278243
 ```
 
-> the bias estimate is 4 - 0.45 = -0.05. Not too bad.
+> the bias estimate is 4 - 0.43 = -0.03. Not too bad.
 
 Next, here's a rough version of what McShane, Böckenholt, and Hansen (2016) ([.html](http://www.blakemcshane.com/Papers/pps_selectionmethods.pdf)) did. This example is conceptually similar to the example in Simonsohn et al. Supplement 2 in which cell size was held constant but, instead of sampling equal numbers of significant effects from each distribution, they merely saved significant effects from a set number of "attempted" studies of those distributions. In the long run of a simulation, this means larger true effects receive more weight in *p*-curve's estimates. In other words, bigger effects find more *p* < .05, which gives them more weight, which produces upwardly baised estimates. This is exactly what McShane et al. predicted and found. I demonstrate this below.
 
+# Example 4
+> mean = 0.40 and sd = 0.20, but not all effects will be *p* < .05
+
 ## sample 10000 Cohen's *d* from a normal distribution
-> mean = 0.40 and sd = 0.20
 
 
 ```r
@@ -504,7 +503,7 @@ mean(di)
 ```
 
 ```
-## [1] 0.3974551
+## [1] 0.3992268
 ```
 
 ```r
@@ -512,7 +511,7 @@ sd(di)
 ```
 
 ```
-## [1] 0.2007245
+## [1] 0.2031352
 ```
 
 ## compute *p*-values
@@ -535,12 +534,12 @@ options(warn = -1)
 ```
 
 ```
-## [1] 0.5274681
+## [1] 0.5298499
 ```
 
 > the bias estimate is 4 - 0.53 = -0.13. This bias should look familiar: compare this to the average bias estimate for *p*-curve Figure 3 in McShane et al. I used mean *d* = 0.40, which gives a bias estimate practically in the middle of those for mean *d* = 0.30 (~ 0.15) and mean *d* = 0.50 (~ 0.075) in their figure.
 
-Bias here is caused by heterogeneity. Like I described above, not all true effects were given equal weight in *p*-curve's estimate. Larger effects with larger cell sizes (i.e., higher powered studies) were given more weight, so *p*-curve gave a larger estimate than the average true effect.
+Bias here is caused by heterogeneity. But keep in mind that had the heterogeneity been equally represented with significant *p*-values, then *p*-curve would recover that accurate average true effect (like in my third example). Like I described above, not all true effects were given equal weight in *p*-curve's estimate. Larger effects with larger cell sizes (i.e., higher powered studies) were given more weight, so *p*-curve gave a larger estimate than the average true effect.
 
 I'll illustrate what I think is the key difference between the Simonsohn et al. and McShane et al. simulation environments. Below I plot a histogram of the *true* effect sizes whose studies did not find *p* < .05.
 
@@ -564,6 +563,9 @@ tibble(d_nosig = di[pi > 0.025]) %>%
 What are these? In simulation land, these are just subset of random variables drawn from a hypothetical distribution. But in the "real world", these represent idiosyncratic study designs and any factors that might influence their results. These represent a relatively small galaxy of effect sizes that are waiting for their *p* < .05 if only luck (or statistical power) will have it.
 
 McShane et al. and even Simonsohn et al. point this out as a major limitation of *p*-curve. McShane et al. go further and recommend that you use the information in those nonsignificant effects. For example, you could use `weightfunct()` from the weightr package ([.html](https://cran.r-project.org/web/packages/weightr/index.html)) to estimate the Iyengar and Greenhouse (1984) model. See below.
+
+# Example 5
+> use weight function model (a.k.a., three-parameter selection method). the three parameters are (1) effect size, (2) heterogeneity, and (3) weight function for significant and nonsignificant results (e.g., weight *p* < .05 more than *p* > .05)
 
 ## estimate Cohen's *d* and its variance
 
@@ -591,33 +593,33 @@ weightfunct(effect = yi, v = vi, steps = c(0.025, 1), table = TRUE, pval = pi)
 ## 
 ## Unadjusted Model (k = 10000):
 ## 
-## tau^2 (estimated amount of total heterogeneity): 0.0389 (SE = 0.0013)
-## tau (square root of estimated tau^2 value):  0.1972
+## tau^2 (estimated amount of total heterogeneity): 0.0406 (SE = 0.0013)
+## tau (square root of estimated tau^2 value):  0.2016
 ## 
 ## Model Results:
 ## 
-##           estimate std.error z-stat      p-val  ci.lb  ci.ub
-## Intercept   0.3996  0.003094  129.2 < 2.22e-16 0.3935 0.4056
+##           estimate std.error z-stat      p-val  ci.lb ci.ub
+## Intercept   0.3999  0.003113  128.5 < 2.22e-16 0.3938 0.406
 ## 
 ## Adjusted Model (k = 10000):
 ## 
-## tau^2 (estimated amount of total heterogeneity): 0.0389 (SE = 0.0013)
-## tau (square root of estimated tau^2 value):  0.1972
+## tau^2 (estimated amount of total heterogeneity): 0.0403 (SE = 0.0013)
+## tau (square root of estimated tau^2 value):  0.2008
 ## 
 ## Model Results:
 ## 
 ##               estimate std.error z-stat      p-val  ci.lb  ci.ub
-## Intercept       0.3991  0.004944  80.71 < 2.22e-16 0.3894 0.4088
-## 0.025 < p < 1   0.9959  0.033475  29.75 < 2.22e-16 0.9303 1.0615
+## Intercept       0.3915  0.004963  78.89 < 2.22e-16 0.3818 0.4013
+## 0.025 < p < 1   0.9303  0.031201  29.82 < 2.22e-16 0.8692 0.9915
 ## 
 ## Likelihood Ratio Test:
-## X^2(df = 1) = 0.01519148, p-val = 0.90191
+## X^2(df = 1) = 4.619751, p-val = 0.031606
 ## 
 ## Number of Effect Sizes per Interval:
 ## 
 ##                      Frequency
-## p-values <0.025           4171
-## 0.025 < p-values < 1      5829
+## p-values <0.025           4272
+## 0.025 < p-values < 1      5728
 ```
 
 > compare the Intercept estimate and tau estimate to the *d* mean and *d* sd I requested: this model gets it spot on.
@@ -631,7 +633,7 @@ weightfunct(effect = yi[pi < 0.025], v = vi[pi < 0.025], steps = c(0.025, 1), ta
 
 ```
 ## 
-## Unadjusted Model (k = 4171):
+## Unadjusted Model (k = 4272):
 ## 
 ## tau^2 (estimated amount of total heterogeneity): 0.0000 (SE = 0.0012)
 ## tau (square root of estimated tau^2 value):  0.0000
@@ -639,34 +641,34 @@ weightfunct(effect = yi[pi < 0.025], v = vi[pi < 0.025], steps = c(0.025, 1), ta
 ## Model Results:
 ## 
 ##           estimate std.error z-stat      p-val  ci.lb  ci.ub
-## Intercept   0.6385  0.003437  185.8 < 2.22e-16 0.6318 0.6453
+## Intercept   0.6381  0.003374  189.1 < 2.22e-16 0.6315 0.6447
 ## 
-## Adjusted Model (k = 4171):
+## Adjusted Model (k = 4272):
 ## 
-## tau^2 (estimated amount of total heterogeneity): 0.0246 (SE = 0.0019)
-## tau (square root of estimated tau^2 value):  0.1568
+## tau^2 (estimated amount of total heterogeneity): 0.0234 (SE = 0.0018)
+## tau (square root of estimated tau^2 value):  0.1530
 ## 
 ## Model Results:
 ## 
-##               estimate std.error z-stat      p-val  ci.lb  ci.ub
-## Intercept       0.4565  0.003562  128.2 < 2.22e-16 0.4495 0.4635
-## 0.025 < p < 1   0.0100       NaN    NaN         NA    NaN    NaN
+##               estimate std.error z-stat      p-val  ci.lb ci.ub
+## Intercept       0.4631  0.003529  131.2 < 2.22e-16 0.4562  0.47
+## 0.025 < p < 1   0.0100       NaN    NaN         NA    NaN   NaN
 ## 
 ## Likelihood Ratio Test:
-## X^2(df = 1) = 2900.887, p-val = < 2.22e-16
+## X^2(df = 1) = 2932.378, p-val = < 2.22e-16
 ## 
 ## Number of Effect Sizes per Interval:
 ## 
 ##                      Frequency
-## p-values <0.025           4171
+## p-values <0.025           4272
 ## 0.025 < p-values < 1         0
 ```
 
 > upwardly biased, as the methodologists say, but not as upward as *p*-curve's estimate
 
-My point is that McShane et al. are right to recommend people use valuable information from effect sizes, *p* < .05 or not. What's more, this model does just as well as *p*-curve when only p < .05 are published—in my example but also in McShane et al.'s simulations.
+My point is that McShane et al. are right to recommend people use valuable information from effect sizes, *p* < .05 or not. What's more, the model they recommend does just as well as *p*-curve when only *p* < .05 are published—in my example but also in McShane et al.'s simulations.
 
-But take a step back and think back to those *p* < .05-less studies represented in that histogram above. Those represent more combinations of manipulations, measures, sample characteristics, and contexts than those reported by any research literature that exists. Realistically, researchers will selectively (i.e., non-randomly) study a handful of these combinations, and those combinations that mostly easily produce interesting, statistically significant results will end up in meta-analyst's hands. Like Uri Simonsohn points out, *"The" effect size does not exist* ([.html](http://datacolada.org/33)). The effect sizes that received more weight in these simulations did so because they were larger. In simulation land, this is correctly called bias. But, perhaps, in the "real world", the studies that receive the most weight might represent the most interesting studies—to researchers, to funders, to everyday people. In other words, they represent not the true average, whatever that is, but, maybe, the *interesting* average.
+But think back to those *p* < .05-less studies represented in that histogram above. Those represent more combinations of manipulations, measures, sample characteristics, and contexts than those reported by any research literature that exists. Realistically, researchers will selectively (i.e., non-randomly) study a handful of these combinations, and those combinations that most easily produce interesting, statistically significant results will end up in meta-analyst's hands. Like Uri Simonsohn points out, *"The" effect size does not exist* ([.html](http://datacolada.org/33)). The effect sizes that received more weight in these simulations did so because they were larger. In simulation land, this is correctly called bias. But, perhaps, in the "real world", the studies that receive the most weight might represent the most interesting studies—to researchers, to funders, to everyday people. In other words, they represent not the true average, whatever that is, but, maybe, the *interesting* average.
 
 Interesting in this case is just another name for heterogeneity-caused bias that we want.
 
