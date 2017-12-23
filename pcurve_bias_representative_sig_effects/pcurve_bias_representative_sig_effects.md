@@ -46,7 +46,7 @@ In fact, between the main text and their supplement, they reported 4 simulations
 
 ![](https://raw.githubusercontent.com/nmmichalak/novum_R_ganum/master/pcurve_bias_representative_sig_effects/simonsohn_et_al_F2.png) 
 
-and Figure S2 from their Supplement, [.html](http://p-curve.com/Supplement/Supplement_pcurve2.pdf)) below.   
+and Figure S2 from their Supplement ([.html](http://p-curve.com/Supplement/Supplement_pcurve2.pdf)) below.   
 
 ![](https://raw.githubusercontent.com/nmmichalak/novum_R_ganum/master/pcurve_bias_representative_sig_effects/simonsohn_et_al_S2.png)   
   
@@ -66,7 +66,7 @@ library(weightr)
 ```
 
 # Example 1
-> equal cell sizes
+> equal cell sizes. this is like researchers replicating the same two study designs with the same cell sizes but reporting only equal numbers of *p* < .05 results.
 
 ## start by saving two different effect sizes, *d*
 
@@ -137,9 +137,6 @@ t05 <- qt(p = rp05, df = df05, ncp = ncp05)
 ```
 ## Warning in qt(p = rp05, df = df05, ncp = ncp05): full precision may not
 ## have been achieved in 'pnt{final}'
-
-## Warning in qt(p = rp05, df = df05, ncp = ncp05): full precision may not
-## have been achieved in 'pnt{final}'
 ```
 
 ## `loss()` function from Simonsohn, Nelson, and Simons (2014) ([.html](http://www.p-curve.com/Supplement/Rcode_paper2/9%20-%20Loss%20Function%20and%20Estimation.R))
@@ -179,7 +176,7 @@ options(warn = -1)
 ```
 
 ```
-## [1] 0.2844141
+## [1] 0.3013011
 ```
 
 ```r
@@ -187,7 +184,7 @@ options(warn = -1)
 ```
 
 ```
-## [1] 0.4913761
+## [1] 0.4976747
 ```
 
 ## combine them and estimate the average effect size
@@ -201,7 +198,7 @@ options(warn = -1)
 ```
 
 ```
-## [1] 0.391759
+## [1] 0.4036178
 ```
 
 ## plot all 3 estimates
@@ -237,7 +234,7 @@ tibble(dhat03, dhat05, dhat_avg) %>%
 > the average effect size is just as they said—the simple average of the true effects, more or less
 
 # Example 2
-> triple the cell size used to study the larger effect size
+> triple the cell size used to study the study design with the larger effect size. still equal numbers of *p* < .05 results
 
 
 ```r
@@ -300,7 +297,7 @@ options(warn = -1)
 ```
 
 ```
-## [1] 0.283507
+## [1] 0.3125321
 ```
 
 ```r
@@ -308,7 +305,7 @@ options(warn = -1)
 ```
 
 ```
-## [1] 0.5067629
+## [1] 0.5066927
 ```
 
 ## combine them for the average effect size
@@ -322,7 +319,7 @@ options(warn = -1)
 ```
 
 ```
-## [1] 0.457893
+## [1] 0.4629974
 ```
 
 ## plot all 3 estimates
@@ -395,7 +392,7 @@ sim_d <- function(d_mean, d_sd, n0, n1) {
 ```
 
 # Example 3
-> like Figure 2, Panel C in Simonsohn et al., mean *d* = 0.40, *d* standard deviation *d* = 0.20, and cell sizes range from *n* = 10 to *n* = 70
+> like Figure 2, Panel C in Simonsohn et al., mean *d* = 0.40, *d* standard deviation *d* = 0.20, and cell sizes range from *n* = 10 to *n* = 70. Importantly, keep equal numbers of *p* < .05 results from each combination of effect size and cell size.
 
 ## with `sim_d()`, replicate 10000 studies
 
@@ -426,7 +423,7 @@ di <- sapply(sim_data, function(x) x[["di"]])
 ```
 
 ## estimate true Cohen's *d* mean and sd
-> this insures that our simulation generated the conditions I requested
+> this insures that my simulation generated the conditions I requested
 
 
 ```r
@@ -435,7 +432,7 @@ mean(di)
 ```
 
 ```
-## [1] 0.3992473
+## [1] 0.4012938
 ```
 
 ```r
@@ -444,7 +441,7 @@ sd(di)
 ```
 
 ```
-## [1] 0.2009476
+## [1] 0.2020361
 ```
 
 ## estimate the  effect size
@@ -458,7 +455,7 @@ options(warn = -1)
 ```
 
 ```
-## [1] 0.435052
+## [1] 0.435601
 ```
 
 > the bias estimate is 4 - 0.44 = -0.04. Not too bad.
@@ -466,7 +463,7 @@ options(warn = -1)
 Next, here's a rough version of what McShane, Böckenholt, and Hansen (2016) ([.html](http://www.blakemcshane.com/Papers/pps_selectionmethods.pdf)) did. This example is conceptually similar to the example in Simonsohn et al. Supplement 2 in which cell size was held constant but, instead of sampling equal numbers of significant effects from each distribution, they merely saved significant effects from a set number of "attempted" studies of those distributions. In the long run of a simulation, this means larger true effects receive more weight in *p*-curve's estimates. In other words, bigger effects find more *p* < .05, which gives them more weight, which produces upwardly baised estimates. This is exactly what McShane et al. predicted and found. I demonstrate this below.
 
 # Example 4
-> mean = 0.40 and sd = 0.20, but not all effects will be *p* < .05
+> mean = 0.40 and sd = 0.20, and cell sizes range from *n* = 10 to *n* = 70, but not all combinations will have equal numbers of *p* < .05 results
 
 ## sample 10000 Cohen's *d* from a normal distribution
 
@@ -509,19 +506,21 @@ ti <- sapply(1:length(di), function(i) {
 
 
 ```r
+# mean
 mean(di)
 ```
 
 ```
-## [1] 0.402287
+## [1] 0.401953
 ```
 
 ```r
+# standard deviation
 sd(di)
 ```
 
 ```
-## [1] 0.2014983
+## [1] 0.1992789
 ```
 
 ## compute *p*-values
@@ -533,7 +532,7 @@ pi <- 1 - pt(q = ti, df = dfi)
 ```
 
 ## find effect size
-> note I only use effects that result in *p* < .025, which gives us significant effects in the predicted direction (i.e., positive and *p* < .05, two-tailed)
+> note (again) I only use effects that result in *p* < .025, which gives us significant effects in the predicted direction (i.e., positive and *p* < .05, two-tailed)
 
 
 ```r
@@ -544,12 +543,12 @@ options(warn = -1)
 ```
 
 ```
-## [1] 0.5327717
+## [1] 0.5262171
 ```
 
-> the bias estimate is 4 - 0.53 = -0.13. This bias should look familiar: compare this to the average bias estimate for *p*-curve Figure 3 in McShane et al. I used mean *d* = 0.40, which gives a bias estimate practically in the middle of those for mean *d* = 0.30 (~ 0.15) and mean *d* = 0.50 (~ 0.075) in their figure.
+> The bias estimate is 4 - 0.53 = -0.13. This bias should look familiar. Compare this to the average bias estimate for *p*-curve Figure 3 in McShane et al. I used mean *d* = 0.40, which gives a bias estimate practically in the middle of those for mean *d* = 0.30 (~ 0.15) and mean *d* = 0.50 (~ 0.075) in their figure.
 
-Bias here is caused by heterogeneity. But keep in mind that had the heterogeneity been equally represented with significant *p*-values, then *p*-curve would recover that accurate average true effect (like in my third example). Like I described above, not all true effects were given equal weight in *p*-curve's estimate. Larger effects with larger cell sizes (i.e., higher powered studies) were given more weight, so *p*-curve gave a larger estimate than the average true effect.
+Bias here is caused by heterogeneity. But keep in mind that had the heterogeneity been equally represented with significant *p*-values, then *p*-curve would have recovered the accurate average true effect (like in my Example 3). Like I described above, not all true effects were given equal weight in *p*-curve's estimate. Larger effects with larger cell sizes (i.e., higher powered studies) were given more weight, so *p*-curve estimated a larger effect size than the average true effect.
 
 I'll illustrate what I think is the key difference between the Simonsohn et al. and McShane et al. simulation environments. Below I plot a histogram of the *true* effect sizes whose studies did not find *p* < .05.
 
@@ -570,12 +569,12 @@ tibble(d_nosig = di[pi > 0.025]) %>%
 
 ![](pcurve_bias_representative_sig_effects_files/figure-html/unnamed-chunk-40-1.png)<!-- -->
 
-What are these? In simulation land, these are just subset of random variables drawn from a hypothetical distribution. But in the "real world", these represent idiosyncratic study designs and any factors that might influence their results. These represent a relatively small galaxy of effect sizes that are waiting for their *p* < .05 if only luck (or statistical power) will have it.
+What are these? In simulation land, these are just subset of random variables drawn from a hypothetical distribution. But in the "real world", these represent idiosyncratic study designs and any factors that might influence their results. These represent a relatively small galaxy of effect sizes that are waiting for their *p* < .05 if only luck (or statistical power) will have it. Simonsohn et al. assumed these effects weren't published.
 
-McShane et al. and even Simonsohn et al. point this out as a major limitation of *p*-curve. McShane et al. go further and recommend that you use the information in those nonsignificant effects. For example, you could use `weightfunct()` from the weightr package ([.html](https://cran.r-project.org/web/packages/weightr/index.html)) to estimate the Iyengar and Greenhouse (1984) model. See below.
+McShane et al. and even Simonsohn et al. point this out as a major limitation of *p*-curve: it doesn't use information from nonsignificant. McShane et al. recommend that you use the information in those nonsignificant effects. For example, you could use `weightfunct()` from the weightr package ([.html](https://cran.r-project.org/web/packages/weightr/index.html)) to estimate the Iyengar and Greenhouse (1984) model. See below.
 
 # Example 5
-> use weight function model (a.k.a., three-parameter selection method). the three parameters are (1) effect size, (2) heterogeneity, and (3) weight function for significant and nonsignificant results (e.g., weight *p* < .05 more than *p* > .05)
+> use weight function model (a.k.a., three-parameter selection method). the three parameters are (1) effect size, (2) heterogeneity, and (3) weight function for significant and nonsignificant results (e.g., weight *p* < .05 more than *p* > .05). In other words, use information from *p*-value cutoffs and effect size variability.
 
 ## estimate Cohen's *d* and its variance
 
@@ -592,7 +591,7 @@ vi <- es_data$var.d
 ```
 
 ## fit Iyengar and Greenhouse (1984) model
-> by the way, the line for .025 < *p* < 1 gives the estimate for how likely it is that *p* > .025 and < 1 are to be published, relative to *p* < .025 which get weight = 1. I only gave it effect that reached *p* < .025, so that estimate is 0.01 (i.e., 0.01 times as likely as *p* < .025 to be published)
+> by the way, the line for .025 < *p* < 1 gives the estimate for how likely it is that *p* > .025 and < 1 are to be published, relative to *p* < .025 which get a weight = 1. I gave it *all* the effects, so that estimate is pretty close to 1 (i.e., 0.99 or 1 times as likely as *p* < .025 to be published)
 
 
 ```r
@@ -603,39 +602,39 @@ weightfunct(effect = yi, v = vi, steps = c(0.025, 1), table = TRUE, pval = pi)
 ## 
 ## Unadjusted Model (k = 10000):
 ## 
-## tau^2 (estimated amount of total heterogeneity): 0.0393 (SE = 0.0013)
-## tau (square root of estimated tau^2 value):  0.1982
+## tau^2 (estimated amount of total heterogeneity): 0.0382 (SE = 0.0013)
+## tau (square root of estimated tau^2 value):  0.1954
 ## 
 ## Model Results:
 ## 
 ##           estimate std.error z-stat      p-val  ci.lb  ci.ub
-## Intercept   0.4003  0.003103    129 < 2.22e-16 0.3942 0.4064
+## Intercept   0.4032  0.003078    131 < 2.22e-16 0.3972 0.4092
 ## 
 ## Adjusted Model (k = 10000):
 ## 
-## tau^2 (estimated amount of total heterogeneity): 0.0393 (SE = 0.0013)
-## tau (square root of estimated tau^2 value):  0.1981
+## tau^2 (estimated amount of total heterogeneity): 0.0380 (SE = 0.0013)
+## tau (square root of estimated tau^2 value):  0.1948
 ## 
 ## Model Results:
 ## 
 ##               estimate std.error z-stat      p-val  ci.lb  ci.ub
-## Intercept       0.3998  0.004957  80.66 < 2.22e-16 0.3901 0.4095
-## 0.025 < p < 1   0.9957  0.033462  29.76 < 2.22e-16 0.9301 1.0613
+## Intercept       0.3973  0.004903  81.02 < 2.22e-16 0.3877 0.4069
+## 0.025 < p < 1   0.9496  0.031818  29.84 < 2.22e-16 0.8872 1.0120
 ## 
 ## Likelihood Ratio Test:
-## X^2(df = 1) = 0.01675869, p-val = 0.897
+## X^2(df = 1) = 2.385334, p-val = 0.12248
 ## 
 ## Number of Effect Sizes per Interval:
 ## 
 ##                      Frequency
-## p-values <0.025           4174
-## 0.025 < p-values < 1      5826
+## p-values <0.025           4264
+## 0.025 < p-values < 1      5736
 ```
 
-> compare the Intercept estimate and tau estimate to the *d* mean and *d* sd I requested: this model gets it spot on.
+> compare the Intercept estimate and tau estimate to the *d* mean and *d* sd I requested: this model gets it **really close**.
 
 # Example 6
-> compare its performance when only *p* < .05 effects are published
+> compare its performance when only *p* < .05 effects are published. This is similar to above, but now the model is blind to all the *p* > .05 information (including its heterogeneity), so *p* > .025 and *p* < 1 are 0.01 times as likely to be published, relative to *p* < .025
 
 
 ```r
@@ -644,7 +643,7 @@ weightfunct(effect = yi[pi < 0.025], v = vi[pi < 0.025], steps = c(0.025, 1), ta
 
 ```
 ## 
-## Unadjusted Model (k = 4174):
+## Unadjusted Model (k = 4264):
 ## 
 ## tau^2 (estimated amount of total heterogeneity): 0.0000 (SE = 0.0011)
 ## tau (square root of estimated tau^2 value):  0.0000
@@ -652,34 +651,34 @@ weightfunct(effect = yi[pi < 0.025], v = vi[pi < 0.025], steps = c(0.025, 1), ta
 ## Model Results:
 ## 
 ##           estimate std.error z-stat      p-val  ci.lb  ci.ub
-## Intercept   0.6384  0.003425  186.4 < 2.22e-16 0.6317 0.6451
+## Intercept   0.6374  0.003394  187.8 < 2.22e-16 0.6308 0.6441
 ## 
-## Adjusted Model (k = 4174):
+## Adjusted Model (k = 4264):
 ## 
-## tau^2 (estimated amount of total heterogeneity): 0.0278 (SE = 0.0019)
-## tau (square root of estimated tau^2 value):  0.1667
+## tau^2 (estimated amount of total heterogeneity): 0.0249 (SE = 0.0018)
+## tau (square root of estimated tau^2 value):  0.1578
 ## 
 ## Model Results:
 ## 
-##               estimate std.error z-stat      p-val ci.lb  ci.ub
-## Intercept       0.4481   0.00366  122.4 < 2.22e-16 0.441 0.4553
-## 0.025 < p < 1   0.0100       NaN    NaN         NA   NaN    NaN
+##               estimate std.error z-stat      p-val  ci.lb  ci.ub
+## Intercept       0.4547  0.003577  127.1 < 2.22e-16 0.4476 0.4617
+## 0.025 < p < 1   0.0100       NaN    NaN         NA    NaN    NaN
 ## 
 ## Likelihood Ratio Test:
-## X^2(df = 1) = 2936.524, p-val = < 2.22e-16
+## X^2(df = 1) = 3011.547, p-val = < 2.22e-16
 ## 
 ## Number of Effect Sizes per Interval:
 ## 
 ##                      Frequency
-## p-values <0.025           4174
+## p-values <0.025           4264
 ## 0.025 < p-values < 1         0
 ```
 
-> upwardly biased, as the methodologists say, but not as upward as *p*-curve's estimate
+> the estimate is upwardly biased, as the methodologists say, but not as upward as *p*-curve's estimate
 
 # Conclusion: bias from simulations versus "real-world" bias
 
-My point is that I think McShane et al. are right to recommend people use valuable information from effect sizes, *p* < .05 or not. What's more, the model they recommend does just as well as *p*-curve when only *p* < .05 are published—in my example but also in McShane et al.'s simulations.
+McShane et al. are right to recommend people use valuable information from effect sizes, *p* < .05 or not. What's more, the model they recommend does just as well as *p*-curve when only *p* < .05 are published—in my example but also in McShane et al.'s simulations.
 
 But think back to those *p* < .05-less studies represented in that histogram above. Those represent more combinations of manipulations, measures, sample characteristics, and contexts than those reported by any research literature that exists. Realistically, researchers will selectively (i.e., non-randomly) study a handful of these combinations, and those combinations that most easily produce interesting, statistically significant results will end up in meta-analyst's hands. Like Uri Simonsohn points out, *"The" effect size does not exist* ([.html](http://datacolada.org/33)). The effect sizes that received more weight in these simulations did so because they were larger. In simulation land, this is correctly called bias. But, perhaps, in the "real world", the studies that receive the most weight might represent the most interesting studies—to researchers, to funders, to everyday people. In other words, they represent not the true average, whatever that is, but, maybe, the *interesting* average.
 
