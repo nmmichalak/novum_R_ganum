@@ -554,7 +554,7 @@ tibble(d_nosig = di[pi > 0.025]) %>%
 
 What are these? In simulation land, these are just a subset of random variables drawn from a hypothetical normal distribution with a known mean and standard deviaiton. But in the "real world", these represent average true effects for idiosyncratic study designs and any factors that might influence their results. These represent a relatively small galaxy of effect sizes that are waiting for their *p* < .05 if only luck (or statistical power) will have it. Simonsohn et al. made sure estimates of these effects received equal *p*-value representation. But that's not likely to happen in practice.
 
-McShane et al. and even Simonsohn et al. point this out as a limitation of *p*-curve: it doesn't use information from nonsignificant effects. McShane et al. recommend that you use the information in those nonsignificant effects. For example, you could use `weightfunct()` from the weightr package ([.html](https://cran.r-project.org/web/packages/weightr/index.html)) to estimate the three-parameter version of the Hedges (1984) model ([.html](http://journals.sagepub.com/doi/pdf/10.3102/10769986009001061)). See below.
+McShane et al. and even Simonsohn et al. point this out as a limitation (really, a trade-off) of *p*-curve: it doesn't use information from nonsignificant effects. McShane et al. recommend that you use the information in those nonsignificant effects. For example, you could use `weightfunct()` from the weightr package ([.html](https://cran.r-project.org/web/packages/weightr/index.html)) to estimate the three-parameter version of the Hedges (1984) model ([.html](http://journals.sagepub.com/doi/pdf/10.3102/10769986009001061)). See below.
 
 # Example 5
 > use weight function model (a.k.a., three-parameter selection method). the three parameters are (1) effect size, (2) heterogeneity, and (3) weight function for significant and nonsignificant results (e.g., weight *p* < .05 more than *p* > .05). In other words, use information from *p*-value cutoffs and effect size variability.
@@ -594,13 +594,24 @@ weightfunct(effect = yi[pi < 0.025], v = vi[pi < 0.025], steps = c(0.025, 1), ta
 
 ```
 
-> the estimate is upwardly biased, as the methodologists say, but not as upward as *p*-curve's estimate
+> the estimate is upwardly biased, as the methodologists say, but not as upward as *p*-curve's estimate in this case
+
+# Example 7
+> compare its performance when *p* > .05 are more likely to be published if they're in the predicted direction or *p* < .10 (this mimics the most disastrous scenario in *Why p-curve excludes ps>.05* ([.html](http://datacolada.org/61)))
+
+```{r}
+
+weightfunct(effect = yi[yi > 0 & pi < .05], v = vi[yi > 0 & pi < .05], steps = c(0.025, 1), table = TRUE, pval = pi[yi > 0 & pi < .05])
+
+```
+
+> This demonstrates how using *p* > .05 information can mislead a meta-analytic technique that uses it. The problem here is that it's *really hard* to determine the censoring rule for *p* > .05 effects. That is, under what coditions are *p* > .05 likely to be published?
 
 # Conclusion: bias from simulations versus "real-world" bias
 
-McShane et al. are right to recommend people use valuable information from effect sizes, *p* < .05 or not. What's more, the model they recommend does just as well as *p*-curve when only *p* < .05 are published—in my example but also in McShane et al.'s simulations. (Side: I don't have the space to demonstrate here, but *p*-curve might perform a little better in some *p*-hacking environments (e.g., data peeking)).
+McShane et al. recommend researchers use valuable information from effect sizes, *p* < .05 or not. What's more, the model they recommend does just as well as *p*-curve when only *p* < .05 are published—in my example but also in McShane et al.'s simulations. However, this model performs poorly when there is selection bias for *p* > .05.
 
-But think back to those *p* < .05-less studies represented in that histogram above. Those represent more combinations of manipulations, measures, sample characteristics, and contexts than those reported by any research literature that exists. Realistically, researchers will selectively (i.e., non-randomly) study a handful of these combinations, and those combinations that most easily produce interesting, statistically significant results will end up in meta-analyst's hands. Like Uri Simonsohn points out, *"The" effect size does not exist* ([.html](http://datacolada.org/33)). The effect sizes that received more weight in these simulations did so because they were larger. In simulation land, this is correctly called bias. But, perhaps, in the "real world", the studies that receive the most weight might represent the most interesting studies—to researchers, to funders, to everyday people. In other words, they represent not the true average, whatever that is, but, maybe, the *interesting* average.
+Think back to those *p* < .05-less studies represented in that histogram above. Those represent more combinations of manipulations, measures, sample characteristics, and contexts than those reported by any research literature that exists. Realistically, researchers will selectively (i.e., non-randomly) study a handful of these combinations, and those combinations that most easily produce interesting, statistically significant results will end up in meta-analyst's hands. Like Uri Simonsohn points out, *"The" effect size does not exist* ([.html](http://datacolada.org/33)). The effect sizes that received more weight in these simulations did so because they were larger. In simulation land, this is correctly called bias. But, perhaps, in the "real world", the studies that receive the most weight might represent the most interesting studies—to researchers, to funders, to everyday people. In other words, they represent not the true average, whatever that is, but, maybe, the *interesting* average.
 
 "Interesting" in this case is just another name for heterogeneity-caused bias that we want.
 
