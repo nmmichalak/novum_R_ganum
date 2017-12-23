@@ -18,6 +18,8 @@ body{ /* Normal  */
   }
 </style>
 
+# *P*-curve and heterogeneity: an brief introduction
+
 For readers who aren't familair with *p*-curve, it was developed by Simonsohn, Nelson, and Simons (2014, [.html](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=2256237)) who define it as,
 
 > "the distribution of statistically significant *p*-values from a set of independent findings (p. 535)."
@@ -168,7 +170,7 @@ loss <- function(ti, dfi, dhat) {
 ```
 
 ## use the `optimize()` function to estimate the average effect size, *d*
-> note: interval gives a range of possible effect sizes to "look" for. we know the "true" effect size, so we can save computation time by setting a pretty narrow interval, ± *d* = 0.20
+> note: interval gives a range of possible effect sizes to "look" for. we know the true effect size, so we can save computation time by setting a pretty narrow interval, ± *d* = 0.20
 
 ```{r}
 
@@ -565,7 +567,8 @@ weightfunct(effect = yi, v = vi, steps = c(0.025, 1), table = TRUE, pval = pi)
 
 > compare the Intercept estimate and tau estimate to the *d* mean and *d* sd I requested: this model gets it spot on.
 
-But wait. Now compare its performance when only *p* < .05 effects are published
+# Example 6
+> compare its performance when only *p* < .05 effects are published
 
 ```{r}
 
@@ -575,11 +578,13 @@ weightfunct(effect = yi[pi < 0.025], v = vi[pi < 0.025], steps = c(0.025, 1), ta
 
 > upwardly biased, as the methodologists say, but not as upward as *p*-curve's estimate
 
-My point is that McShane et al. are right to recommend people use valuable information from effect sizes, *p* < .05 or not. What's more, the model they recommend does just as well as *p*-curve when only *p* < .05 are published—in my example but also in McShane et al.'s simulations.
+# Conclusion: bias from simulations versus "real-world" bias
+
+My point is that I think McShane et al. are right to recommend people use valuable information from effect sizes, *p* < .05 or not. What's more, the model they recommend does just as well as *p*-curve when only *p* < .05 are published—in my example but also in McShane et al.'s simulations.
 
 But think back to those *p* < .05-less studies represented in that histogram above. Those represent more combinations of manipulations, measures, sample characteristics, and contexts than those reported by any research literature that exists. Realistically, researchers will selectively (i.e., non-randomly) study a handful of these combinations, and those combinations that most easily produce interesting, statistically significant results will end up in meta-analyst's hands. Like Uri Simonsohn points out, *"The" effect size does not exist* ([.html](http://datacolada.org/33)). The effect sizes that received more weight in these simulations did so because they were larger. In simulation land, this is correctly called bias. But, perhaps, in the "real world", the studies that receive the most weight might represent the most interesting studies—to researchers, to funders, to everyday people. In other words, they represent not the true average, whatever that is, but, maybe, the *interesting* average.
 
-Interesting in this case is just another name for heterogeneity-caused bias that we want.
+"Interesting" in this case is just another name for heterogeneity-caused bias that we want.
 
 ## Some notes
 > *Why p-curve excludes ps>.05* ([.html](http://datacolada.org/61)) and *PET-PEESE Is Not Like Homeopathy* ([.html](http://datacolada.org/59)) motivated this post—those and my own meta-analysis project with Neil Lewis, Jr. :-)
