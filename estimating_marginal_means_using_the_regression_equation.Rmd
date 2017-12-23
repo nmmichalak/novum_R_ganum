@@ -1,0 +1,231 @@
+---
+title: "Estimating marginal means using the regression equation"
+author: "Nick Michalak"
+date: "October 28th, 2017"
+output:
+  html_notebook:
+    fig_height: 9
+    fig_width: 12
+    theme: readable
+---
+
+## packages
+
+```{r, warning = FALSE, message = FALSE}
+
+library(tidyverse)
+library(haven)
+library(multcomp)
+
+```
+
+## data
+
+### dummy 1
+
+```{r}
+
+dummy1 <- c(0, 1) %>% rep(each = 50)
+
+```
+
+### contrast 1
+
+```{r}
+
+cont1 <- (c(-1, 1) / 2) %>% rep(each = 50)
+
+```
+
+### dummy 2
+
+```{r}
+
+dummy2 <- c(0, 1) %>% rep(each = 25, times = 2)
+
+```
+
+### contrast 2
+
+```{r}
+
+cont2 <- (c(-1, 1) / 2) %>% rep(each = 25, times = 2)
+
+```
+
+### y
+
+```{r}
+
+# set randomizer seed so that results are reproducible
+set.seed(100)
+
+y <- c(5.5, 2.5, 2.5, 5.5) %>% map(function(m) rnorm(n = 25, mean = m, sd = 1)) %>% unlist()
+
+```
+
+## plot
+
+```{r}
+
+tibble(y, cont1, cont2) %>% 
+  mutate(cont1 = cont1 %>% factor(),
+         cont2 = cont2 %>% factor()) %>% 
+  ggplot(mapping = aes(x = cont1, y = y, fill = cont2)) +
+  stat_summary(geom = "bar", fun.data = mean_cl_normal, position = position_dodge(0.9)) +
+  stat_summary(geom = "errorbar", fun.data = mean_cl_normal, position = position_dodge(0.9), width = 0.1)
+
+```
+
+## cell means
+
+```{r}
+
+tibble(dummy1, dummy2, y) %>% 
+  group_by(dummy1, dummy2) %>% 
+  summarize(Mean = mean(y),
+            SD = sd(y),
+            n = sum(!is.na(y)))
+
+```
+
+## models
+
+### dummy model
+
+```{r}
+
+lm_dummy <- lm(y ~ dummy1 * dummy2)
+
+```
+
+### summary
+
+```{r}
+
+lm_dummy %>% summary()
+
+```
+
+> the second and third cofficient, dummy1 and dummy2, are simple effects. dummy1 is the difference between the two red bars or the effect of a 1 unit change in dummy1 when dummy2 = 0; dummy2 is the difference between the far left red bar and the blue bar next to it or the effect of a 1 unite change in dummy2 when dummy1 = 0.
+
+### use regression equation to get marginal means from dummy codes
+> the first coefficient -- the intercept -- gives the marginal mean for a specific cell when you weigh the regression cofficients using the values that represent that cell for that cofficient's predictor variable. In all the coefficient weights below, the intercept always gets weight = 1 because that's the coefficient we're interested in.
+
+#### far left bar
+> the far left bar's mean is the value of the intercept when dummy1 = 0 and dummy2 = 0, so the first cofficient = 0, the second = 0, and the third = 0 * 0 = 0. 
+
+```{r}
+
+lm_dummy %>%
+  glht(linfct = rbind(c(1, 0, 0, 0))) %>%
+  summary(test = adjusted("none"))
+
+```
+
+#### second bar from left bar
+> the second bar from the left's mean is the value of the intercept when dummy1 = 0 and dummy2 = 1, so the first cofficient = 0, the second = 0, and the third = 0 * 1 = 0. 
+
+```{r}
+
+lm_dummy %>%
+  glht(linfct = rbind(c(1, 0, 1, 0))) %>%
+  summary(test = adjusted("none"))
+
+```
+
+#### third bar from left
+> the third bar from the left's mean is the value of the intercept when dummy1 = 1 and dummy2 = 0, so the first cofficient = 1, the second = 0, and the third = 1 * 0 = 0.
+
+```{r}
+
+lm_dummy %>%
+  glht(linfct = rbind(c(1, 1, 0, 0))) %>%
+  summary(test = adjusted("none"))
+
+```
+
+#### fourth bar from left (the far right bar)
+> the fourth bar from the left's mean (the far right bar) is the value of the intercept when dummy1 = 1 and dummy2 = 1, so the first cofficient = 1, the second = 1, and the third = 1 * 1 = 1.
+
+```{r}
+
+lm_dummy %>%
+  glht(linfct = rbind(c(1, 1, 1, 1))) %>%
+  summary(test = adjusted("none"))
+
+```
+
+### contrast model
+
+```{r}
+
+lm_cont <- lm(y ~ cont1 * cont2)
+
+```
+
+### summary
+
+```{r}
+
+lm_cont %>% summary()
+
+```
+
+> the second and third cofficient, cont1 and cont2, are main effects. cont1 is the difference between the average of the left bars and the average of the right bars or the effect of a 1 unit change in cont1 when cont2 = 0. cont2 is the difference between the average of the red bars and the average of the blue bars or the effect of a 1 unit change in cont2 when cont1 = 0. 
+
+### use regression equation to get marginal means from contrast codes
+
+#### far left bar
+> same as with the dummy codes but we're using difefrent weights: 1 for the intercept, cont1 = -0.5, cont2 = -0.5, and their product = -0.5 * -0.5 = 0.25
+
+```{r}
+
+lm_cont %>%
+  glht(linfct = rbind(c(1, -0.5, -0.5, 0.25))) %>%
+  summary(test = adjusted("none"))
+
+```
+
+#### second bar from left bar
+> 1 for the intercept, cont1 = -0.5, cont2 = 0.5, and their product = -0.5 * 0.5 = -0.25
+
+```{r}
+
+lm_cont %>%
+  glht(linfct = rbind(c(1, -0.5, 0.5, -0.25))) %>%
+  summary(test = adjusted("none"))
+
+```
+
+#### third bar from left
+> 1 for the intercept, cont1 = 0.5, cont2 = -0.5, and their product = 0.5 * -0.5 = -0.25
+
+```{r}
+
+lm_cont %>%
+  glht(linfct = rbind(c(1, 0.5, -0.5, -0.25))) %>%
+  summary(test = adjusted("none"))
+
+```
+
+#### fourth bar from left (the far right bar)
+> 1 for the intercept, cont1 = 0.5, cont2 = 0.5, and their product = 0.5 * 0.5 = 0.25
+
+```{r}
+
+lm_cont %>%
+  glht(linfct = rbind(c(1, 0.5, 0.5, 0.25))) %>%
+  summary(test = adjusted("none"))
+
+```
+
+## export data
+
+```{r}
+
+tibble(y, cont1, cont2, dummy1, dummy2) %>% 
+  write_sav(path = "~/Desktop/novum_R_ganum/dummy_cont_data.sav")
+
+```
+
