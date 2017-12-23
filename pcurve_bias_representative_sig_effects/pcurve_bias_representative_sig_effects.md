@@ -132,8 +132,8 @@ ncp05 <- sqrt(n05 / 2) * d05
 tibble(x = c(-10, 10)) %>% 
   ggplot(mapping = aes(x = x)) +
   stat_function(fun = dt, n = 10000, args = list(df = df03, ncp = 0), geom = "polygon", alpha = 0.50, aes(fill = "ncp = 0")) +
-  stat_function(fun = dt, n = 10000, args = list(df = df03, ncp = sqrt(n03 / 2) * d03), geom = "polygon", alpha = 0.50, aes(fill = paste0("ncp = ", round(ncp03, 2)))) +
-  stat_function(fun = dt, n = 10000, args = list(df = df05, ncp = sqrt(n05 / 2) * d05), geom = "polygon", alpha = 0.50, aes(fill = paste0("ncp = ", round(ncp05, 2)))) +
+  stat_function(fun = dt, n = 10000, args = list(df = df03, ncp = ncp03), geom = "polygon", alpha = 0.50, aes(fill = paste0("ncp = ", round(ncp03, 2)))) +
+  stat_function(fun = dt, n = 10000, args = list(df = df05, ncp = ncp05), geom = "polygon", alpha = 0.50, aes(fill = paste0("ncp = ", round(ncp05, 2)))) +
   labs(fill = "Noncentral t-distribution") +
   scale_x_continuous(breaks = seq(-10, 10, 2.5)) +
   blog_theme
@@ -164,11 +164,6 @@ rp05 <- runif(n = 5000, min = 1 - pwr05, max = 1)
 ```r
 t03 <- qt(p = rp03, df = df03, ncp = ncp03)
 t05 <- qt(p = rp05, df = df05, ncp = ncp05)
-```
-
-```
-## Warning in qt(p = rp05, df = df05, ncp = ncp05): full precision may not
-## have been achieved in 'pnt{final}'
 ```
 
 ## `loss()` function from Simonsohn, Nelson, and Simons (2014) ([.html](http://www.p-curve.com/Supplement/Rcode_paper2/9%20-%20Loss%20Function%20and%20Estimation.R))
@@ -208,7 +203,7 @@ options(warn = -1)
 ```
 
 ```
-## [1] 0.2994009
+## [1] 0.3043232
 ```
 
 ```r
@@ -216,7 +211,7 @@ options(warn = -1)
 ```
 
 ```
-## [1] 0.5090851
+## [1] 0.5016881
 ```
 
 ## combine them and estimate the average effect size
@@ -230,7 +225,7 @@ options(warn = -1)
 ```
 
 ```
-## [1] 0.4120891
+## [1] 0.4079864
 ```
 
 ## plot all 3 estimates
@@ -313,7 +308,7 @@ options(warn = -1)
 ```
 
 ```
-## [1] 0.3096483
+## [1] 0.2720343
 ```
 
 ```r
@@ -321,7 +316,7 @@ options(warn = -1)
 ```
 
 ```
-## [1] 0.5004158
+## [1] 0.4966768
 ```
 
 ## combine them for the average effect size
@@ -335,7 +330,7 @@ options(warn = -1)
 ```
 
 ```
-## [1] 0.4540783
+## [1] 0.4469985
 ```
 
 ## plot all 3 estimates
@@ -448,7 +443,7 @@ mean(di)
 ```
 
 ```
-## [1] 0.3991621
+## [1] 0.3971388
 ```
 
 ```r
@@ -457,7 +452,7 @@ sd(di)
 ```
 
 ```
-## [1] 0.2009272
+## [1] 0.1989279
 ```
 
 ## estimate the  effect size
@@ -471,10 +466,10 @@ options(warn = -1)
 ```
 
 ```
-## [1] 0.4327637
+## [1] 0.4230717
 ```
 
-> the bias estimate is 4 - 0.43 = -0.03. Not too bad.
+> the bias estimate is 4 - 0.42 = -0.02. Not too bad.
 
 Next, here's a rough version of what McShane, Böckenholt, and Hansen (2016) ([.html](http://www.blakemcshane.com/Papers/pps_selectionmethods.pdf)) did. This example is conceptually similar to the example in Simonsohn et al. Supplement 2 in which cell size was held constant but, instead of sampling equal numbers of significant effects from each distribution, they merely saved significant effects from a set number of "attempted" studies of those distributions. In the long run of a simulation, this means larger average true effects receive more weight in *p*-curve's estimates. In other words, bigger effects find more *p* < .05, which gives them more weight, which produces upwardly baised estimates. This is exactly what McShane et al. predicted and found. I demonstrate this below.
 
@@ -527,7 +522,7 @@ mean(di)
 ```
 
 ```
-## [1] 0.4003784
+## [1] 0.4038547
 ```
 
 ```r
@@ -536,7 +531,7 @@ sd(di)
 ```
 
 ```
-## [1] 0.1986347
+## [1] 0.1976717
 ```
 
 ## compute *p*-values
@@ -559,7 +554,7 @@ options(warn = -1)
 ```
 
 ```
-## [1] 0.5253359
+## [1] 0.5292545
 ```
 
 > The bias estimate is 4 - 0.53 = -0.13. This bias should look familiar. Compare this to the average bias estimate for *p*-curve Figure 3 in McShane et al. I used mean *d* = 0.40, which gives a bias estimate practically in the middle of those for mean *d* = 0.30 (~ 0.15) and mean *d* = 0.50 (~ 0.075) in their figure.
@@ -618,33 +613,33 @@ weightfunct(effect = yi, v = vi, steps = c(0.025, 1), table = TRUE, pval = pi)
 ## 
 ## Unadjusted Model (k = 10000):
 ## 
-## tau^2 (estimated amount of total heterogeneity): 0.0366 (SE = 0.0013)
-## tau (square root of estimated tau^2 value):  0.1914
+## tau^2 (estimated amount of total heterogeneity): 0.0400 (SE = 0.0013)
+## tau (square root of estimated tau^2 value):  0.1999
 ## 
 ## Model Results:
 ## 
-##           estimate std.error z-stat      p-val  ci.lb ci.ub
-## Intercept    0.398  0.003048  130.6 < 2.22e-16 0.3921 0.404
+##           estimate std.error z-stat      p-val  ci.lb  ci.ub
+## Intercept   0.4002  0.003114  128.5 < 2.22e-16 0.3941 0.4063
 ## 
 ## Adjusted Model (k = 10000):
 ## 
-## tau^2 (estimated amount of total heterogeneity): 0.0366 (SE = 0.0013)
-## tau (square root of estimated tau^2 value):  0.1914
+## tau^2 (estimated amount of total heterogeneity): 0.0397 (SE = 0.0013)
+## tau (square root of estimated tau^2 value):  0.1992
 ## 
 ## Model Results:
 ## 
-##               estimate std.error z-stat      p-val  ci.lb  ci.ub
-## Intercept       0.3981  0.004871  81.73 < 2.22e-16 0.3885 0.4076
-## 0.025 < p < 1   1.0005  0.033631  29.75 < 2.22e-16 0.9346 1.0664
+##               estimate std.error z-stat      p-val  ci.lb ci.ub
+## Intercept       0.3933  0.004962  79.26 < 2.22e-16 0.3835 0.403
+## 0.025 < p < 1   0.9417  0.031632  29.77 < 2.22e-16 0.8797 1.004
 ## 
 ## Likelihood Ratio Test:
-## X^2(df = 1) = 0.0002051485, p-val = 0.98857
+## X^2(df = 1) = 3.201789, p-val = 0.073558
 ## 
 ## Number of Effect Sizes per Interval:
 ## 
 ##                      Frequency
-## p-values <0.025           4159
-## 0.025 < p-values < 1      5841
+## p-values <0.025           4228
+## 0.025 < p-values < 1      5772
 ```
 
 > compare the Intercept estimate and tau estimate to the *d* mean and *d* sd I requested: this model gets it **really close**.
@@ -659,7 +654,7 @@ weightfunct(effect = yi[pi < 0.025], v = vi[pi < 0.025], steps = c(0.025, 1), ta
 
 ```
 ## 
-## Unadjusted Model (k = 4159):
+## Unadjusted Model (k = 4228):
 ## 
 ## tau^2 (estimated amount of total heterogeneity): 0.0000 (SE = 0.0012)
 ## tau (square root of estimated tau^2 value):  0.0000
@@ -667,26 +662,26 @@ weightfunct(effect = yi[pi < 0.025], v = vi[pi < 0.025], steps = c(0.025, 1), ta
 ## Model Results:
 ## 
 ##           estimate std.error z-stat      p-val  ci.lb  ci.ub
-## Intercept   0.6359  0.003438    185 < 2.22e-16 0.6292 0.6427
+## Intercept   0.6381  0.003423  186.4 < 2.22e-16 0.6314 0.6448
 ## 
-## Adjusted Model (k = 4159):
+## Adjusted Model (k = 4228):
 ## 
-## tau^2 (estimated amount of total heterogeneity): 0.0234 (SE = 0.0018)
-## tau (square root of estimated tau^2 value):  0.1531
+## tau^2 (estimated amount of total heterogeneity): 0.0233 (SE = 0.0018)
+## tau (square root of estimated tau^2 value):  0.1527
 ## 
 ## Model Results:
 ## 
-##               estimate std.error z-stat      p-val ci.lb ci.ub
-## Intercept        0.456  0.003574  127.6 < 2.22e-16 0.449 0.463
-## 0.025 < p < 1    0.010       NaN    NaN         NA   NaN   NaN
+##               estimate std.error z-stat      p-val ci.lb  ci.ub
+## Intercept       0.4611  0.003619  127.4 < 2.22e-16 0.454 0.4681
+## 0.025 < p < 1   0.0100       NaN    NaN         NA   NaN    NaN
 ## 
 ## Likelihood Ratio Test:
-## X^2(df = 1) = 2916.6, p-val = < 2.22e-16
+## X^2(df = 1) = 2999.705, p-val = < 2.22e-16
 ## 
 ## Number of Effect Sizes per Interval:
 ## 
 ##                      Frequency
-## p-values <0.025           4159
+## p-values <0.025           4228
 ## 0.025 < p-values < 1         0
 ```
 

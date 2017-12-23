@@ -139,8 +139,8 @@ ncp05 <- sqrt(n05 / 2) * d05
 tibble(x = c(-10, 10)) %>% 
   ggplot(mapping = aes(x = x)) +
   stat_function(fun = dt, n = 10000, args = list(df = df03, ncp = 0), geom = "polygon", alpha = 0.50, aes(fill = "ncp = 0")) +
-  stat_function(fun = dt, n = 10000, args = list(df = df03, ncp = sqrt(n03 / 2) * d03), geom = "polygon", alpha = 0.50, aes(fill = paste0("ncp = ", round(ncp03, 2)))) +
-  stat_function(fun = dt, n = 10000, args = list(df = df05, ncp = sqrt(n05 / 2) * d05), geom = "polygon", alpha = 0.50, aes(fill = paste0("ncp = ", round(ncp05, 2)))) +
+  stat_function(fun = dt, n = 10000, args = list(df = df03, ncp = ncp03), geom = "polygon", alpha = 0.50, aes(fill = paste0("ncp = ", round(ncp03, 2)))) +
+  stat_function(fun = dt, n = 10000, args = list(df = df05, ncp = ncp05), geom = "polygon", alpha = 0.50, aes(fill = paste0("ncp = ", round(ncp05, 2)))) +
   labs(fill = "Noncentral t-distribution") +
   scale_x_continuous(breaks = seq(-10, 10, 2.5)) +
   blog_theme
