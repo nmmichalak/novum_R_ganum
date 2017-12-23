@@ -67,6 +67,20 @@ library(compute.es)
 library(weightr)
 ```
 
+### save custom plotting theme for this post
+
+
+```r
+blog_theme <- theme_bw() +
+  theme(legend.position = "top",
+        axis.title.x = element_text(color = "Black", size = 12),
+        axis.title.y = element_text(color = "Black", size = 12),
+        axis.text.x = element_text(color = "Black", size = 12),
+        axis.text.y = element_text(color = "Black", size = 12),
+        legend.title = element_text(color = "Black", size = 12),
+        legend.text = element_text(color = "Black", size = 12))
+```
+
 # Example 1
 > equal cell sizes. this is like researchers replicating the same two study designs with the same cell sizes but reporting only equal numbers of *p* < .05 results.
 
@@ -110,6 +124,22 @@ tcrit05 <- qt(1 - 0.05 / 2, df05)
 ncp03 <- sqrt(n03 / 2) * d03
 ncp05 <- sqrt(n05 / 2) * d05
 ```
+
+## side bar: here's what the noncentrality and centrality parameters look like
+
+
+```r
+tibble(x = c(-10, 10)) %>% 
+  ggplot(mapping = aes(x = x)) +
+  stat_function(fun = dt, n = 10000, args = list(df = df03, ncp = 0), geom = "polygon", alpha = 0.50, aes(fill = "ncp = 0")) +
+  stat_function(fun = dt, n = 10000, args = list(df = df03, ncp = sqrt(n03 / 2) * d03), geom = "polygon", alpha = 0.50, aes(fill = paste0("ncp = ", round(ncp03, 2)))) +
+  stat_function(fun = dt, n = 10000, args = list(df = df05, ncp = sqrt(n05 / 2) * d05), geom = "polygon", alpha = 0.50, aes(fill = paste0("ncp = ", round(ncp05, 2)))) +
+  labs(fill = "Noncentral t-distribution") +
+  scale_x_continuous(breaks = seq(-10, 10, 2.5)) +
+  blog_theme
+```
+
+![](pcurve_bias_representative_sig_effects_files/figure-html/unnamed-chunk-8-1.png)<!-- -->
 
 ## calculate powers, pwr
 
@@ -178,7 +208,7 @@ options(warn = -1)
 ```
 
 ```
-## [1] 0.3099271
+## [1] 0.2994009
 ```
 
 ```r
@@ -186,7 +216,7 @@ options(warn = -1)
 ```
 
 ```
-## [1] 0.484313
+## [1] 0.5090851
 ```
 
 ## combine them and estimate the average effect size
@@ -200,26 +230,10 @@ options(warn = -1)
 ```
 
 ```
-## [1] 0.3994271
+## [1] 0.4120891
 ```
 
 ## plot all 3 estimates
-
-### save custom plotting theme
-
-
-```r
-blog_theme <- theme_bw() +
-  theme(legend.position = "top",
-        axis.title.x = element_text(color = "Black", size = 12),
-        axis.title.y = element_text(color = "Black", size = 12),
-        axis.text.x = element_text(color = "Black", size = 12),
-        axis.text.y = element_text(color = "Black", size = 12),
-        legend.title = element_text(color = "Black", size = 12),
-        legend.text = element_text(color = "Black", size = 12))
-```
-
-### ok, now plot
 
 
 ```r
@@ -231,7 +245,7 @@ tibble(dhat03, dhat05, dhat_avg) %>%
   blog_theme
 ```
 
-![](pcurve_bias_representative_sig_effects_files/figure-html/unnamed-chunk-14-1.png)<!-- -->
+![](pcurve_bias_representative_sig_effects_files/figure-html/unnamed-chunk-15-1.png)<!-- -->
 
 > the average effect size is just as they said—the simple average of the average true effects, more or less
 
@@ -299,7 +313,7 @@ options(warn = -1)
 ```
 
 ```
-## [1] 0.2970089
+## [1] 0.3096483
 ```
 
 ```r
@@ -307,7 +321,7 @@ options(warn = -1)
 ```
 
 ```
-## [1] 0.5017178
+## [1] 0.5004158
 ```
 
 ## combine them for the average effect size
@@ -321,7 +335,7 @@ options(warn = -1)
 ```
 
 ```
-## [1] 0.4560746
+## [1] 0.4540783
 ```
 
 ## plot all 3 estimates
@@ -336,7 +350,7 @@ tibble(dhat03, dhat05, dhat_avg) %>%
   blog_theme
 ```
 
-![](pcurve_bias_representative_sig_effects_files/figure-html/unnamed-chunk-24-1.png)<!-- -->
+![](pcurve_bias_representative_sig_effects_files/figure-html/unnamed-chunk-25-1.png)<!-- -->
 
 > because the larger effect *d* = 0.50 had a larger cell size—thus more power and more *p* < .05—*p*-curve gave more weight to that effect when it estimated the average true effect
 
@@ -434,7 +448,7 @@ mean(di)
 ```
 
 ```
-## [1] 0.3974515
+## [1] 0.3991621
 ```
 
 ```r
@@ -443,7 +457,7 @@ sd(di)
 ```
 
 ```
-## [1] 0.2001485
+## [1] 0.2009272
 ```
 
 ## estimate the  effect size
@@ -457,7 +471,7 @@ options(warn = -1)
 ```
 
 ```
-## [1] 0.4288658
+## [1] 0.4327637
 ```
 
 > the bias estimate is 4 - 0.43 = -0.03. Not too bad.
@@ -513,7 +527,7 @@ mean(di)
 ```
 
 ```
-## [1] 0.3986926
+## [1] 0.4003784
 ```
 
 ```r
@@ -522,7 +536,7 @@ sd(di)
 ```
 
 ```
-## [1] 0.2009301
+## [1] 0.1986347
 ```
 
 ## compute *p*-values
@@ -545,7 +559,7 @@ options(warn = -1)
 ```
 
 ```
-## [1] 0.5313117
+## [1] 0.5253359
 ```
 
 > The bias estimate is 4 - 0.53 = -0.13. This bias should look familiar. Compare this to the average bias estimate for *p*-curve Figure 3 in McShane et al. I used mean *d* = 0.40, which gives a bias estimate practically in the middle of those for mean *d* = 0.30 (~ 0.15) and mean *d* = 0.50 (~ 0.075) in their figure.
@@ -569,7 +583,7 @@ tibble(d_nosig = di[pi > 0.025]) %>%
 ## `stat_bin()` using `bins = 30`. Pick better value with `binwidth`.
 ```
 
-![](pcurve_bias_representative_sig_effects_files/figure-html/unnamed-chunk-40-1.png)<!-- -->
+![](pcurve_bias_representative_sig_effects_files/figure-html/unnamed-chunk-41-1.png)<!-- -->
 
 What are these? In simulation land, these are just a subset of random variables drawn from a hypothetical normal distribution with a known mean and standard deviaiton. But in the "real world", these represent average true effects for idiosyncratic study designs and any factors that might influence their results. These represent a relatively small galaxy of effect sizes that are waiting for their *p* < .05 if only luck (or statistical power) will have it. Simonsohn et al. made sure estimates of these effects received equal *p*-value representation. But that's not likely to happen in practice.
 
@@ -604,33 +618,33 @@ weightfunct(effect = yi, v = vi, steps = c(0.025, 1), table = TRUE, pval = pi)
 ## 
 ## Unadjusted Model (k = 10000):
 ## 
-## tau^2 (estimated amount of total heterogeneity): 0.0380 (SE = 0.0013)
-## tau (square root of estimated tau^2 value):  0.1950
+## tau^2 (estimated amount of total heterogeneity): 0.0366 (SE = 0.0013)
+## tau (square root of estimated tau^2 value):  0.1914
 ## 
 ## Model Results:
 ## 
-##           estimate std.error z-stat      p-val  ci.lb  ci.ub
-## Intercept   0.4001   0.00307  130.3 < 2.22e-16 0.3941 0.4061
+##           estimate std.error z-stat      p-val  ci.lb ci.ub
+## Intercept    0.398  0.003048  130.6 < 2.22e-16 0.3921 0.404
 ## 
 ## Adjusted Model (k = 10000):
 ## 
-## tau^2 (estimated amount of total heterogeneity): 0.0381 (SE = 0.0013)
-## tau (square root of estimated tau^2 value):  0.1953
+## tau^2 (estimated amount of total heterogeneity): 0.0366 (SE = 0.0013)
+## tau (square root of estimated tau^2 value):  0.1914
 ## 
 ## Model Results:
 ## 
 ##               estimate std.error z-stat      p-val  ci.lb  ci.ub
-## Intercept       0.4031  0.004911  82.08 < 2.22e-16 0.3935 0.4127
-## 0.025 < p < 1   1.0270  0.034487  29.78 < 2.22e-16 0.9594 1.0946
+## Intercept       0.3981  0.004871  81.73 < 2.22e-16 0.3885 0.4076
+## 0.025 < p < 1   1.0005  0.033631  29.75 < 2.22e-16 0.9346 1.0664
 ## 
 ## Likelihood Ratio Test:
-## X^2(df = 1) = 0.6271362, p-val = 0.42841
+## X^2(df = 1) = 0.0002051485, p-val = 0.98857
 ## 
 ## Number of Effect Sizes per Interval:
 ## 
 ##                      Frequency
-## p-values <0.025           4172
-## 0.025 < p-values < 1      5828
+## p-values <0.025           4159
+## 0.025 < p-values < 1      5841
 ```
 
 > compare the Intercept estimate and tau estimate to the *d* mean and *d* sd I requested: this model gets it **really close**.
@@ -645,34 +659,34 @@ weightfunct(effect = yi[pi < 0.025], v = vi[pi < 0.025], steps = c(0.025, 1), ta
 
 ```
 ## 
-## Unadjusted Model (k = 4172):
+## Unadjusted Model (k = 4159):
 ## 
-## tau^2 (estimated amount of total heterogeneity): 0.0000 (SE = 0.0011)
+## tau^2 (estimated amount of total heterogeneity): 0.0000 (SE = 0.0012)
 ## tau (square root of estimated tau^2 value):  0.0000
 ## 
 ## Model Results:
 ## 
 ##           estimate std.error z-stat      p-val  ci.lb  ci.ub
-## Intercept   0.6376  0.003415  186.7 < 2.22e-16 0.6309 0.6443
+## Intercept   0.6359  0.003438    185 < 2.22e-16 0.6292 0.6427
 ## 
-## Adjusted Model (k = 4172):
+## Adjusted Model (k = 4159):
 ## 
-## tau^2 (estimated amount of total heterogeneity): 0.0257 (SE = 0.0019)
-## tau (square root of estimated tau^2 value):  0.1602
+## tau^2 (estimated amount of total heterogeneity): 0.0234 (SE = 0.0018)
+## tau (square root of estimated tau^2 value):  0.1531
 ## 
 ## Model Results:
 ## 
-##               estimate std.error z-stat      p-val  ci.lb  ci.ub
-## Intercept       0.4549   0.00358  127.1 < 2.22e-16 0.4479 0.4619
-## 0.025 < p < 1   0.0100       NaN    NaN         NA    NaN    NaN
+##               estimate std.error z-stat      p-val ci.lb ci.ub
+## Intercept        0.456  0.003574  127.6 < 2.22e-16 0.449 0.463
+## 0.025 < p < 1    0.010       NaN    NaN         NA   NaN   NaN
 ## 
 ## Likelihood Ratio Test:
-## X^2(df = 1) = 2883.73, p-val = < 2.22e-16
+## X^2(df = 1) = 2916.6, p-val = < 2.22e-16
 ## 
 ## Number of Effect Sizes per Interval:
 ## 
 ##                      Frequency
-## p-values <0.025           4172
+## p-values <0.025           4159
 ## 0.025 < p-values < 1         0
 ```
 
