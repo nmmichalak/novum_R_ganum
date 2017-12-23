@@ -597,7 +597,7 @@ weightfunct(effect = yi[pi < 0.025], v = vi[pi < 0.025], steps = c(0.025, 1), ta
 > the estimate is upwardly biased, as the methodologists say, but not as upward as *p*-curve's estimate in this case
 
 # Example 7
-> compare its performance when *p* > .05 are more likely to be published if they're in the predicted direction or *p* < .10 (this mimics the most disastrous scenario in *Why p-curve excludes ps>.05* ([.html](http://datacolada.org/61)))
+> compare its performance when *p* > .05 are more likely to be published if they're in the predicted direction and *p* < .10 (this is similar to the most disastrous scenario in *Why p-curve excludes ps>.05* ([.html](http://datacolada.org/61)))
 
 ```{r}
 

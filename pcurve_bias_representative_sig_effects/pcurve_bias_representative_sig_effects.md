@@ -172,12 +172,6 @@ t05 <- qt(p = rp05, df = df05, ncp = ncp05)
 
 ## Warning in qt(p = rp05, df = df05, ncp = ncp05): full precision may not
 ## have been achieved in 'pnt{final}'
-
-## Warning in qt(p = rp05, df = df05, ncp = ncp05): full precision may not
-## have been achieved in 'pnt{final}'
-
-## Warning in qt(p = rp05, df = df05, ncp = ncp05): full precision may not
-## have been achieved in 'pnt{final}'
 ```
 
 ## `loss()` function from Simonsohn, Nelson, and Simons (2014) ([.html](http://www.p-curve.com/Supplement/Rcode_paper2/9%20-%20Loss%20Function%20and%20Estimation.R))
@@ -217,7 +211,7 @@ options(warn = -1)
 ```
 
 ```
-## [1] 0.3166701
+## [1] 0.2740666
 ```
 
 ```r
@@ -225,7 +219,7 @@ options(warn = -1)
 ```
 
 ```
-## [1] 0.5153614
+## [1] 0.4935052
 ```
 
 ## combine them and estimate the average effect size
@@ -239,7 +233,7 @@ options(warn = -1)
 ```
 
 ```
-## [1] 0.420386
+## [1] 0.39067
 ```
 
 ## plot all 3 estimates
@@ -322,7 +316,7 @@ options(warn = -1)
 ```
 
 ```
-## [1] 0.3092684
+## [1] 0.2842198
 ```
 
 ```r
@@ -330,7 +324,7 @@ options(warn = -1)
 ```
 
 ```
-## [1] 0.5013183
+## [1] 0.4974825
 ```
 
 ## combine them for the average effect size
@@ -344,7 +338,7 @@ options(warn = -1)
 ```
 
 ```
-## [1] 0.4562914
+## [1] 0.4534992
 ```
 
 ## plot all 3 estimates
@@ -457,7 +451,7 @@ mean(di)
 ```
 
 ```
-## [1] 0.4033719
+## [1] 0.3993007
 ```
 
 ```r
@@ -466,7 +460,7 @@ sd(di)
 ```
 
 ```
-## [1] 0.2011709
+## [1] 0.1980281
 ```
 
 ## estimate the  effect size
@@ -480,7 +474,7 @@ options(warn = -1)
 ```
 
 ```
-## [1] 0.4368198
+## [1] 0.4358384
 ```
 
 > the bias estimate is 4 - 0.44 = -0.04. Not too bad.
@@ -536,7 +530,7 @@ mean(di)
 ```
 
 ```
-## [1] 0.3999498
+## [1] 0.3958356
 ```
 
 ```r
@@ -545,7 +539,7 @@ sd(di)
 ```
 
 ```
-## [1] 0.1983992
+## [1] 0.2009184
 ```
 
 ## compute *p*-values
@@ -568,7 +562,7 @@ options(warn = -1)
 ```
 
 ```
-## [1] 0.5295318
+## [1] 0.5291996
 ```
 
 > The bias estimate is 4 - 0.53 = -0.13. This bias should look familiar. Compare this to the average bias estimate for *p*-curve Figure 3 in McShane et al. I used mean *d* = 0.40, which gives a bias estimate practically in the middle of those for mean *d* = 0.30 (~ 0.15) and mean *d* = 0.50 (~ 0.075) in their figure.
@@ -627,33 +621,33 @@ weightfunct(effect = yi, v = vi, steps = c(0.025, 1), table = TRUE, pval = pi)
 ## 
 ## Unadjusted Model (k = 10000):
 ## 
-## tau^2 (estimated amount of total heterogeneity): 0.0382 (SE = 0.0013)
-## tau (square root of estimated tau^2 value):  0.1955
+## tau^2 (estimated amount of total heterogeneity): 0.0401 (SE = 0.0013)
+## tau (square root of estimated tau^2 value):  0.2002
 ## 
 ## Model Results:
 ## 
 ##           estimate std.error z-stat      p-val  ci.lb  ci.ub
-## Intercept   0.4003  0.003073  130.3 < 2.22e-16 0.3942 0.4063
+## Intercept   0.3964  0.003103  127.8 < 2.22e-16 0.3903 0.4025
 ## 
 ## Adjusted Model (k = 10000):
 ## 
-## tau^2 (estimated amount of total heterogeneity): 0.0382 (SE = 0.0013)
-## tau (square root of estimated tau^2 value):  0.1954
+## tau^2 (estimated amount of total heterogeneity): 0.0399 (SE = 0.0013)
+## tau (square root of estimated tau^2 value):  0.1997
 ## 
 ## Model Results:
 ## 
 ##               estimate std.error z-stat      p-val  ci.lb  ci.ub
-## Intercept       0.3987   0.00491  81.22 < 2.22e-16 0.3891 0.4084
-## 0.025 < p < 1   0.9867   0.03312  29.79 < 2.22e-16 0.9218 1.0516
+## Intercept       0.3918  0.004952  79.11 < 2.22e-16 0.3821 0.4015
+## 0.025 < p < 1   0.9607  0.032258  29.78 < 2.22e-16 0.8975 1.0239
 ## 
 ## Likelihood Ratio Test:
-## X^2(df = 1) = 0.1600584, p-val = 0.6891
+## X^2(df = 1) = 1.42566, p-val = 0.23247
 ## 
 ## Number of Effect Sizes per Interval:
 ## 
 ##                      Frequency
-## p-values <0.025           4213
-## 0.025 < p-values < 1      5787
+## p-values <0.025           4199
+## 0.025 < p-values < 1      5801
 ```
 
 > compare the Intercept estimate and tau estimate to the *d* mean and *d* sd I requested: this model gets it **really close**.
@@ -668,41 +662,41 @@ weightfunct(effect = yi[pi < 0.025], v = vi[pi < 0.025], steps = c(0.025, 1), ta
 
 ```
 ## 
-## Unadjusted Model (k = 4213):
+## Unadjusted Model (k = 4199):
 ## 
 ## tau^2 (estimated amount of total heterogeneity): 0.0000 (SE = 0.0012)
 ## tau (square root of estimated tau^2 value):  0.0000
 ## 
 ## Model Results:
 ## 
-##           estimate std.error z-stat      p-val ci.lb  ci.ub
-## Intercept   0.6356  0.003403  186.8 < 2.22e-16 0.629 0.6423
+##           estimate std.error z-stat      p-val  ci.lb  ci.ub
+## Intercept   0.6377  0.003393    188 < 2.22e-16 0.6311 0.6444
 ## 
-## Adjusted Model (k = 4213):
+## Adjusted Model (k = 4199):
 ## 
-## tau^2 (estimated amount of total heterogeneity): 0.0227 (SE = 0.0018)
-## tau (square root of estimated tau^2 value):  0.1508
+## tau^2 (estimated amount of total heterogeneity): 0.0225 (SE = 0.0018)
+## tau (square root of estimated tau^2 value):  0.1500
 ## 
 ## Model Results:
 ## 
 ##               estimate std.error z-stat      p-val  ci.lb  ci.ub
-## Intercept       0.4614  0.003471  132.9 < 2.22e-16 0.4546 0.4682
+## Intercept       0.4657  0.003488  133.5 < 2.22e-16 0.4588 0.4725
 ## 0.025 < p < 1   0.0100       NaN    NaN         NA    NaN    NaN
 ## 
 ## Likelihood Ratio Test:
-## X^2(df = 1) = 2888.337, p-val = < 2.22e-16
+## X^2(df = 1) = 2832.446, p-val = < 2.22e-16
 ## 
 ## Number of Effect Sizes per Interval:
 ## 
 ##                      Frequency
-## p-values <0.025           4213
+## p-values <0.025           4199
 ## 0.025 < p-values < 1         0
 ```
 
 > the estimate is upwardly biased, as the methodologists say, but not as upward as *p*-curve's estimate in this case
 
 # Example 7
-> compare its performance when *p* > .05 are more likely to be published if they're in the predicted direction or *p* < .10 (this mimics the most disastrous scenario in *Why p-curve excludes ps>.05* ([.html](http://datacolada.org/61)))
+> compare its performance when *p* > .05 are more likely to be published if they're in the predicted direction and *p* < .10 (this is similar to the most disastrous scenario in *Why p-curve excludes ps>.05* ([.html](http://datacolada.org/61)))
 
 
 ```r
@@ -711,17 +705,17 @@ weightfunct(effect = yi[yi > 0 & pi < .05], v = vi[yi > 0 & pi < .05], steps = c
 
 ```
 ## 
-## Unadjusted Model (k = 5132):
+## Unadjusted Model (k = 5078):
 ## 
 ## tau^2 (estimated amount of total heterogeneity): 0.0000 (SE = 0.0010)
 ## tau (square root of estimated tau^2 value):  0.0000
 ## 
 ## Model Results:
 ## 
-##           estimate std.error z-stat      p-val  ci.lb  ci.ub
-## Intercept   0.5988  0.003097  193.4 < 2.22e-16 0.5927 0.6049
+##           estimate std.error z-stat      p-val ci.lb  ci.ub
+## Intercept    0.601  0.003097  194.1 < 2.22e-16 0.595 0.6071
 ## 
-## Adjusted Model (k = 5132):
+## Adjusted Model (k = 5078):
 ## 
 ## tau^2 (estimated amount of total heterogeneity): 0.0000 (SE = 0.0010)
 ## tau (square root of estimated tau^2 value):  0.0000
@@ -729,17 +723,17 @@ weightfunct(effect = yi[yi > 0 & pi < .05], v = vi[yi > 0 & pi < .05], steps = c
 ## Model Results:
 ## 
 ##               estimate std.error z-stat      p-val  ci.lb  ci.ub
-## Intercept       0.5522  0.004258 129.69 < 2.22e-16 0.5438 0.5605
-## 0.025 < p < 1   0.4103  0.020603  19.91 < 2.22e-16 0.3699 0.4507
+## Intercept       0.5541  0.004296 128.99 < 2.22e-16 0.5457 0.5625
+## 0.025 < p < 1   0.4023  0.020565  19.56 < 2.22e-16 0.3620 0.4427
 ## 
 ## Likelihood Ratio Test:
-## X^2(df = 1) = 367.3952, p-val = < 2.22e-16
+## X^2(df = 1) = 374.9651, p-val = < 2.22e-16
 ## 
 ## Number of Effect Sizes per Interval:
 ## 
 ##                      Frequency
-## p-values <0.025           4213
-## 0.025 < p-values < 1       919
+## p-values <0.025           4199
+## 0.025 < p-values < 1       879
 ```
 
 > This demonstrates how using *p* > .05 information can mislead a meta-analytic technique that uses it. The problem here is that it's *really hard* to determine the censoring rule for *p* > .05 effects. That is, under what coditions are *p* > .05 likely to be published?
