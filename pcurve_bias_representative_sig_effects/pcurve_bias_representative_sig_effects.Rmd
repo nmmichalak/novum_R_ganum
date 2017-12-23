@@ -55,7 +55,7 @@ Yes. But even when I show you the difference, you might be surprised about how d
 
 I'll start with the intuitive example from  Simonsohn et al.'s Supplement 2. There, they present Figure S2 above, which displays the results of a simulation of two true effect sizes, *d~1~* and *d~2~*. *P*-curve's average of these two effects—the average true effect—depends on how each effect is weighted. If cell sizes and statistically significant effects are equal—that is, if we assume each study of each true effect used the same *n* per condition and reported the same number of significant effects—then *p*-curve will estimate the simple average true effect, (*d~1~* + *d~2~*) / 2. Simonsohn et al. don't provide the R code for this particular figure, but it's easy enough to figure it out from their code for their more complex simulations ([.html](http://www.p-curve.com/Supplement/Rcode_paper2/2-%20Fig%202%20-%20File-drawering%20and%20effect%20size%20estimation.R)). I walk through the steps below. Keep in mind I borrowed heavily from Simonsohn et al.'s code.
 
-## load packages I'll use throughout
+## load relevant packages
 
 ```{r, warning = FALSE, message = FALSE}
 
@@ -486,7 +486,7 @@ sd(di)
 
 ```
 
-# compute *p*-values
+## compute *p*-values
 > this is necessary when they're not all *p* < .05. also, note that I compute one-tailed *p*-values in order to take the predicted positive direction into account
 
 ```{r}
