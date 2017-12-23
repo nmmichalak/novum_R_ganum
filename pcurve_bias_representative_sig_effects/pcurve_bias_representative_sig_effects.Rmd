@@ -34,11 +34,13 @@ Specifically, McShane, Böckenholt, and Hansen (2016) ([.html](http://www.blakem
 
 ![](https://raw.githubusercontent.com/nmmichalak/novum_R_ganum/master/pcurve_bias_representative_sig_effects/mcshane_et_al_F3.png) 
 
+*P*-curve (the red line) gives more biased estimates (i.e., above the 0 line) when heterogeneity is present and the average true effect is relatively small (i.e., bias decreases as average true effect increases).
+
 They conclude, 
 
 > "Given that studies with results that are not statistically significant are indeed published and that heterogeneity is the norm in behavioral research, we should indeed be circumspect about the application of one-parameter approaches such as the *p*-curve (p. 742)."
 
-To be sure, Simonsohn, Nelson, and Simons (2014) aknowledge that *p*-curve ignores effect size information from nonsignificant results, which gives *p*-curve fewer reports to work with. *P*-curve will generally give more variable estimates from smaller samples of significant studies than from larger samples. However, Simonsohn et al. comes to a different conclusion about bias:
+To be sure, Simonsohn, Nelson, and Simons (2014) aknowledge that *p*-curve ignores effect size information from nonsignificant results, which gives *p*-curve fewer reports to work with. *P*-curve will generally give more variable estimates from smaller samples of significant studies than from larger samples. However, Simonsohn et al. come to a different conclusion about bias:
 
 > "Note that although excluding nonsignificant results makes *p*-curve noisier (less efficient), it does not make *p*-curve biased (p. 675)."
 

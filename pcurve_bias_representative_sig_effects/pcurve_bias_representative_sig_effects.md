@@ -34,11 +34,13 @@ Specifically, McShane, Böckenholt, and Hansen (2016) ([.html](http://www.blakem
 
 ![](https://raw.githubusercontent.com/nmmichalak/novum_R_ganum/master/pcurve_bias_representative_sig_effects/mcshane_et_al_F3.png) 
 
+*P*-curve (the red line) gives more biased estimates (i.e., above the 0 line) when heterogeneity is present and the average true effect is relatively small (i.e., bias decreases as average true effect increases).
+
 They conclude, 
 
 > "Given that studies with results that are not statistically significant are indeed published and that heterogeneity is the norm in behavioral research, we should indeed be circumspect about the application of one-parameter approaches such as the *p*-curve (p. 742)."
 
-To be sure, Simonsohn, Nelson, and Simons (2014) aknowledge that *p*-curve ignores effect size information from nonsignificant results, which gives *p*-curve fewer reports to work with. *P*-curve will generally give more variable estimates from smaller samples of significant studies than from larger samples. However, Simonsohn et al. comes to a different conclusion about bias:
+To be sure, Simonsohn, Nelson, and Simons (2014) aknowledge that *p*-curve ignores effect size information from nonsignificant results, which gives *p*-curve fewer reports to work with. *P*-curve will generally give more variable estimates from smaller samples of significant studies than from larger samples. However, Simonsohn et al. come to a different conclusion about bias:
 
 > "Note that although excluding nonsignificant results makes *p*-curve noisier (less efficient), it does not make *p*-curve biased (p. 675)."
 
@@ -176,7 +178,7 @@ options(warn = -1)
 ```
 
 ```
-## [1] 0.3108136
+## [1] 0.2872118
 ```
 
 ```r
@@ -184,7 +186,7 @@ options(warn = -1)
 ```
 
 ```
-## [1] 0.4953351
+## [1] 0.4831504
 ```
 
 ## combine them and estimate the average effect size
@@ -198,7 +200,7 @@ options(warn = -1)
 ```
 
 ```
-## [1] 0.4073998
+## [1] 0.3932141
 ```
 
 ## plot all 3 estimates
@@ -297,7 +299,7 @@ options(warn = -1)
 ```
 
 ```
-## [1] 0.2963416
+## [1] 0.3062546
 ```
 
 ```r
@@ -305,7 +307,7 @@ options(warn = -1)
 ```
 
 ```
-## [1] 0.4964668
+## [1] 0.4980917
 ```
 
 ## combine them for the average effect size
@@ -319,7 +321,7 @@ options(warn = -1)
 ```
 
 ```
-## [1] 0.4503337
+## [1] 0.4537974
 ```
 
 ## plot all 3 estimates
@@ -432,7 +434,7 @@ mean(di)
 ```
 
 ```
-## [1] 0.3966701
+## [1] 0.4021552
 ```
 
 ```r
@@ -441,7 +443,7 @@ sd(di)
 ```
 
 ```
-## [1] 0.2012691
+## [1] 0.1965248
 ```
 
 ## estimate the  effect size
@@ -455,7 +457,7 @@ options(warn = -1)
 ```
 
 ```
-## [1] 0.4325675
+## [1] 0.4252973
 ```
 
 > the bias estimate is 4 - 0.43 = -0.03. Not too bad.
@@ -511,7 +513,7 @@ mean(di)
 ```
 
 ```
-## [1] 0.3982688
+## [1] 0.4007867
 ```
 
 ```r
@@ -520,7 +522,7 @@ sd(di)
 ```
 
 ```
-## [1] 0.2003572
+## [1] 0.2002214
 ```
 
 ## compute *p*-values
@@ -543,7 +545,7 @@ options(warn = -1)
 ```
 
 ```
-## [1] 0.533697
+## [1] 0.5328723
 ```
 
 > The bias estimate is 4 - 0.53 = -0.13. This bias should look familiar. Compare this to the average bias estimate for *p*-curve Figure 3 in McShane et al. I used mean *d* = 0.40, which gives a bias estimate practically in the middle of those for mean *d* = 0.30 (~ 0.15) and mean *d* = 0.50 (~ 0.075) in their figure.
@@ -602,33 +604,33 @@ weightfunct(effect = yi, v = vi, steps = c(0.025, 1), table = TRUE, pval = pi)
 ## 
 ## Unadjusted Model (k = 10000):
 ## 
-## tau^2 (estimated amount of total heterogeneity): 0.0403 (SE = 0.0013)
-## tau (square root of estimated tau^2 value):  0.2008
+## tau^2 (estimated amount of total heterogeneity): 0.0390 (SE = 0.0013)
+## tau (square root of estimated tau^2 value):  0.1974
 ## 
 ## Model Results:
 ## 
 ##           estimate std.error z-stat      p-val  ci.lb  ci.ub
-## Intercept   0.3985   0.00311  128.1 < 2.22e-16 0.3924 0.4046
+## Intercept   0.3997  0.003085  129.6 < 2.22e-16 0.3937 0.4058
 ## 
 ## Adjusted Model (k = 10000):
 ## 
-## tau^2 (estimated amount of total heterogeneity): 0.0400 (SE = 0.0013)
-## tau (square root of estimated tau^2 value):  0.2000
+## tau^2 (estimated amount of total heterogeneity): 0.0389 (SE = 0.0013)
+## tau (square root of estimated tau^2 value):  0.1971
 ## 
 ## Model Results:
 ## 
 ##               estimate std.error z-stat      p-val  ci.lb  ci.ub
-## Intercept       0.3903  0.004957  78.73 < 2.22e-16 0.3806 0.4000
-## 0.025 < p < 1   0.9316  0.031252  29.81 < 2.22e-16 0.8703 0.9928
+## Intercept       0.3968  0.004928  80.53 < 2.22e-16 0.3872 0.4065
+## 0.025 < p < 1   0.9749  0.032716  29.80 < 2.22e-16 0.9108 1.0390
 ## 
 ## Likelihood Ratio Test:
-## X^2(df = 1) = 4.451542, p-val = 0.03487
+## X^2(df = 1) = 0.5751226, p-val = 0.44823
 ## 
 ## Number of Effect Sizes per Interval:
 ## 
 ##                      Frequency
-## p-values <0.025           4245
-## 0.025 < p-values < 1      5755
+## p-values <0.025           4221
+## 0.025 < p-values < 1      5779
 ```
 
 > compare the Intercept estimate and tau estimate to the *d* mean and *d* sd I requested: this model gets it **really close**.
@@ -643,34 +645,34 @@ weightfunct(effect = yi[pi < 0.025], v = vi[pi < 0.025], steps = c(0.025, 1), ta
 
 ```
 ## 
-## Unadjusted Model (k = 4245):
+## Unadjusted Model (k = 4221):
 ## 
 ## tau^2 (estimated amount of total heterogeneity): 0.0000 (SE = 0.0012)
 ## tau (square root of estimated tau^2 value):  0.0000
 ## 
 ## Model Results:
 ## 
-##           estimate std.error z-stat      p-val  ci.lb  ci.ub
-## Intercept   0.6392  0.003401    188 < 2.22e-16 0.6326 0.6459
+##           estimate std.error z-stat      p-val  ci.lb ci.ub
+## Intercept   0.6384  0.003403  187.6 < 2.22e-16 0.6317 0.645
 ## 
-## Adjusted Model (k = 4245):
+## Adjusted Model (k = 4221):
 ## 
-## tau^2 (estimated amount of total heterogeneity): 0.0196 (SE = 0.0017)
-## tau (square root of estimated tau^2 value):  0.1398
+## tau^2 (estimated amount of total heterogeneity): 0.0226 (SE = 0.0018)
+## tau (square root of estimated tau^2 value):  0.1505
 ## 
 ## Model Results:
 ## 
 ##               estimate std.error z-stat      p-val  ci.lb  ci.ub
-## Intercept       0.4759  0.003402  139.9 < 2.22e-16 0.4693 0.4826
+## Intercept       0.4631   0.00345  134.2 < 2.22e-16 0.4563 0.4699
 ## 0.025 < p < 1   0.0100       NaN    NaN         NA    NaN    NaN
 ## 
 ## Likelihood Ratio Test:
-## X^2(df = 1) = 2870.592, p-val = < 2.22e-16
+## X^2(df = 1) = 2869.076, p-val = < 2.22e-16
 ## 
 ## Number of Effect Sizes per Interval:
 ## 
 ##                      Frequency
-## p-values <0.025           4245
+## p-values <0.025           4221
 ## 0.025 < p-values < 1         0
 ```
 
