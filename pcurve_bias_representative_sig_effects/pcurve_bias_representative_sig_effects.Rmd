@@ -18,7 +18,7 @@ body{ /* Normal  */
   }
 </style>
 
-# *P*-curve and heterogeneity: an brief introduction
+# *P*-curve and heterogeneity: a brief introduction
 
 For readers who aren't familair with *p*-curve, it was developed by Simonsohn, Nelson, and Simons (2014, [.html](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=2256237)) who define it as,
 
