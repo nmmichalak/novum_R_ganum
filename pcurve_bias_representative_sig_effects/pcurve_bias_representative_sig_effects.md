@@ -208,7 +208,7 @@ options(warn = -1)
 ```
 
 ```
-## [1] 0.293289
+## [1] 0.303065
 ```
 
 ```r
@@ -216,7 +216,7 @@ options(warn = -1)
 ```
 
 ```
-## [1] 0.5018598
+## [1] 0.4938567
 ```
 
 ## combine them and estimate the average effect size
@@ -230,7 +230,7 @@ options(warn = -1)
 ```
 
 ```
-## [1] 0.4013462
+## [1] 0.3990203
 ```
 
 ## plot all 3 estimates
@@ -313,7 +313,7 @@ options(warn = -1)
 ```
 
 ```
-## [1] 0.2919467
+## [1] 0.2840383
 ```
 
 ```r
@@ -321,7 +321,7 @@ options(warn = -1)
 ```
 
 ```
-## [1] 0.5008008
+## [1] 0.5005621
 ```
 
 ## combine them for the average effect size
@@ -335,7 +335,7 @@ options(warn = -1)
 ```
 
 ```
-## [1] 0.4550982
+## [1] 0.452118
 ```
 
 ## plot all 3 estimates
@@ -448,7 +448,7 @@ mean(di)
 ```
 
 ```
-## [1] 0.3967951
+## [1] 0.4011198
 ```
 
 ```r
@@ -457,7 +457,7 @@ sd(di)
 ```
 
 ```
-## [1] 0.2001406
+## [1] 0.2019248
 ```
 
 ## estimate the  effect size
@@ -471,7 +471,7 @@ options(warn = -1)
 ```
 
 ```
-## [1] 0.4303884
+## [1] 0.4337513
 ```
 
 > the bias estimate is 4 - 0.43 = -0.03. Not too bad.
@@ -527,7 +527,7 @@ mean(di)
 ```
 
 ```
-## [1] 0.3984995
+## [1] 0.3988833
 ```
 
 ```r
@@ -536,7 +536,7 @@ sd(di)
 ```
 
 ```
-## [1] 0.1992156
+## [1] 0.1971644
 ```
 
 ## compute *p*-values
@@ -559,7 +559,7 @@ options(warn = -1)
 ```
 
 ```
-## [1] 0.5288229
+## [1] 0.5264601
 ```
 
 > The bias estimate is 4 - 0.53 = -0.13. This bias should look familiar. Compare this to the average bias estimate for *p*-curve Figure 3 in McShane et al. I used mean *d* = 0.40, which gives a bias estimate practically in the middle of those for mean *d* = 0.30 (~ 0.15) and mean *d* = 0.50 (~ 0.075) in their figure.
@@ -618,33 +618,33 @@ weightfunct(effect = yi, v = vi, steps = c(0.025, 1), table = TRUE, pval = pi)
 ## 
 ## Unadjusted Model (k = 10000):
 ## 
-## tau^2 (estimated amount of total heterogeneity): 0.0391 (SE = 0.0013)
-## tau (square root of estimated tau^2 value):  0.1977
+## tau^2 (estimated amount of total heterogeneity): 0.0382 (SE = 0.0013)
+## tau (square root of estimated tau^2 value):  0.1956
 ## 
 ## Model Results:
 ## 
 ##           estimate std.error z-stat      p-val  ci.lb  ci.ub
-## Intercept   0.3987  0.003084  129.3 < 2.22e-16 0.3927 0.4048
+## Intercept   0.3946  0.003079  128.2 < 2.22e-16 0.3885 0.4006
 ## 
 ## Adjusted Model (k = 10000):
 ## 
-## tau^2 (estimated amount of total heterogeneity): 0.0391 (SE = 0.0013)
-## tau (square root of estimated tau^2 value):  0.1978
+## tau^2 (estimated amount of total heterogeneity): 0.0380 (SE = 0.0013)
+## tau (square root of estimated tau^2 value):  0.1948
 ## 
 ## Model Results:
 ## 
 ##               estimate std.error z-stat      p-val  ci.lb  ci.ub
-## Intercept        0.399  0.004931  80.91 < 2.22e-16 0.3893 0.4086
-## 0.025 < p < 1    1.002  0.033643  29.78 < 2.22e-16 0.9360 1.0679
+## Intercept       0.3878  0.004904  79.07 < 2.22e-16 0.3782 0.3974
+## 0.025 < p < 1   0.9424  0.031694  29.73 < 2.22e-16 0.8803 1.0045
 ## 
 ## Likelihood Ratio Test:
-## X^2(df = 1) = 0.002222493, p-val = 0.9624
+## X^2(df = 1) = 3.11639, p-val = 0.077508
 ## 
 ## Number of Effect Sizes per Interval:
 ## 
 ##                      Frequency
-## p-values <0.025           4195
-## 0.025 < p-values < 1      5805
+## p-values <0.025           4168
+## 0.025 < p-values < 1      5832
 ```
 
 > compare the Intercept estimate and tau estimate to the *d* mean and *d* sd I requested: this model gets it **really close**.
@@ -659,7 +659,7 @@ weightfunct(effect = yi[pi < 0.025], v = vi[pi < 0.025], steps = c(0.025, 1), ta
 
 ```
 ## 
-## Unadjusted Model (k = 4195):
+## Unadjusted Model (k = 4168):
 ## 
 ## tau^2 (estimated amount of total heterogeneity): 0.0000 (SE = 0.0012)
 ## tau (square root of estimated tau^2 value):  0.0000
@@ -667,26 +667,26 @@ weightfunct(effect = yi[pi < 0.025], v = vi[pi < 0.025], steps = c(0.025, 1), ta
 ## Model Results:
 ## 
 ##           estimate std.error z-stat      p-val  ci.lb  ci.ub
-## Intercept    0.637  0.003392  187.8 < 2.22e-16 0.6304 0.6437
+## Intercept   0.6355  0.003426  185.5 < 2.22e-16 0.6288 0.6422
 ## 
-## Adjusted Model (k = 4195):
+## Adjusted Model (k = 4168):
 ## 
-## tau^2 (estimated amount of total heterogeneity): 0.0249 (SE = 0.0019)
-## tau (square root of estimated tau^2 value):  0.1577
+## tau^2 (estimated amount of total heterogeneity): 0.0230 (SE = 0.0018)
+## tau (square root of estimated tau^2 value):  0.1518
 ## 
 ## Model Results:
 ## 
 ##               estimate std.error z-stat      p-val  ci.lb  ci.ub
-## Intercept       0.4587  0.003573  128.4 < 2.22e-16 0.4517 0.4657
+## Intercept       0.4556  0.003592  126.8 < 2.22e-16 0.4486 0.4627
 ## 0.025 < p < 1   0.0100       NaN    NaN         NA    NaN    NaN
 ## 
 ## Likelihood Ratio Test:
-## X^2(df = 1) = 2857.631, p-val = < 2.22e-16
+## X^2(df = 1) = 2941.074, p-val = < 2.22e-16
 ## 
 ## Number of Effect Sizes per Interval:
 ## 
 ##                      Frequency
-## p-values <0.025           4195
+## p-values <0.025           4168
 ## 0.025 < p-values < 1         0
 ```
 
@@ -694,7 +694,7 @@ weightfunct(effect = yi[pi < 0.025], v = vi[pi < 0.025], steps = c(0.025, 1), ta
 
 # Conclusion: bias from simulations versus "real-world" bias
 
-McShane et al. are right to recommend people use valuable information from effect sizes, *p* < .05 or not. What's more, the model they recommend does just as well as *p*-curve when only *p* < .05 are published—in my example but also in McShane et al.'s simulations.
+McShane et al. are right to recommend people use valuable information from effect sizes, *p* < .05 or not. What's more, the model they recommend does just as well as *p*-curve when only *p* < .05 are published—in my example but also in McShane et al.'s simulations. (Side: I don't have the space to demonstrate here, but *p*-curve might perform a little better in some *p*-hacking environments (e.g., data peeking)).
 
 But think back to those *p* < .05-less studies represented in that histogram above. Those represent more combinations of manipulations, measures, sample characteristics, and contexts than those reported by any research literature that exists. Realistically, researchers will selectively (i.e., non-randomly) study a handful of these combinations, and those combinations that most easily produce interesting, statistically significant results will end up in meta-analyst's hands. Like Uri Simonsohn points out, *"The" effect size does not exist* ([.html](http://datacolada.org/33)). The effect sizes that received more weight in these simulations did so because they were larger. In simulation land, this is correctly called bias. But, perhaps, in the "real world", the studies that receive the most weight might represent the most interesting studies—to researchers, to funders, to everyday people. In other words, they represent not the true average, whatever that is, but, maybe, the *interesting* average.
 
