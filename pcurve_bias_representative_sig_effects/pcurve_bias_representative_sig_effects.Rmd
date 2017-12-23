@@ -226,7 +226,7 @@ tibble(dhat03, dhat05, dhat_avg) %>%
 > the average effect size is just as they said—the simple average of the true effects, more or less
 
 # Example 2
-> triple the cell size used to study the study design with the larger effect size. still equal numbers of *p* < .05 results
+> triple the cell size used for the study design with the larger effect size. still equal numbers of *p* < .05 results
 
 ```{r}
 
