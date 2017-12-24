@@ -18,6 +18,8 @@ body{ /* Normal  */
   }
 </style>
 
+# *P*-curve is biased by more representative significant effects (a.k.a. heterogeneity)
+
 # *P*-curve and heterogeneity: a brief introduction
 
 For readers who aren't familair with *p*-curve, it was developed by Simonsohn, Nelson, and Simons (2014) ([.html](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=2256237)) who define it as,
@@ -25,6 +27,8 @@ For readers who aren't familair with *p*-curve, it was developed by Simonsohn, N
 > "the distribution of statistically significant *p*-values from a set of independent findings (p. 535)."
 
 In their paper, they demonstrated how researchers can test whether a set of only statistically significant effects (i.e., *p* < .05) reveal evidential value. They went on to develop a technique for estimating the average true effect from a given *p*-curve ([.html](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=2377290)).
+
+Big idea: *p*-curve tests whether there is evidence for an effect using only signifcant p-values, and it estimates the effect size with those *p*-values too.
 
 The tests and the effect size estimation technique for *p*-curve are quite popular (see [www.p-curve.com](www.p-curve.com)), at least popular enough to attract some pretty harsh criticisms. In this post, I focus on one:
 
@@ -166,6 +170,11 @@ t03 <- qt(p = rp03, df = df03, ncp = ncp03)
 t05 <- qt(p = rp05, df = df05, ncp = ncp05)
 ```
 
+```
+## Warning in qt(p = rp05, df = df05, ncp = ncp05): full precision may not
+## have been achieved in 'pnt{final}'
+```
+
 ## `loss()` function from Simonsohn, Nelson, and Simons (2014) ([.html](http://www.p-curve.com/Supplement/Rcode_paper2/9%20-%20Loss%20Function%20and%20Estimation.R))
 
 
@@ -203,7 +212,7 @@ options(warn = -1)
 ```
 
 ```
-## [1] 0.2980262
+## [1] 0.2895571
 ```
 
 ```r
@@ -211,7 +220,7 @@ options(warn = -1)
 ```
 
 ```
-## [1] 0.5166765
+## [1] 0.5130443
 ```
 
 ## combine them and estimate the average effect size
@@ -225,7 +234,7 @@ options(warn = -1)
 ```
 
 ```
-## [1] 0.4132155
+## [1] 0.4087567
 ```
 
 ## plot all 3 estimates
@@ -308,7 +317,7 @@ options(warn = -1)
 ```
 
 ```
-## [1] 0.3007241
+## [1] 0.2954575
 ```
 
 ```r
@@ -316,7 +325,7 @@ options(warn = -1)
 ```
 
 ```
-## [1] 0.5067782
+## [1] 0.494993
 ```
 
 ## combine them for the average effect size
@@ -330,7 +339,7 @@ options(warn = -1)
 ```
 
 ```
-## [1] 0.4567745
+## [1] 0.4508108
 ```
 
 ## plot all 3 estimates
@@ -443,7 +452,7 @@ mean(di)
 ```
 
 ```
-## [1] 0.399757
+## [1] 0.3941473
 ```
 
 ```r
@@ -452,7 +461,7 @@ sd(di)
 ```
 
 ```
-## [1] 0.1984505
+## [1] 0.2003004
 ```
 
 ## estimate the  effect size
@@ -466,7 +475,7 @@ options(warn = -1)
 ```
 
 ```
-## [1] 0.4305705
+## [1] 0.4275694
 ```
 
 > the bias estimate is 4 - 0.43 = -0.03. Not too bad.
@@ -522,7 +531,7 @@ mean(di)
 ```
 
 ```
-## [1] 0.402068
+## [1] 0.4034759
 ```
 
 ```r
@@ -531,7 +540,7 @@ sd(di)
 ```
 
 ```
-## [1] 0.1981659
+## [1] 0.2000569
 ```
 
 ## compute *p*-values
@@ -554,7 +563,7 @@ options(warn = -1)
 ```
 
 ```
-## [1] 0.5300479
+## [1] 0.5310486
 ```
 
 > The bias estimate is 4 - 0.53 = -0.13. This bias should look familiar. Compare this to the average bias estimate for *p*-curve Figure 3 in McShane et al. I used mean *d* = 0.40, which gives a bias estimate practically in the middle of those for mean *d* = 0.30 (~ 0.15) and mean *d* = 0.50 (~ 0.075) in their figure.
@@ -613,33 +622,33 @@ weightfunct(effect = yi, v = vi, steps = c(0.025, 1), table = TRUE, pval = pi)
 ## 
 ## Unadjusted Model (k = 10000):
 ## 
-## tau^2 (estimated amount of total heterogeneity): 0.0381 (SE = 0.0013)
-## tau (square root of estimated tau^2 value):  0.1953
+## tau^2 (estimated amount of total heterogeneity): 0.0395 (SE = 0.0013)
+## tau (square root of estimated tau^2 value):  0.1987
 ## 
 ## Model Results:
 ## 
-##           estimate std.error z-stat      p-val ci.lb  ci.ub
-## Intercept   0.4001  0.003072  130.2 < 2.22e-16 0.394 0.4061
+##           estimate std.error z-stat      p-val  ci.lb ci.ub
+## Intercept    0.403  0.003093  130.3 < 2.22e-16 0.3969 0.409
 ## 
 ## Adjusted Model (k = 10000):
 ## 
-## tau^2 (estimated amount of total heterogeneity): 0.0380 (SE = 0.0013)
-## tau (square root of estimated tau^2 value):  0.1950
+## tau^2 (estimated amount of total heterogeneity): 0.0394 (SE = 0.0013)
+## tau (square root of estimated tau^2 value):  0.1986
 ## 
 ## Model Results:
 ## 
 ##               estimate std.error z-stat      p-val  ci.lb  ci.ub
-## Intercept       0.3977  0.004903  81.12 < 2.22e-16 0.3881 0.4073
-## 0.025 < p < 1   0.9795  0.032868  29.80 < 2.22e-16 0.9151 1.0439
+## Intercept       0.4012  0.004947  81.10 < 2.22e-16 0.3915 0.4109
+## 0.025 < p < 1   0.9847  0.033030  29.81 < 2.22e-16 0.9199 1.0494
 ## 
 ## Likelihood Ratio Test:
-## X^2(df = 1) = 0.3782827, p-val = 0.53852
+## X^2(df = 1) = 0.2125944, p-val = 0.64474
 ## 
 ## Number of Effect Sizes per Interval:
 ## 
 ##                      Frequency
-## p-values <0.025           4213
-## 0.025 < p-values < 1      5787
+## p-values <0.025           4256
+## 0.025 < p-values < 1      5744
 ```
 
 > compare the Intercept estimate and tau estimate to the *d* mean and *d* sd I requested: this model gets it **really close**.
@@ -654,34 +663,34 @@ weightfunct(effect = yi[pi < 0.025], v = vi[pi < 0.025], steps = c(0.025, 1), ta
 
 ```
 ## 
-## Unadjusted Model (k = 4213):
+## Unadjusted Model (k = 4256):
 ## 
-## tau^2 (estimated amount of total heterogeneity): 0.0000 (SE = 0.0012)
+## tau^2 (estimated amount of total heterogeneity): 0.0000 (SE = 0.0011)
 ## tau (square root of estimated tau^2 value):  0.0000
 ## 
 ## Model Results:
 ## 
 ##           estimate std.error z-stat      p-val  ci.lb  ci.ub
-## Intercept    0.636  0.003406  186.7 < 2.22e-16 0.6293 0.6427
+## Intercept   0.6401  0.003401  188.2 < 2.22e-16 0.6335 0.6468
 ## 
-## Adjusted Model (k = 4213):
+## Adjusted Model (k = 4256):
 ## 
-## tau^2 (estimated amount of total heterogeneity): 0.0236 (SE = 0.0018)
-## tau (square root of estimated tau^2 value):  0.1537
+## tau^2 (estimated amount of total heterogeneity): 0.0285 (SE = 0.0020)
+## tau (square root of estimated tau^2 value):  0.1689
 ## 
 ## Model Results:
 ## 
 ##               estimate std.error z-stat      p-val  ci.lb  ci.ub
-## Intercept       0.4572  0.003533  129.4 < 2.22e-16 0.4503 0.4642
-## 0.025 < p < 1   0.0100       NaN    NaN         NA    NaN    NaN
+## Intercept        0.448  0.003619  123.8 < 2.22e-16 0.4409 0.4551
+## 0.025 < p < 1    0.010       NaN    NaN         NA    NaN    NaN
 ## 
 ## Likelihood Ratio Test:
-## X^2(df = 1) = 2931.205, p-val = < 2.22e-16
+## X^2(df = 1) = 2972.937, p-val = < 2.22e-16
 ## 
 ## Number of Effect Sizes per Interval:
 ## 
 ##                      Frequency
-## p-values <0.025           4213
+## p-values <0.025           4256
 ## 0.025 < p-values < 1         0
 ```
 
@@ -697,35 +706,35 @@ weightfunct(effect = yi[pi < .05 | pi > .95], v = vi[pi < .05 | pi > .95], steps
 
 ```
 ## 
-## Unadjusted Model (k = 5206):
+## Unadjusted Model (k = 5225):
 ## 
-## tau^2 (estimated amount of total heterogeneity): 0.0029 (SE = 0.0009)
-## tau (square root of estimated tau^2 value):  0.0536
+## tau^2 (estimated amount of total heterogeneity): 0.0038 (SE = 0.0010)
+## tau (square root of estimated tau^2 value):  0.0617
 ## 
 ## Model Results:
 ## 
 ##           estimate std.error z-stat      p-val  ci.lb  ci.ub
-## Intercept   0.5895  0.003157  186.7 < 2.22e-16 0.5833 0.5957
+## Intercept   0.5942  0.003193  186.1 < 2.22e-16 0.5879 0.6005
 ## 
-## Adjusted Model (k = 5206):
+## Adjusted Model (k = 5225):
 ## 
-## tau^2 (estimated amount of total heterogeneity): 0.0110 (SE = 0.0013)
-## tau (square root of estimated tau^2 value):  0.1046
+## tau^2 (estimated amount of total heterogeneity): 0.0123 (SE = 0.0014)
+## tau (square root of estimated tau^2 value):  0.1111
 ## 
 ## Model Results:
 ## 
 ##               estimate std.error z-stat      p-val  ci.lb  ci.ub
-## Intercept       0.5213  0.005337  97.67 < 2.22e-16 0.5108 0.5318
-## 0.025 < p < 1   0.3418  0.017488  19.54 < 2.22e-16 0.3075 0.3760
+## Intercept       0.5232   0.00542  96.54 < 2.22e-16 0.5126 0.5339
+## 0.025 < p < 1   0.3307   0.01700  19.45 < 2.22e-16 0.2974 0.3640
 ## 
 ## Likelihood Ratio Test:
-## X^2(df = 1) = 476.8975, p-val = < 2.22e-16
+## X^2(df = 1) = 505.1858, p-val = < 2.22e-16
 ## 
 ## Number of Effect Sizes per Interval:
 ## 
 ##                      Frequency
-## p-values <0.025           4213
-## 0.025 < p-values < 1       993
+## p-values <0.025           4256
+## 0.025 < p-values < 1       969
 ```
 
 > This demonstrates how using *p* > .05 information can mislead a meta-analytic technique that uses it. The problem here is that it's *really hard* to determine the censoring rule for *p* > .05 effects. That is, under what coditions are *p* > .05 likely to be published?

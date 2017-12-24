@@ -18,6 +18,8 @@ body{ /* Normal  */
   }
 </style>
 
+# *P*-curve is biased by more representative significant effects (a.k.a. heterogeneity)
+
 # *P*-curve and heterogeneity: a brief introduction
 
 For readers who aren't familair with *p*-curve, it was developed by Simonsohn, Nelson, and Simons (2014) ([.html](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=2256237)) who define it as,
@@ -25,6 +27,8 @@ For readers who aren't familair with *p*-curve, it was developed by Simonsohn, N
 > "the distribution of statistically significant *p*-values from a set of independent findings (p. 535)."
 
 In their paper, they demonstrated how researchers can test whether a set of only statistically significant effects (i.e., *p* < .05) reveal evidential value. They went on to develop a technique for estimating the average true effect from a given *p*-curve ([.html](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=2377290)).
+
+Big idea: *p*-curve tests whether there is evidence for an effect using only signifcant p-values, and it estimates the effect size with those *p*-values too.
 
 The tests and the effect size estimation technique for *p*-curve are quite popular (see [www.p-curve.com](www.p-curve.com)), at least popular enough to attract some pretty harsh criticisms. In this post, I focus on one:
 
