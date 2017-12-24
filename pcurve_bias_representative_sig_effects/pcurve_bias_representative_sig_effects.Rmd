@@ -597,11 +597,11 @@ weightfunct(effect = yi[pi < 0.025], v = vi[pi < 0.025], steps = c(0.025, 1), ta
 > the estimate is upwardly biased, as the methodologists say, but not as upward as *p*-curve's estimate in this case
 
 # Example 7
-> compare its performance when *p* > .05 are more likely to be published if they're in the predicted direction and *p* < .10 (this is similar to the most disastrous scenario in *Why p-curve excludes ps>.05* ([.html](http://datacolada.org/61)))
+> compare its performance when *p* > .05 are more likely to be published if they're in the predicted direction or *p* < .10 (this is similar to the most disastrous scenario in *Why p-curve excludes ps>.05* ([.html](http://datacolada.org/61)))
 
 ```{r}
 
-weightfunct(effect = yi[yi > 0 & pi < .05], v = vi[yi > 0 & pi < .05], steps = c(0.025, 1), table = TRUE, pval = pi[yi > 0 & pi < .05])
+weightfunct(effect = yi[pi < .05 | pi > .95], v = vi[pi < .05 | pi > .95], steps = c(0.025, 1), table = TRUE, pval = pi[pi < .05 | pi > .95])
 
 ```
 
@@ -611,7 +611,7 @@ weightfunct(effect = yi[yi > 0 & pi < .05], v = vi[yi > 0 & pi < .05], steps = c
 
 McShane et al. recommend researchers use valuable information from effect sizes, *p* < .05 or not. What's more, the model they recommend does just as well as *p*-curve when only *p* < .05 are published—in my example but also in McShane et al.'s simulations. However, this model performs poorly when there is selection bias for *p* > .05.
 
-Think back to those *p* < .05-less studies represented in that histogram above. Those represent more combinations of manipulations, measures, sample characteristics, and contexts than those reported by any research literature that exists. Realistically, researchers will selectively (i.e., non-randomly) study a handful of these combinations, and those combinations that most easily produce interesting, statistically significant results will end up in meta-analyst's hands. Like Uri Simonsohn points out, *"The" effect size does not exist* ([.html](http://datacolada.org/33)). The effect sizes that received more weight in these simulations did so because they were larger. In simulation land, this is correctly called bias. But, perhaps, in the "real world", the studies that receive the most weight might represent the most interesting studies—to researchers, to funders, to everyday people. In other words, they represent not the true average, whatever that is, but, maybe, the *interesting* average.
+But think back to those *p* < .05-less studies represented in that histogram above. Those represent more combinations of manipulations, measures, sample characteristics, and contexts than those reported by any research literature that exists. Realistically, researchers will selectively (i.e., non-randomly) study a handful of these combinations, and those combinations that most easily produce interesting, statistically significant results will end up in meta-analyst's hands. Like Uri Simonsohn points out, *"The" effect size does not exist* ([.html](http://datacolada.org/33)). The effect sizes that received more weight in these simulations did so because they were larger. In simulation land, this is correctly called bias. But, perhaps, in the "real world", the studies that receive the most weight might represent the most interesting studies—to researchers, to funders, to everyday people. In other words, they represent not the true average, whatever that is, but, maybe, the *interesting* average.
 
 "Interesting" in this case is just another name for heterogeneity-caused bias that we want.
 
