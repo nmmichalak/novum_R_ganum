@@ -49,12 +49,13 @@ sim_d <- function(d_mean, d_sd, n0, n1) {
 }
 
 # parameters
-d <- 0.50
-n0 <- power.t.test(delta = d, power = 0.50)$n
-n1 <- power.t.test(delta = d, power = 0.80)$n
+mean_d <- 0.35
+sd_d <- 0.20
+n0 <- power.t.test(delta = mean_d, power = 0.50)$n
+n1 <- power.t.test(delta = mean_d, power = 0.80)$n
 
 # simulation data
-simdat <- replicate(n = 10000, sim_d(d_mean = d, d_sd = 0.20, n0 = n0, n1 = n1), simplify = FALSE)
+simdat <- replicate(n = 10000, sim_d(d_mean = mean_d, d_sd = sd_d, n0 = n0, n1 = n1), simplify = FALSE)
 
 # t-stat
 ti <- map_dbl(simdat, function(x) x[["ti"]])
